@@ -6,19 +6,20 @@
     const string Using = """
                          using System.Linq;
                          """;
+    const string String = "global::System.String";
+    const string Bool = "global::System.Boolean";
     const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
+    const string SemanticModel = "global::Microsoft.CodeAnalysis.SemanticModel";
     const string AttributeSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax";
     const string TypeDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax";
-    const string String = "global::System.String";
-    const string SemanticModel = "global::Microsoft.CodeAnalysis.SemanticModel";
-    const string Bool = "global::System.Boolean";
+    const string CancellationToken = "global::System.Threading.CancellationToken";
     
     const string ClassName = "Syntax";
     var methods = new List<(string name,string text)>
     {
-        ("AllAttributes",
+        ("GetAllAttributes",
             $$"""
-            public static {{IEnumerable}}<{{AttributeSyntax}}> AllAttributes(this {{TypeDeclarationSyntax}} syntax)
+            public static {{IEnumerable}}<{{AttributeSyntax}}> GetAllAttributes(this {{TypeDeclarationSyntax}} syntax)
             {
                 return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
             }
@@ -27,11 +28,14 @@
             $$"""
               public static {{IEnumerable}}<{{AttributeSyntax}}> GetSpecifiedAttributes(this {{TypeDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
-                  {{String}} fullAttributeName)
+                  {{String}} fullAttributeName, 
+                  {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
               {
-                  foreach (var attributeSyntax in syntax.AllAttributes())
+                  foreach (var attributeSyntax in syntax.GetAllAttributes())
                   {
-                      if (semanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
+                      if(cancellationToken.IsCancellationRequested)
+                          yield break;
+                      if (semanticModel.GetSymbolInfo(attributeSyntax, cancellationToken).Symbol is not IMethodSymbol attributeSymbol)
                           continue;
               
                       string attributeName = attributeSymbol.ContainingType.ToDisplayString();
@@ -45,9 +49,10 @@
             $$"""
               public static {{AttributeSyntax}}? GetSpecifiedAttribute(this {{TypeDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
-                  {{String}} fullAttributeName)
+                  {{String}} fullAttributeName,
+                  {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
               {
-                  foreach (var attributeSyntax in syntax.GetSpecifiedAttributes(semanticModel, fullAttributeName))
+                  foreach (var attributeSyntax in syntax.GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken))
                   {
                       return attributeSyntax;
                   }

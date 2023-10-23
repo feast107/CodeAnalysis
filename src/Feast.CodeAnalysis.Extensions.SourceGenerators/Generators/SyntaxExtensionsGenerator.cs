@@ -15,7 +15,7 @@ public class SyntaxExtensionsGenerator : IIncrementalGenerator
         {
             ctx.AddSource(Global.GenerateFileName(ClassName),
                 Global.Generate(ClassName, 
-                    SyntaxExtensions.AllAttributesText,
+                    SyntaxExtensions.GetAllAttributesText,
                     SyntaxExtensions.GetSpecifiedAttributesText,
                     SyntaxExtensions.GetSpecifiedAttributeText,
                     SyntaxExtensions.HasSpecifiedAttributeText
