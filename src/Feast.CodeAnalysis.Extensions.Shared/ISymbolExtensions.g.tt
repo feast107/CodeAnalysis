@@ -1,0 +1,43 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    const string NameSpace = "Microsoft.CodeAnalysis";
+    const string Using = """
+                         using System.Linq;
+                         """;
+    const string String = "global::System.String";
+    const string ISymbol = "global::Microsoft.CodeAnalysis.ISymbol";
+    
+    const string ClassName = "ISymbol";
+    var methods = new List<(string name,string text)>
+    {
+        ("GetFullyQualifiedName",
+            $$"""
+            public static {{String}} AllAttributes(this {{ISymbol}} symbol)
+            {
+                return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            }
+            """),
+    };
+#>
+<#=Using#>
+#nullable enable
+namespace <#=NameSpace#>
+{
+    internal static class <#=ClassName#>Extensions
+    {
+<#foreach(var (name,text) in methods){#>
+<#
+      var target = text.Replace("\n", "\n        ");#>
+        <#=target#>
+
+	    internal const string <#=name#>Text =
+        """
+        
+        <#=target#>
+        """;
+
+<#}#>
+    }
+}
