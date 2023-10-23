@@ -71,6 +71,22 @@ public class SampleIncrementalSourceGenerator : IIncrementalGenerator
         GeneratorSyntaxContext context)
     {
         var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+        
+        var attr = classDeclarationSyntax.GetSpecifiedAttribute(context.SemanticModel, $"{Namespace}.{AttributeName}");
+
+        var args = attr?.ArgumentList?.Arguments;
+
+        if (args is null || !args.Value.Any()) return (classDeclarationSyntax, false);
+        
+        var arg = attr!.ArgumentList!.Arguments.First();
+
+        var exp = arg.Expression as TypeOfExpressionSyntax;
+
+        var type = exp!.Type;
+
+        var symbol = context.SemanticModel.GetSymbolInfo(type).Symbol;
+        
+        
         return (classDeclarationSyntax, 
             classDeclarationSyntax.HasSpecifiedAttribute(context.SemanticModel, $"{Namespace}.{AttributeName}"));
     }

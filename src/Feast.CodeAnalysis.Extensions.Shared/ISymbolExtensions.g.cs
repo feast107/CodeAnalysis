@@ -4,7 +4,7 @@ namespace Microsoft.CodeAnalysis
 {
     internal static class ISymbolExtensions
     {
-        public static global::System.String AllAttributes(this global::Microsoft.CodeAnalysis.ISymbol symbol)
+        public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
         {
             return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         }
@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis
 	    internal const string GetFullyQualifiedNameText =
         """
         
-        public static global::System.String AllAttributes(this global::Microsoft.CodeAnalysis.ISymbol symbol)
+        public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
         {
             return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         }

@@ -14,7 +14,7 @@
     {
         ("GetFullyQualifiedName",
             $$"""
-            public static {{String}} AllAttributes(this {{ISymbol}} symbol)
+            public static {{String}} GetFullyQualifiedName(this {{ISymbol}} symbol)
             {
                 return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }

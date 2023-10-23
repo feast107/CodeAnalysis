@@ -1,9 +1,9 @@
 using Generators;
 
 namespace Feast.CodeAnalysis.Extensions.Tests;
-using S = System.SerializableAttribute;
+using AnotherName = AnotherClass;
 
-[RelateTo(typeof(Another))]
+[RelateTo(typeof(AnotherName))]
 public partial class Tests
 {
     [SetUp]
@@ -16,8 +16,4 @@ public partial class Tests
     {
         Assert.Pass();
     }
-}
-
-public class Another
-{
 }

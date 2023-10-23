@@ -5,17 +5,17 @@ namespace Feast.CodeAnalysis.Extensions;
 
 internal static class Global
 {
-    internal const string GenerateNamespace = $"{nameof(Microsoft)}.{nameof(CodeAnalysis)}";
+    private const string GenerateNamespace = $"{nameof(Microsoft)}.{nameof(CodeAnalysis)}";
 
-    internal const string GenerateUsing = """
-                                          using System;
-                                          using System.Collections.Generic;
-                                          using System.Linq;
-                                          using System.Reflection;
-                                          using Microsoft.CodeAnalysis;
-                                          using Microsoft.CodeAnalysis.CSharp;
-                                          using Microsoft.CodeAnalysis.CSharp.Syntax;
-                                          """;
+    private const string GenerateUsing = """
+                                         using System;
+                                         using System.Collections.Generic;
+                                         using System.Linq;
+                                         using System.Reflection;
+                                         using Microsoft.CodeAnalysis;
+                                         using Microsoft.CodeAnalysis.CSharp;
+                                         using Microsoft.CodeAnalysis.CSharp.Syntax;
+                                         """;
 
     internal static string Generate(string className,params string[] methods) =>
         $$"""
@@ -32,8 +32,8 @@ internal static class Global
           """;
     
     internal static string GenerateFileName(string className) =>
-        $"{nameof(Feast)}.{nameof(CodeAnalysis)}.{nameof(Extensions)}.{className}.g.cs";
+        $"{nameof(Feast)}.{nameof(Feast.CodeAnalysis)}.{nameof(Extensions)}.{className}.g.cs";
 
-    internal const string CodeAnalysis = $"global::{nameof(Microsoft)}.{nameof(CodeAnalysis)}";
+    internal const string CodeAnalysis = $"global::{GenerateNamespace}";
   
 }
