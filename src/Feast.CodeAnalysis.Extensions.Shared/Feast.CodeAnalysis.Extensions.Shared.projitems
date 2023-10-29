@@ -9,6 +9,16 @@
     <Import_RootNamespace>Feast.CodeAnalysis.Extensions.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)GeneratorAttributeSyntaxContext.g.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeneratorAttributeSyntaxContext.g.tt</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ImmutableArrayBuilder.g.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImmutableArrayBuilder.g.tt</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ISymbolExtensions.g.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -31,6 +41,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)GeneratorAttributeSyntaxContext.g.tt" >
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)ImmutableArrayBuilder.g.tt" >
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
     <Content Include="$(MSBuildThisFileDirectory)ISymbolExtensions.g.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </Content>

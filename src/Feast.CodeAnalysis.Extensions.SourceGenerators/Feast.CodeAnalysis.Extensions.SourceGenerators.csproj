@@ -31,6 +31,12 @@
         <Compile Update="..\Feast.CodeAnalysis.Extensions.Shared\ITypeSymbolExtensions.g.cs">
           <DependentUpon>ITypeSymbolExtensions.g.tt</DependentUpon>
         </Compile>
+        <Compile Update="..\Feast.CodeAnalysis.Extensions.Shared\ImmutableArrayBuilder.g.cs">
+          <DependentUpon>ImmutableArrayBuilder.g.tt</DependentUpon>
+        </Compile>
+        <Compile Update="..\Feast.CodeAnalysis.Extensions.Shared\GeneratorAttributeSyntaxContext.g.cs">
+          <DependentUpon>GeneratorAttributeSyntaxContext.g.tt</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -38,8 +44,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1"/>
         <PackageReference Include="PolySharp" Version="1.13.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -72,6 +78,14 @@
         <Content Update="..\Feast.CodeAnalysis.Extensions.Shared\SyntaxValueProviderExtensions.g.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>SyntaxValueProviderExtensions.g.cs</LastGenOutput>
+        </Content>
+        <Content Update="..\Feast.CodeAnalysis.Extensions.Shared\ImmutableArrayBuilder.g.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ImmutableArrayBuilder.g.cs</LastGenOutput>
+        </Content>
+        <Content Update="..\Feast.CodeAnalysis.Extensions.Shared\GeneratorAttributeSyntaxContext.g.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>GeneratorAttributeSyntaxContext.g.cs</LastGenOutput>
         </Content>
     </ItemGroup>
 

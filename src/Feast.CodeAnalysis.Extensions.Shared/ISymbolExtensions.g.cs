@@ -18,6 +18,7 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        #if !ROSLYN_4_3_1_OR_GREATER
         /// <summary>
         /// Tries to get an attribute with the specified fully qualified metadata name.
         /// </summary>
@@ -43,10 +44,12 @@ namespace Microsoft.CodeAnalysis
         
             return false;
         }
+        #endif
 
 	    internal const string TryGetAttributeWithFullyQualifiedMetadataNameText =
         """
         
+        #if !ROSLYN_4_3_1_OR_GREATER
         /// <summary>
         /// Tries to get an attribute with the specified fully qualified metadata name.
         /// </summary>
@@ -72,6 +75,7 @@ namespace Microsoft.CodeAnalysis
         
             return false;
         }
+        #endif
         """;
 
     }

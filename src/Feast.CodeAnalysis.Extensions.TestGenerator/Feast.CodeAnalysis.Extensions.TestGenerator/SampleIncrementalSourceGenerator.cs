@@ -39,21 +39,12 @@ public class SampleIncrementalSourceGenerator : IIncrementalGenerator
         context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
             $"{AttributeName}.g.cs",
             SourceText.From(AttributeSourceCode, Encoding.UTF8)));
-        Debugger.Launch();
         // Filter classes annotated with the [Report] attribute. Only filtered Syntax Nodes can trigger code generation.
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(
                 (s, token) =>
                    s is  ClassDeclarationSyntax,
-                (ctx, token) =>
-                {
-                    var symbol = ctx.SemanticModel.GetDeclaredSymbol(ctx.Node, token);
-                    var name   = symbol?.GetFullyQualifiedName();
-                    Debugger.Break();
-                    var node = ctx.Node as ClassDeclarationSyntax;
-                    
-                    return GetClassDeclarationForSourceGen(ctx);
-                })
+                (ctx,_) => GetClassDeclarationForSourceGen(ctx))
             .Where(t => t.reportAttributeFound)
             .Select((t, _) => t.Item1);
 

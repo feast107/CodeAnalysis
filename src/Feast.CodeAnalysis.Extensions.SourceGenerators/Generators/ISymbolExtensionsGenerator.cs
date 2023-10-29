@@ -16,7 +16,8 @@ public class ISymbolExtensionsGenerator : IIncrementalGenerator
         {
             ctx.AddSource(Global.GenerateFileName(ClassName),
                 Global.Generate(ClassName,
-                    ISymbolExtensions.GetFullyQualifiedNameText
+                    ISymbolExtensions.GetFullyQualifiedNameText,
+                    ISymbolExtensions.TryGetAttributeWithFullyQualifiedMetadataNameText
                 )
             );
         });
