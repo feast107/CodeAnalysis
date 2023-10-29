@@ -8,8 +8,9 @@
                          """;
     const string String = "global::System.String";
     const string ISymbol = "global::Microsoft.CodeAnalysis.ISymbol";
-    
+    const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
     const string ClassName = "ISymbol";
+    const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
     var methods = new List<(string name,string text)>
     {
         ("GetFullyQualifiedName",
@@ -19,6 +20,35 @@
                 return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
             """),
+        
+        ("TryGetAttributeWithFullyQualifiedMetadataName",
+            $$"""
+               /// <summary>
+               /// Tries to get an attribute with the specified fully qualified metadata name.
+               /// </summary>
+               /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
+               /// <param name="name">The attribute name to look for.</param>
+               /// <param name="attributeData">The resulting attribute, if it was found.</param>
+               /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
+               public static bool TryGetAttributeWithFullyQualifiedMetadataName(this {{ISymbol}} symbol, 
+                   {{String}} name, 
+                   [{{NotNullWhen}}(true)] out {{AttributeData}}? attributeData)
+               {
+                   foreach (AttributeData attribute in symbol.GetAttributes())
+                   {
+                       if (attribute.AttributeClass?.HasFullyQualifiedMetadataName(name) == true)
+                       {
+                           attributeData = attribute;
+               
+                           return true;
+                       }
+                   }
+               
+                   attributeData = null;
+               
+                   return false;
+               }
+               """)
     };
 #>
 <#=Using#>
