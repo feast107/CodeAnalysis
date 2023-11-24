@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using Feast.CodeAnalysis.Extensions.Internals;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.Extensions.Generators;
 

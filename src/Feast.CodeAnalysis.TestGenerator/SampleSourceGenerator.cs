@@ -1,7 +1,7 @@
 using System.IO;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.Extensions.TestGenerator;
+namespace Feast.CodeAnalysis.TestGenerator;
 
 /// <summary>
 /// A sample source generator that creates C# classes based on the text file (in this case, Domain Driven Design ubiquitous language registry).

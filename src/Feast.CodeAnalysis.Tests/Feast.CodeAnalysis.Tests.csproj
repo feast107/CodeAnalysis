@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.Extensions.TestGenerator\Feast.CodeAnalysis.Extensions.TestGenerator\Feast.CodeAnalysis.Extensions.TestGenerator.csproj" />
+      <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.TestGenerator\Feast.CodeAnalysis.TestGenerator.csproj" />
     </ItemGroup>
 
 </Project>

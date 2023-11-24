@@ -9,8 +9,8 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
 
-        <RootNamespace>Feast.CodeAnalysis.Extensions.TestGenerator</RootNamespace>
-        <PackageId>Feast.CodeAnalysis.Extensions.TestGenerator</PackageId>
+        <RootNamespace>Feast.CodeAnalysis.TestGenerator</RootNamespace>
+        <PackageId>Feast.CodeAnalysis.TestGenerator</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference OutputItemType="Analyzer" Include="..\..\Feast.CodeAnalysis.Extensions.SourceGenerators\Feast.CodeAnalysis.Extensions.SourceGenerators.csproj" />
+      <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
     </ItemGroup>
 
 

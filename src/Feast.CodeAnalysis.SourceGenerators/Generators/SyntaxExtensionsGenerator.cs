@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using Feast.CodeAnalysis.Extensions.Internals;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
+
 namespace Feast.CodeAnalysis.Extensions.Generators;
 
 [Generator]

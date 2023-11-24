@@ -5,23 +5,23 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
-        
-        <Title>Feast.CodeAnalysis.Extensions</Title>
+
+        <Title>Feast.CodeAnalysis</Title>
         <Description>Auto generate extensions for Microsoft.CodeAnalysis</Description>
         <Copyright>(c) Feast. All rights reserved.</Copyright>
-        <PackageProjectUrl>https://github.com/feast107/CodeAnalysis.Extensions</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/feast107/CodeAnalysis.Extensions.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
-    
+
     <ItemGroup Label="Package">
-        <None Include="..\Feast.CodeAnalysis.Extensions.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.Extensions.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
+        <None Include="..\Feast.CodeAnalysis.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\Feast.CodeAnalysis.Extensions.SourceGenerators\Feast.CodeAnalysis.Extensions.SourceGenerators.csproj" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 </Project>
