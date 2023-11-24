@@ -2,8 +2,6 @@ using Feast.CodeAnalysis.Generators;
 using Generators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using TypeInfo = Feast.CodeAnalysis.Utils.TypeInfo;
-
 namespace Feast.CodeAnalysis.Tests;
 using AnotherName = AnotherClass;
 
