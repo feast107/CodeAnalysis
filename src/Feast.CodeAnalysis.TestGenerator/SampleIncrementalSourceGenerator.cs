@@ -33,6 +33,7 @@ public class SampleIncrementalSourceGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        
         // Add the marker attribute to the compilation.
         context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
             $"{AttributeName}.g.cs",

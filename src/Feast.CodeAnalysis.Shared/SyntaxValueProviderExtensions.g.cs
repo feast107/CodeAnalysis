@@ -5,11 +5,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Threading;
+#nullable enable
 using System;
 using System.Collections.Immutable;
-#nullable enable
-namespace Microsoft.CodeAnalysis
+using Microsoft.CodeAnalysis;
+
+namespace Feast.CodeAnalysis
 {
     /// <summary>
     /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
@@ -36,7 +37,7 @@ namespace Microsoft.CodeAnalysis
             this global::Microsoft.CodeAnalysis.SyntaxValueProvider syntaxValueProvider,
             global::System.String fullyQualifiedMetadataName,
             global::System.Func<global::Microsoft.CodeAnalysis.SyntaxNode, global::System.Threading.CancellationToken, global::System.Boolean> predicate,
-            global::System.Func<global::Microsoft.CodeAnalysis.Internal.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
+            global::System.Func<global::Feast.CodeAnalysis.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
         {
             return
                 syntaxValueProvider
@@ -70,7 +71,7 @@ namespace Microsoft.CodeAnalysis
     
                         // Create the GeneratorAttributeSyntaxContext value to pass to the input transform. The attributes array
                         // will only ever have a single value, but that's fine with the attributes the various generators look for.
-                        global::Microsoft.CodeAnalysis.Internal.GeneratorAttributeSyntaxContext syntaxContext = new(
+                        global::Feast.CodeAnalysis.GeneratorAttributeSyntaxContext syntaxContext = new(
                             targetNode: context.Node,
                             targetSymbol: symbol,
                             semanticModel: context.SemanticModel,

@@ -27,7 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
+      <ProjectReference OutputItemType="Analyzer" ReferenceOutputAssembly="true" Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
+      <ProjectReference Include="..\Feast.CodeAnalysis\Feast.CodeAnalysis.csproj" />
     </ItemGroup>
 
 

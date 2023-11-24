@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 
-namespace Feast.CodeAnalysis.Extensions.Internals;
+namespace Feast.CodeAnalysis.Internals;
 
 public record ExtensionMethod(string Name,
     string ReturnType,

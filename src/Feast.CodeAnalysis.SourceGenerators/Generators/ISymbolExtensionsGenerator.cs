@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.Extensions.Generators;
+namespace Feast.CodeAnalysis.Generators;
 
 // ReSharper disable once InconsistentNaming
 [Generator]

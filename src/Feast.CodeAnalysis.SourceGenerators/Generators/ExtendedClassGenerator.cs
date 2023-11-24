@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Internal;
 
-namespace Feast.CodeAnalysis.Extensions.Generators;
+namespace Feast.CodeAnalysis.Generators;
 
 // ReSharper disable once InconsistentNaming
 [Generator]
@@ -19,13 +18,11 @@ public class ExtendedClassGenerator : IIncrementalGenerator
                 #endif
                 """);
             ctx.AddSource(Global.GenerateFileName(nameof(GeneratorAttributeSyntaxContext)),
-                GeneratorAttributeSyntaxContext.GeneratorAttributeSyntaxContextText
-            );
+                GeneratorAttributeSyntaxContext.GeneratorAttributeSyntaxContextText);
             ctx.AddSource(Global.GenerateFileName("ImmutableArrayBuilder{T}"),
                 ImmutableArrayBuilder<object>.ImmutableArrayBuilderText);
             ctx.AddSource(Global.GenerateFileName(nameof(SyntaxValueProviderExtensions)),
-                SyntaxValueProviderExtensions.SyntaxValueProviderText
-            );
+                SyntaxValueProviderExtensions.SyntaxValueProviderText);
         });
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using System.Text;
 
-namespace Feast.CodeAnalysis.Extensions;
+namespace Feast.CodeAnalysis;
 
 internal static class Global
 {
@@ -32,7 +31,7 @@ internal static class Global
           """;
     
     internal static string GenerateFileName(string className) =>
-        $"{nameof(Feast)}.{nameof(Feast.CodeAnalysis)}.{nameof(Extensions)}.{className}.g.cs";
+        $"{nameof(Feast)}.{nameof(Feast.CodeAnalysis)}.{className}.g.cs";
 
     internal const string CodeAnalysis = $"global::{GenerateNamespace}";
   
