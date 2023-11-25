@@ -4,11 +4,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     
     /// <summary>
@@ -70,7 +68,7 @@ namespace Feast.CodeAnalysis
         
             using System.Collections.Immutable;
            
-            namespace Microsoft.CodeAnalysis.Internal;     
+            namespace Microsoft.CodeAnalysis;     
             
             /// <summary>
             /// A type containing information for a match from <see cref="SyntaxValueProviderExtensions.ForAttributeWithMetadataName"/>.

@@ -18,10 +18,11 @@ public class RuntimeTypeInfo : TypeInfo
                 .ToArray());
     }
 
-    public override string           Name         => type.Namespace + "." + type.Name;
-    public override bool             IsParameter  => type.IsGenericParameter;
-    public override bool             IsInterface  => type.IsInterface;
-    public override Lazy<TypeInfo[]> GenericTypes { get; } = new();
-    public override Lazy<TypeInfo?>  BaseClass    { get; } = new();
-    public override Lazy<TypeInfo[]> Interfaces   { get; } = new();
+    public override string Name        => $"{type.Namespace}.{type.Name}";
+    public override bool   IsParameter => type.IsGenericParameter;
+    public override bool   IsInterface => type.IsInterface;
+
+    public override Lazy<TypeInfo?>               BaseClass    { get; } = new();
+    public override Lazy<IReadOnlyList<TypeInfo>> GenericTypes { get; } = new();
+    public override Lazy<IReadOnlyList<TypeInfo>> Interfaces   { get; } = new();
 }

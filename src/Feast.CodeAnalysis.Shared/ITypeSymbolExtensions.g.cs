@@ -1,8 +1,7 @@
-#nullable enable
 using System;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis
+using System.Linq;
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     internal static class ITypeSymbolExtensions
     {
@@ -14,7 +13,7 @@ namespace Feast.CodeAnalysis
         /// <returns>Whether <paramref name="symbol"/> has a full name equals to <paramref name="name"/>.</returns>
         public static global::System.Boolean HasFullyQualifiedMetadataName(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.String name)
         {
-            using global::Feast.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder = global::Feast.CodeAnalysis.ImmutableArrayBuilder<global::System.Char>.Rent();
+            using global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder = global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char>.Rent();
         
             symbol.AppendFullyQualifiedMetadataName(in builder);
         
@@ -46,9 +45,9 @@ namespace Feast.CodeAnalysis
         /// <param name="symbol">The input <see cref="ITypeSymbol"/> instance.</param>
         /// <param name="builder">The target <see cref="ImmutableArrayBuilder{T}"/> instance.</param>
         private static void AppendFullyQualifiedMetadataName(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, 
-            in global::Feast.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
+            in global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
         {
-            static void BuildFrom(global::Microsoft.CodeAnalysis.ISymbol? symbol, in global::Feast.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
+            static void BuildFrom(global::Microsoft.CodeAnalysis.ISymbol? symbol, in global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
             {
                 switch (symbol)
                 {

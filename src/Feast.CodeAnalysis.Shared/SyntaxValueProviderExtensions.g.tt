@@ -1,6 +1,4 @@
 <#@ template language="C#" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
 <#
     const string NameSpace = "Microsoft.CodeAnalysis";
     
@@ -24,7 +22,7 @@
     const string CancellationToken = "global::System.Threading.CancellationToken";
     const string SyntaxValueProvider = "global::Microsoft.CodeAnalysis.SyntaxValueProvider";
     const string IncrementalValuesProvider = "global::Microsoft.CodeAnalysis.IncrementalValuesProvider";
-    const string GeneratorAttributeSyntaxContext = "global::Microsoft.CodeAnalysis.Internal.GeneratorAttributeSyntaxContext";
+    const string GeneratorAttributeSyntaxContext = "global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext";
 
     const string body = $$"""
                         /// <summary>

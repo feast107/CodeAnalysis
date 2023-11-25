@@ -1,8 +1,6 @@
-﻿#nullable enable
-using System.Linq;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis
+﻿using System.Linq;
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     internal static class SyntaxExtensions
     {

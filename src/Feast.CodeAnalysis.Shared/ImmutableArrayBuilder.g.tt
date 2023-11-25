@@ -1,6 +1,4 @@
 <#@ template language="C#" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
 <#
     const string NameSpace = "Microsoft.CodeAnalysis";
     const string ClassName = "ImmutableArrayBuilder";

@@ -38,12 +38,11 @@ public class SymbolTypeInfo : TypeInfo
         Debugger.Break();
     }
 
-    public override string Name { get; }
+    public override string Name        { get; }
+    public override bool   IsParameter { get; }
+    public override bool   IsInterface { get; }
 
-    public override bool IsParameter { get; }
-
-    public override bool             IsInterface  { get; }
-    public override Lazy<TypeInfo[]> GenericTypes { get; } = new();
-    public override Lazy<TypeInfo?>  BaseClass    { get; } = new();
-    public override Lazy<TypeInfo[]> Interfaces   { get; } = new();
+    public override Lazy<IReadOnlyList<TypeInfo>> GenericTypes { get; } = new();
+    public override Lazy<TypeInfo?>               BaseClass    { get; } = new();
+    public override Lazy<IReadOnlyList<TypeInfo>> Interfaces   { get; } = new();
 }

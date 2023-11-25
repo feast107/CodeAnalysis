@@ -1,8 +1,6 @@
 <#@ template language="C#" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
 <#
-    const string NameSpace = "Microsoft.CodeAnalysis.Internal";
+    const string NameSpace = "Microsoft.CodeAnalysis";
     const string ClassName = "GeneratorAttributeSyntaxContext";
     const string Comment = """
                            // Licensed to the .NET Foundation under one or more agreements.

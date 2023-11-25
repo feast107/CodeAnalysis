@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Internal;
 
 namespace Feast.CodeAnalysis.Generators;
 

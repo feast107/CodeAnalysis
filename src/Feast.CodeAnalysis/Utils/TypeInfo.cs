@@ -21,22 +21,22 @@ public abstract class TypeInfo
     /// <summary>
     /// 是否是泛型
     /// </summary>
-    public bool IsGeneric => GenericTypes.Value.Length > 0;
+    public bool IsGeneric => GenericTypes.Value.Count > 0;
 
     /// <summary>
     /// 泛型参数
     /// </summary>
-    public abstract Lazy<TypeInfo[]> GenericTypes { get; }
+    public abstract Lazy<IReadOnlyList<TypeInfo>> GenericTypes { get; }
 
     /// <summary>
     /// 基类
     /// </summary>
     public abstract Lazy<TypeInfo?> BaseClass { get; }
-    
+
     /// <summary>
     /// 实现的所有接口
     /// </summary>
-    public abstract Lazy<TypeInfo[]> Interfaces { get; }
+    public abstract Lazy<IReadOnlyList<TypeInfo>> Interfaces { get; }
 
     /// <summary>
     /// 本类型是否可以赋值给另一个类型
@@ -51,7 +51,7 @@ public abstract class TypeInfo
             case { IsInterface: true } when another.IsInterface:
                 if (Name != another.Name) return false;
                 if (!IsGeneric && !another.IsGeneric) return true;
-                if (GenericTypes.Value.Length != another.GenericTypes.Value.Length) return false;
+                if (GenericTypes.Value.Count != another.GenericTypes.Value.Count) return false;
                 return !GenericTypes.Value
                     .Where((t, i) => !t.IsAssignableTo(another.GenericTypes.Value[i]))
                     .Any();
@@ -78,7 +78,7 @@ public abstract class TypeInfo
         return false;
     }
 
-    
+
     public override int GetHashCode() => Name.GetHashCode() | GenericTypes.GetHashCode();
 
     public override bool Equals(object? obj)
@@ -88,7 +88,7 @@ public abstract class TypeInfo
         if (IsParameter != another.IsParameter) return false;
         if (!IsGeneric && !another.IsGeneric) return true;
         if (IsInterface               != another.IsInterface) return false;
-        if (GenericTypes.Value.Length != another.GenericTypes.Value.Length) return false;
+        if (GenericTypes.Value.Count != another.GenericTypes.Value.Count) return false;
         return !GenericTypes.Value.Where((t, i) => !t.Equals(another.GenericTypes.Value[i])).Any();
     }
 
