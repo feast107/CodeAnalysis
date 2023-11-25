@@ -1,28 +1,42 @@
 namespace Feast.CodeAnalysis.Utils;
 
-public class RuntimeTypeInfo : TypeInfo
+internal class RuntimeTypeInfo : TypeInfo
 {
     private readonly Type type;
 
     public RuntimeTypeInfo(Type type)
     {
         this.type = type;
-        BaseClass = new(() => type.BaseType == null ? null : new RuntimeTypeInfo(type.BaseType));
-        Interfaces = new(() => type.GetInterfaces()
-            .Select(x => new RuntimeTypeInfo(x) as TypeInfo)
-            .ToArray());
-        if (type.IsGenericType)
-            GenericTypes = new(() => type
-                .GetGenericArguments()
-                .Select(x => new RuntimeTypeInfo(x) as TypeInfo)
+        if (type.BaseType != null)
+        {
+            baseClass = new(() => new RuntimeTypeInfo(type.BaseType));
+        }
+
+        interfaces = new(() =>
+            type.GetInterfaces()
+                .Select(FromType)
                 .ToArray());
+        if (type.IsGenericType)
+            genericTypes = new(() =>
+                type.GetGenericArguments()
+                    .Select(FromType)
+                    .ToArray());
+        if (type.IsGenericParameter)
+        {
+            constrainedTypes = new(() =>
+                type.GetGenericParameterConstraints()
+                    .Select(FromType)
+                    .ToArray());
+        }
     }
 
-    public override string Name        => $"{type.Namespace}.{type.Name}";
-    public override bool   IsParameter => type.IsGenericParameter;
-    public override bool   IsInterface => type.IsInterface;
+    public override string? Namespace   => type.Namespace;
+    public override string  Name        => type.Name;
+    public override bool    IsParameter => type.IsGenericParameter;
+    public override bool    IsInterface => type.IsInterface;
 
-    public override Lazy<TypeInfo?>               BaseClass    { get; } = new();
-    public override Lazy<IReadOnlyList<TypeInfo>> GenericTypes { get; } = new();
-    public override Lazy<IReadOnlyList<TypeInfo>> Interfaces   { get; } = new();
+    protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
+    protected override Lazy<IReadOnlyList<TypeInfo>> genericTypes     { get; } = new(Array.Empty<TypeInfo>);
+    protected override Lazy<IReadOnlyList<TypeInfo>> interfaces       { get; } = new(Array.Empty<TypeInfo>);
+    protected override Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; } = new(Array.Empty<TypeInfo>);
 }

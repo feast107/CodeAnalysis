@@ -14,7 +14,7 @@ public class Tests
     }
 
     [Test]
-    public void Test1()
+    public void Test()
     {
         // Create an instance of the source generator.
         var generator = new TestIncrementalGenerator();
@@ -40,14 +40,17 @@ public class Tests
 
 
 
-    public const string CodeText = """
-                                   using Generators;
-                                              
-                                   [Analyze]
-                                   public class TestClass{
-                                       public string Id { get; set; }
-                                       
-                                       public int Num { get;set; }
-                                   }
-                                   """;
+    public const string CodeText =
+        """
+        using Generators;
+        using System.Collections.Generic;
+             
+        [Analyze]
+        public class TestClass<T> where T : IDictionary<T,string> {
+            public T Id { get; set; }
+            
+            public System.Collections.IEnumerable<T> Num { get;set; }
+        }
+        """;
 }
+

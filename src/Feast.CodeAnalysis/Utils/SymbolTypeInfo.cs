@@ -3,46 +3,48 @@ using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.Utils;
 
-public class SymbolTypeInfo : TypeInfo
+internal class SymbolTypeInfo : TypeInfo
 {
-    private SymbolTypeInfo(ITypeSymbol symbol, string name)
+    public SymbolTypeInfo(ITypeSymbol type)
     {
-        Name        = name;
-        IsInterface = symbol.BaseType == null;
-        if (symbol.BaseType != null) BaseClass = new(() => new SymbolTypeInfo(symbol.BaseType));
+        Name = type.MetadataName;
+        Namespace = type.ContainingNamespace.MetadataName == string.Empty
+            ? null
+            : type.ContainingNamespace.ToDisplayString();
+        if (type.BaseType != null) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
+        switch (type)
+        {
+            case INamedTypeSymbol namedTypeSymbol:
+                IsInterface = type.BaseType == null;
+                interfaces = new(() =>
+                    type.AllInterfaces
+                        .Select(FromSymbol)
+                        .ToArray());
+                if (namedTypeSymbol.IsGenericType)
+                    genericTypes = new(() =>
+                        namedTypeSymbol.TypeArguments
+                            .Select(FromSymbol)
+                            .ToArray());
+                break;
+            case ITypeParameterSymbol parameterSymbol:
+                constrainedTypes = new(() =>
+                    parameterSymbol.ConstraintTypes
+                        .Select(FromSymbol)
+                        .ToArray());
+                IsParameter = true;
+                break;
+        }
+
+
     }
 
+    public override string? Namespace   { get; }
+    public override string  Name        { get; }
+    public override bool    IsParameter { get; }
+    public override bool    IsInterface { get; }
 
-    public SymbolTypeInfo(INamedTypeSymbol type)
-        : this(type, $"{type.ContainingNamespace.ToDisplayString()}.{type.MetadataName}")
-    {
-        Interfaces = new(() => type.AllInterfaces
-            .Select(x => new SymbolTypeInfo(x) as TypeInfo)
-            .ToArray());
-        if (type.IsGenericType)
-            GenericTypes = new(() => type.TypeArguments.Select(x =>
-                x switch
-                {
-                    ITypeParameterSymbol parameterSymbol => new SymbolTypeInfo(parameterSymbol),
-                    INamedTypeSymbol namedTypeSymbol     => new SymbolTypeInfo(namedTypeSymbol),
-                    _                                    => throw new Exception()
-                } as TypeInfo
-            ).ToArray());
-    }
-
-
-    public SymbolTypeInfo(ITypeParameterSymbol type) : this(type, type.Name)
-    {
-        Name        = type.Name;
-        IsParameter = true;
-        Debugger.Break();
-    }
-
-    public override string Name        { get; }
-    public override bool   IsParameter { get; }
-    public override bool   IsInterface { get; }
-
-    public override Lazy<IReadOnlyList<TypeInfo>> GenericTypes { get; } = new();
-    public override Lazy<TypeInfo?>               BaseClass    { get; } = new();
-    public override Lazy<IReadOnlyList<TypeInfo>> Interfaces   { get; } = new();
+    protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
+    protected override Lazy<IReadOnlyList<TypeInfo>> genericTypes     { get; } = new(Array.Empty<TypeInfo>);
+    protected override Lazy<IReadOnlyList<TypeInfo>> interfaces       { get; } = new(Array.Empty<TypeInfo>);
+    protected override Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; } = new(Array.Empty<TypeInfo>);
 }
