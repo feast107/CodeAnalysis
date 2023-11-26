@@ -13,17 +13,17 @@
     const string Bool = "global::System.Boolean";
     const string Char = "global::System.Char";
     const string ClassName = "ITypeSymbol";
-    var methods = new List<(string name,string text)>
+    var methods = new List<(string name,Func<string,string> text)>
     {
         ("HasFullyQualifiedMetadataName",
-            $$"""
+           x=> $$"""
               /// <summary>
               /// Checks whether or not a given type symbol has a specified fully qualified metadata name.
               /// </summary>
               /// <param name="symbol">The input <see cref="ITypeSymbol"/> instance to check.</param>
               /// <param name="name">The full name to check.</param>
               /// <returns>Whether <paramref name="symbol"/> has a full name equals to <paramref name="name"/>.</returns>
-              public static {{Bool}} HasFullyQualifiedMetadataName(this {{ITypeSymbol}} symbol, {{String}} name)
+              public static {{Bool}} {{x}}(this {{ITypeSymbol}} symbol, {{String}} name)
               {
                   using {{ImmutableArrayBuilder}}<{{Char}}> builder = {{ImmutableArrayBuilder}}<{{Char}}>.Rent();
               
@@ -33,13 +33,13 @@
               }
               """),
         ("AppendFullyQualifiedMetadataName",
-            $$"""
+            x=>$$"""
               /// <summary>
               /// Appends the fully qualified metadata name for a given symbol to a target builder.
               /// </summary>
               /// <param name="symbol">The input <see cref="ITypeSymbol"/> instance.</param>
               /// <param name="builder">The target <see cref="ImmutableArrayBuilder{T}"/> instance.</param>
-              private static void AppendFullyQualifiedMetadataName(this {{ITypeSymbol}} symbol, 
+              private static void {{x}}(this {{ITypeSymbol}} symbol, 
                   in {{ImmutableArrayBuilder}}<{{Char}}> builder)
               {
                   static void BuildFrom({{ISymbol}}? symbol, in {{ImmutableArrayBuilder}}<{{Char}}> builder)
@@ -94,7 +94,7 @@ namespace <#=NameSpace#>
     {
 <#foreach(var (name,text) in methods){#>
 <#
-      var target = text.Replace("\n", "\n        ");#>
+      var target = text(name).Replace("\n", "\n        ");#>
         <#=target#>
 
 	    internal const string <#=name#>Text =

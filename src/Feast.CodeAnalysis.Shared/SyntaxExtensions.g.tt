@@ -9,23 +9,26 @@
     const string Bool = "global::System.Boolean";
     const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
     const string SemanticModel = "global::Microsoft.CodeAnalysis.SemanticModel";
+    const string SyntaxKind = "global::Microsoft.CodeAnalysis.CSharp.SyntaxKind";
     const string AttributeSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax";
+    const string AttributeArgumentSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax";
+    const string LiteralExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax";
     const string TypeDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax";
     const string CancellationToken = "global::System.Threading.CancellationToken";
     
     const string ClassName = "Syntax";
-    var methods = new List<(string name,string text)>
+    var methods = new List<(string name,Func<string, string> text)>
     {
         ("GetAllAttributes",
-            $$"""
-            public static {{IEnumerable}}<{{AttributeSyntax}}> GetAllAttributes(this {{TypeDeclarationSyntax}} syntax)
+            x => $$"""
+            public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{TypeDeclarationSyntax}} syntax)
             {
                 return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
             }
             """),
         ("GetSpecifiedAttributes",
-            $$"""
-              public static {{IEnumerable}}<{{AttributeSyntax}}> GetSpecifiedAttributes(this {{TypeDeclarationSyntax}} syntax, 
+            x => $$"""
+              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{TypeDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName, 
                   {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
@@ -45,8 +48,8 @@
               }
               """),
         ("GetSpecifiedAttribute",
-            $$"""
-              public static {{AttributeSyntax}}? GetSpecifiedAttribute(this {{TypeDeclarationSyntax}} syntax, 
+            x => $$"""
+              public static {{AttributeSyntax}}? {{x}}(this {{TypeDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName,
                   {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
@@ -59,14 +62,23 @@
               }
               """),
         ("HasSpecifiedAttribute",
-            $$"""
-              public static {{Bool}} HasSpecifiedAttribute(this {{TypeDeclarationSyntax}} syntax, 
+            x => $$"""
+              public static {{Bool}} {{x}}(this {{TypeDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName)
               {
                   return syntax.GetSpecifiedAttribute(semanticModel, fullAttributeName) is not null;
               }
-              """)
+              """),
+        ("GetArgumentString",
+            x => $$"""
+              public static {{String}}? {{x}}(this {{AttributeArgumentSyntax}} syntax)
+              {
+                  if (syntax.Expression is not {{LiteralExpressionSyntax}} literalExpressionSyntax) return null;
+                  if (!literalExpressionSyntax.IsKind({{SyntaxKind}}.StringLiteralExpression)) return null;
+                  return literalExpressionSyntax.Token.ValueText;
+              }
+              """),
     };
 #>
 <#=Using#>
@@ -77,7 +89,7 @@ namespace <#=NameSpace#>
     {
 <#foreach(var (name,text) in methods){#>
 <#
-      var target = text.Replace("\n", "\n        ");#>
+      var target = text(name).Replace("\n", "\n        ");#>
         <#=target#>
 
 	    internal const string <#=name#>Text =

@@ -10,18 +10,18 @@
     const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
     const string ClassName = "ISymbol";
     const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
-    var methods = new List<(string name,string text)>
+    var methods = new List<(string name,Func<string,string> text)>
     {
         ("GetFullyQualifiedName",
-            $$"""
-            public static {{String}} GetFullyQualifiedName(this {{ISymbol}} symbol)
+            x=>$$"""
+            public static {{String}} {{x}}(this {{ISymbol}} symbol)
             {
                 return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
             """),
         
         ("TryGetAttributeWithFullyQualifiedMetadataName",
-            $$"""
+           x=> $$"""
                #if !ROSLYN_4_3_1_OR_GREATER
                /// <summary>
                /// Tries to get an attribute with the specified fully qualified metadata name.
@@ -30,7 +30,7 @@
                /// <param name="name">The attribute name to look for.</param>
                /// <param name="attributeData">The resulting attribute, if it was found.</param>
                /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
-               public static bool TryGetAttributeWithFullyQualifiedMetadataName(this {{ISymbol}} symbol, 
+               public static bool {{x}}(this {{ISymbol}} symbol, 
                    {{String}} name, 
                    [{{NotNullWhen}}(true)] out {{AttributeData}}? attributeData)
                {
@@ -60,7 +60,7 @@ namespace <#=NameSpace#>
     {
 <#foreach(var (name,text) in methods){#>
 <#
-      var target = text.Replace("\n", "\n        ");#>
+      var target = text(name).Replace("\n", "\n        ");#>
         <#=target#>
 
 	    internal const string <#=name#>Text =

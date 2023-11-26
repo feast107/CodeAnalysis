@@ -106,5 +106,23 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        public static global::System.String? GetArgumentString(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax literalExpressionSyntax) return null;
+            if (!literalExpressionSyntax.IsKind(global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.StringLiteralExpression)) return null;
+            return literalExpressionSyntax.Token.ValueText;
+        }
+
+	    internal const string GetArgumentStringText =
+        """
+        
+        public static global::System.String? GetArgumentString(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax literalExpressionSyntax) return null;
+            if (!literalExpressionSyntax.IsKind(global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.StringLiteralExpression)) return null;
+            return literalExpressionSyntax.Token.ValueText;
+        }
+        """;
+
     }
 }

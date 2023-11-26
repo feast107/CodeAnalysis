@@ -16,7 +16,8 @@ public class SyntaxExtensionsGenerator : IIncrementalGenerator
                     SyntaxExtensions.GetAllAttributesText,
                     SyntaxExtensions.GetSpecifiedAttributesText,
                     SyntaxExtensions.GetSpecifiedAttributeText,
-                    SyntaxExtensions.HasSpecifiedAttributeText
+                    SyntaxExtensions.HasSpecifiedAttributeText,
+                    SyntaxExtensions.GetArgumentStringText
                 ));
         });
     }
