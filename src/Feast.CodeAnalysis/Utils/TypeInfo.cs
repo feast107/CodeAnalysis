@@ -72,10 +72,11 @@ public abstract class TypeInfo
     /// <returns></returns>
     public bool IsAssignableTo(TypeInfo another)
     {
+        var resolvedTypes = new List<TypeInfo>();
         switch (another)
         {
             case { IsParameter: true }:
-                return another.ConstrainedTypes.Count == 0 || another.ConstrainedTypes.All(IsAssignableTo);
+                return IsAssignableTo(another, resolvedTypes);
             case { IsInterface: true } when IsInterface:
                 if (FullName != another.FullName) return false;
                 if (!IsGeneric && !another.IsGeneric) return true;
@@ -88,6 +89,36 @@ public abstract class TypeInfo
                     .Where(x => x.FullName == another.FullName)
                     .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
             case { IsInterface: false } when !IsInterface:
+                return SameAs(another) || IsSubClassOf(another);
+        }
+
+        return false;
+    }
+
+    private bool IsAssignableTo(TypeInfo another, List<TypeInfo> resolvedTypes)
+    {
+        if(resolvedTypes.Contains(another)) return true;
+        switch (another)
+        {
+            case { IsParameter: true }:
+                resolvedTypes.Add(another);
+                return another.ConstrainedTypes.Count == 0
+                       || another.ConstrainedTypes.All(x => IsAssignableTo(x, resolvedTypes));
+            case { IsInterface: true } when IsInterface:
+                if (FullName != another.FullName) return false;
+                if (!IsGeneric && !another.IsGeneric) return true;
+                if (GenericTypes.Count != another.GenericTypes.Count) return false;
+                resolvedTypes.Add(another);
+                return !GenericTypes
+                    .Where((t, i) => !t.IsAssignableTo(another.GenericTypes[i], resolvedTypes))
+                    .Any();
+            case { IsInterface: true } when !IsInterface:
+                resolvedTypes.Add(another);
+                return Interfaces
+                    .Where(x => x.FullName == another.FullName)
+                    .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another, resolvedTypes));
+            case { IsInterface: false } when !IsInterface:
+                resolvedTypes.Add(another);
                 return SameAs(another) || IsSubClassOf(another);
         }
 
@@ -120,19 +151,26 @@ public abstract class TypeInfo
     /// <returns></returns>
     public bool SameAs(TypeInfo another)
     {
-        if (FullName    != another.FullName) return false;
-        if (IsParameter)
+        if (FullName != another.FullName) return false;                     //不同名
+        if (!IsGeneric) return !another.IsGeneric;                          //泛型不一致
+        if (!another.IsGeneric) return false;                               //泛型不一致
+        if (GenericTypes.Count != another.GenericTypes.Count) return false; //泛型数量不一致
+        return !GenericTypes.Where((type, i) =>
         {
-            if (!another.IsParameter) return false;
-            if (FullName != another.FullName) return false;
-            return !ConstrainedTypes.Where((t, i) => !t.SameAs(another.ConstrainedTypes[i])).Any();
-        }
-        if (!IsGeneric && !another.IsGeneric) return true;
-        if (IsInterface        != another.IsInterface) return false;
-        if (GenericTypes.Count != another.GenericTypes.Count) return false;
-        return !GenericTypes.Where((t, i) => !t.SameAs(another.GenericTypes[i])).Any();
+            var target = another.GenericTypes[i];
+            return type switch
+            {
+                { IsParameter: true } when target.IsParameter   => true,
+                not null when IsInterface == target.IsInterface => type.SameAs(target),
+                _                                               => false
+            };
+        }).Any();
     }
 
     public static TypeInfo FromType(Type type) => new RuntimeTypeInfo(type);
     public static TypeInfo FromSymbol(ITypeSymbol symbol) => new SymbolTypeInfo(symbol);
+  
 }
+
+public class A<T>  where T : A<T>;
+public class B<T> : A<B<T>> where T : B<T>;

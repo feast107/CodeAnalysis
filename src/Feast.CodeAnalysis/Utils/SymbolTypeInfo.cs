@@ -1,13 +1,15 @@
-﻿using System.Diagnostics;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.Utils;
 
 internal class SymbolTypeInfo : TypeInfo
 {
+    private readonly ITypeSymbol type;
+
     public SymbolTypeInfo(ITypeSymbol type)
     {
-        Name = type.MetadataName;
+        this.type = type;
+        Name      = type.MetadataName;
         Namespace = type.ContainingNamespace.MetadataName == string.Empty
             ? null
             : type.ContainingNamespace.ToDisplayString();
@@ -47,4 +49,14 @@ internal class SymbolTypeInfo : TypeInfo
     protected override Lazy<IReadOnlyList<TypeInfo>> genericTypes     { get; } = new(Array.Empty<TypeInfo>);
     protected override Lazy<IReadOnlyList<TypeInfo>> interfaces       { get; } = new(Array.Empty<TypeInfo>);
     protected override Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; } = new(Array.Empty<TypeInfo>);
+
+#pragma warning disable RS1024
+    public override int GetHashCode() => type.GetHashCode();
+#pragma warning restore RS1024
+
+    public override bool Equals(object? obj) =>
+        obj is SymbolTypeInfo symbolInfo
+            ? SymbolEqualityComparer.Default.Equals(type, symbolInfo.type)
+            : obj is TypeInfo typeInfo
+              && SameAs(typeInfo);
 }

@@ -39,4 +39,16 @@ internal class RuntimeTypeInfo : TypeInfo
     protected override Lazy<IReadOnlyList<TypeInfo>> genericTypes     { get; } = new(Array.Empty<TypeInfo>);
     protected override Lazy<IReadOnlyList<TypeInfo>> interfaces       { get; } = new(Array.Empty<TypeInfo>);
     protected override Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; } = new(Array.Empty<TypeInfo>);
+
+    public static bool operator ==(RuntimeTypeInfo one, RuntimeTypeInfo another) => one.Equals(another);
+    public static bool operator !=(RuntimeTypeInfo one, RuntimeTypeInfo another) => one.Equals(another);
+
+    public override int GetHashCode() => type.GetHashCode();
+
+    public override bool Equals(object? obj) =>
+        obj is RuntimeTypeInfo info
+            ? info.type == type
+            : obj is TypeInfo typeInfo
+              && SameAs(typeInfo);
+
 }

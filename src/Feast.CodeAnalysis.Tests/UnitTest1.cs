@@ -16,6 +16,10 @@ public class Tests
     [Test]
     public void Test()
     {
+        var t   = typeof(int);
+        var eq = t == typeof(int);
+        var can = t.IsAssignableFrom(typeof(int));
+        var ut  = t.UnderlyingSystemType;
         // Create an instance of the source generator.
         var generator = new TestIncrementalGenerator();
 
@@ -44,13 +48,16 @@ public class Tests
         """
         using Generators;
         using System.Collections.Generic;
-             
+        
+        namespace G;
         [Analyze]
-        public class TestClass<T> where T : IDictionary<T,string> {
-            public T Id { get; set; }
+        public class TestClass<T> where T : IEnumerable<T> {
+            public Foo Id { get; set; }
             
             public System.Collections.IEnumerable<T> Num { get;set; }
         }
+        
+        public class Foo : IEnumerable<Foo>;
         """;
 }
 
