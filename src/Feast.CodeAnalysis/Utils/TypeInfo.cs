@@ -166,10 +166,14 @@ public abstract class TypeInfo
             };
         }).Any();
     }
-
+    
+    public static bool operator ==(TypeInfo one, TypeInfo another) => one.Equals(another);
+    public static bool operator !=(TypeInfo one, TypeInfo another) => one.Equals(another);
+    
     public static TypeInfo FromType(Type type) => new RuntimeTypeInfo(type);
     public static TypeInfo FromSymbol(ITypeSymbol symbol) => new SymbolTypeInfo(symbol);
-  
+
+    public static implicit operator TypeInfo(Type type) => FromType(type);
 }
 
 public class A<T>  where T : A<T>;

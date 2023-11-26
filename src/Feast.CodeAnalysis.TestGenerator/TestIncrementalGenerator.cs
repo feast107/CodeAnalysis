@@ -81,6 +81,8 @@ namespace Feast.CodeAnalysis.TestGenerator
                 {
                     var type = TypeInfo.FromSymbol(prop.Type);
                     var can  = typeof(Foo).IsAssignableTo(prop.Type);
+                    var can2 = typeof(Foo).IsAssignableFrom(prop.Type);
+                    var eq   = typeof(Foo) == TypeInfo.FromSymbol(prop.Type);
                     Debugger.Break();
                 }
     

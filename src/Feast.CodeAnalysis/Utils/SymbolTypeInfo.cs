@@ -50,6 +50,10 @@ internal class SymbolTypeInfo : TypeInfo
     protected override Lazy<IReadOnlyList<TypeInfo>> interfaces       { get; } = new(Array.Empty<TypeInfo>);
     protected override Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; } = new(Array.Empty<TypeInfo>);
 
+    public static bool operator ==(SymbolTypeInfo one, SymbolTypeInfo another) => one.Equals(another);
+    public static bool operator !=(SymbolTypeInfo one, SymbolTypeInfo another) => one.Equals(another);
+
+    
 #pragma warning disable RS1024
     public override int GetHashCode() => type.GetHashCode();
 #pragma warning restore RS1024

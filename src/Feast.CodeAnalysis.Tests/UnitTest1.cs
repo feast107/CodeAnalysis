@@ -16,10 +16,6 @@ public class Tests
     [Test]
     public void Test()
     {
-        var t   = typeof(int);
-        var eq = t == typeof(int);
-        var can = t.IsAssignableFrom(typeof(int));
-        var ut  = t.UnderlyingSystemType;
         // Create an instance of the source generator.
         var generator = new TestIncrementalGenerator();
 
