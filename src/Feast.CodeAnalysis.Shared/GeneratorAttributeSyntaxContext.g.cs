@@ -8,7 +8,7 @@ using System.Collections.Immutable;
 #nullable enable
 namespace Microsoft.CodeAnalysis
 {
-    
+    #nullable enable
     /// <summary>
     /// A type containing information for a match from <see cref="SyntaxValueProviderExtensions.ForAttributeWithMetadataName"/>.
     /// </summary>
@@ -69,7 +69,7 @@ namespace Microsoft.CodeAnalysis
             using System.Collections.Immutable;
            
             namespace Microsoft.CodeAnalysis;     
-            
+            #nullable enable
             /// <summary>
             /// A type containing information for a match from <see cref="SyntaxValueProviderExtensions.ForAttributeWithMetadataName"/>.
             /// </summary>

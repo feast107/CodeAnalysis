@@ -13,7 +13,7 @@
                 """;
     
     var body = $$"""
-               
+               #nullable enable
                /// <summary>
                /// A type containing information for a match from <see cref="SyntaxValueProviderExtensions.ForAttributeWithMetadataName"/>.
                /// </summary>

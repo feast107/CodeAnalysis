@@ -53,7 +53,25 @@ internal class SymbolTypeInfo : TypeInfo
     public static bool operator ==(SymbolTypeInfo one, SymbolTypeInfo another) => one.Equals(another);
     public static bool operator !=(SymbolTypeInfo one, SymbolTypeInfo another) => one.Equals(another);
 
-    
+    protected override bool SameAs(TypeInfo another)
+    {
+        return another is SymbolTypeInfo symbolTypeInfo
+            ? SymbolEqualityComparer.Default.Equals(type, symbolTypeInfo.type)
+            : base.SameAs(another);
+    }
+    public override bool IsSubClassOf(TypeInfo another)
+    {
+        if(another is not SymbolTypeInfo symbolTypeInfo) return base.IsSubClassOf(another);
+        var baseType = type.BaseType;
+        while (baseType is not null)
+        {
+            if (SymbolEqualityComparer.Default.Equals(baseType, symbolTypeInfo.type)) return true;
+            baseType = baseType.BaseType;
+        }
+
+        return false;
+    }
+
 #pragma warning disable RS1024
     public override int GetHashCode() => type.GetHashCode();
 #pragma warning restore RS1024

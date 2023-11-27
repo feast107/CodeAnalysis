@@ -43,6 +43,10 @@ internal class RuntimeTypeInfo : TypeInfo
     public static bool operator ==(RuntimeTypeInfo one, RuntimeTypeInfo another) => one.Equals(another);
     public static bool operator !=(RuntimeTypeInfo one, RuntimeTypeInfo another) => one.Equals(another);
 
+    protected override bool SameAs(TypeInfo another) => another is RuntimeTypeInfo runtimeTypeInfo ? runtimeTypeInfo.type == type : base.SameAs(another);
+    public override bool IsAssignableTo(TypeInfo another) => another is RuntimeTypeInfo runtimeTypeInfo ? runtimeTypeInfo.type.IsAssignableFrom(type) : base.IsAssignableTo(another);
+    public override bool IsSubClassOf(TypeInfo another) => another is RuntimeTypeInfo runtimeTypeInfo ? type.IsSubclassOf(runtimeTypeInfo.type) :  base.IsSubClassOf(another);
+
     public override int GetHashCode() => type.GetHashCode();
 
     public override bool Equals(object? obj) =>

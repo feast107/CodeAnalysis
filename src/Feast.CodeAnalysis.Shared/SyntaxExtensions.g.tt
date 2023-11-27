@@ -14,6 +14,8 @@
     const string AttributeArgumentSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax";
     const string LiteralExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax";
     const string TypeDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax";
+    const string MemberDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax";
+    const string CompilationUnitSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax";
     const string CancellationToken = "global::System.Threading.CancellationToken";
     
     const string ClassName = "Syntax";
@@ -21,19 +23,29 @@
     {
         ("GetAllAttributes",
             x => $$"""
+            public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{CompilationUnitSyntax}} syntax)
+            {
+                return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+            }
+            
             public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{TypeDeclarationSyntax}} syntax)
+            {
+                return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+            }
+            
+            public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{MemberDeclarationSyntax}} syntax)
             {
                 return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
             }
             """),
         ("GetSpecifiedAttributes",
             x => $$"""
-              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{TypeDeclarationSyntax}} syntax, 
+              private static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{IEnumerable}}<{{AttributeSyntax}}> attributes, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName, 
                   {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
               {
-                  foreach (var attributeSyntax in syntax.GetAllAttributes())
+                  foreach (var attributeSyntax in attributes)
                   {
                       if(cancellationToken.IsCancellationRequested)
                           yield break;
@@ -45,6 +57,30 @@
                       if (attributeName == fullAttributeName)
                           yield return attributeSyntax;
                   }
+              }
+              
+              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{CompilationUnitSyntax}} syntax, 
+                  {{SemanticModel}} semanticModel, 
+                  {{String}} fullAttributeName, 
+                  {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
+              {
+                    return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+              }
+              
+              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{TypeDeclarationSyntax}} syntax, 
+                  {{SemanticModel}} semanticModel, 
+                  {{String}} fullAttributeName, 
+                  {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
+              {
+                    return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+              }
+              
+              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{MemberDeclarationSyntax}} syntax, 
+                  {{SemanticModel}} semanticModel, 
+                  {{String}} fullAttributeName, 
+                  {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
+              {
+                    return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
               }
               """),
         ("GetSpecifiedAttribute",

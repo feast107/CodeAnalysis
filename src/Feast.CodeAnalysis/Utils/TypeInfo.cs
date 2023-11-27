@@ -70,7 +70,7 @@ public abstract class TypeInfo
     /// </summary>
     /// <param name="another"></param>
     /// <returns></returns>
-    public bool IsAssignableTo(TypeInfo another)
+    public virtual bool IsAssignableTo(TypeInfo another)
     {
         var resolvedTypes = new List<TypeInfo>();
         switch (another)
@@ -130,12 +130,12 @@ public abstract class TypeInfo
     /// </summary>
     /// <param name="another"></param>
     /// <returns></returns>
-    private bool IsSubClassOf(TypeInfo another)
+    public virtual bool IsSubClassOf(TypeInfo another)
     {
         if (IsParameter || another.IsParameter ||
             IsInterface || another.IsInterface) return false;
         var parent = BaseClass;
-        while (parent != null)
+        while (parent is not null)
         {
             if (another.SameAs(parent)) return true;
             parent = parent.BaseClass;
@@ -149,7 +149,7 @@ public abstract class TypeInfo
     /// </summary>
     /// <param name="another"></param>
     /// <returns></returns>
-    public bool SameAs(TypeInfo another)
+    protected virtual bool SameAs(TypeInfo another)
     {
         if (FullName != another.FullName) return false;                     //不同名
         if (!IsGeneric) return !another.IsGeneric;                          //泛型不一致
@@ -175,6 +175,3 @@ public abstract class TypeInfo
 
     public static implicit operator TypeInfo(Type type) => FromType(type);
 }
-
-public class A<T>  where T : A<T>;
-public class B<T> : A<B<T>> where T : B<T>;
