@@ -7,25 +7,44 @@
                          """;
     const string String = "global::System.String";
     const string Bool = "global::System.Boolean";
+    const string SyntaxNode = "global::Microsoft.CodeAnalysis.SyntaxNode";
     const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
+    const string IMethodSymbol = "global::Microsoft.CodeAnalysis.IMethodSymbol";
     const string SemanticModel = "global::Microsoft.CodeAnalysis.SemanticModel";
+    const string SyntaxKind = "global::Microsoft.CodeAnalysis.CSharp.SyntaxKind";
     const string AttributeSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax";
-    const string TypeDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax";
+    const string CompilationUnitSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax";
+    const string LiteralExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax";
+    const string AttributeArgumentSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax";
+    const string MemberDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax";
+    const string LambdaExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LambdaExpressionSyntax";
+    const string BaseParameterSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.BaseParameterSyntax";
+    const string StatementSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax";
     const string CancellationToken = "global::System.Threading.CancellationToken";
-    
+    const string NotSupported = "global::System.NotSupportedException";
     const string ClassName = "Syntax";
-    var methods = new List<(string name,string text)>
+    
+    var methods = new List<(string name,Func<string,string> text)>
     {
         ("GetAllAttributes",
-            $$"""
-            public static {{IEnumerable}}<{{AttributeSyntax}}> GetAllAttributes(this {{TypeDeclarationSyntax}} syntax)
+            x=>$$"""
+            public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{SyntaxNode}} syntax)
             {
-                return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+                var attributeLists = syntax switch
+                {
+                    {{CompilationUnitSyntax}} compilationUnitSyntax     => compilationUnitSyntax.AttributeLists,
+                    {{MemberDeclarationSyntax}} memberDeclarationSyntax => memberDeclarationSyntax.AttributeLists,
+                    {{LambdaExpressionSyntax}} lambdaExpressionSyntax   => lambdaExpressionSyntax.AttributeLists,
+                    {{BaseParameterSyntax}} baseParameterSyntax         => baseParameterSyntax.AttributeLists,
+                    {{StatementSyntax}} statementSyntax                 => statementSyntax.AttributeLists,
+                    _                                                                                            => throw new {{NotSupported}}($"{syntax.GetType()} has no attribute")
+                };
+                return attributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
             }
             """),
         ("GetSpecifiedAttributes",
-            $$"""
-              public static {{IEnumerable}}<{{AttributeSyntax}}> GetSpecifiedAttributes(this {{TypeDeclarationSyntax}} syntax, 
+            x=>$$"""
+              public static {{IEnumerable}}<{{AttributeSyntax}}> {{x}}(this {{SyntaxNode}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName, 
                   {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
@@ -34,7 +53,7 @@
                   {
                       if(cancellationToken.IsCancellationRequested)
                           yield break;
-                      if (semanticModel.GetSymbolInfo(attributeSyntax, cancellationToken).Symbol is not IMethodSymbol attributeSymbol)
+                      if (semanticModel.GetSymbolInfo(attributeSyntax, cancellationToken).Symbol is not {{IMethodSymbol}} attributeSymbol)
                           continue;
               
                       string attributeName = attributeSymbol.ContainingType.ToDisplayString();
@@ -45,8 +64,8 @@
               }
               """),
         ("GetSpecifiedAttribute",
-            $$"""
-              public static {{AttributeSyntax}}? GetSpecifiedAttribute(this {{TypeDeclarationSyntax}} syntax, 
+            x=>$$"""
+              public static {{AttributeSyntax}}? {{x}}(this {{SyntaxNode}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName,
                   {{CancellationToken}} cancellationToken = default ({{CancellationToken}}))
@@ -59,14 +78,25 @@
               }
               """),
         ("HasSpecifiedAttribute",
-            $$"""
-              public static {{Bool}} HasSpecifiedAttribute(this {{TypeDeclarationSyntax}} syntax, 
+            x=>$$"""
+              public static {{Bool}} {{x}}(this {{MemberDeclarationSyntax}} syntax, 
                   {{SemanticModel}} semanticModel, 
                   {{String}} fullAttributeName)
               {
                   return syntax.GetSpecifiedAttribute(semanticModel, fullAttributeName) is not null;
               }
+              """),
+        ("GetArgumentString",
+            x=>$$"""
+              public static {{String}}? {{x}}(this {{AttributeArgumentSyntax}} syntax)
+              {
+                  if (syntax.Expression is not {{LiteralExpressionSyntax}} literalExpressionSyntax) return null;
+                  if (!literalExpressionSyntax.IsKind({{SyntaxKind}}.StringLiteralExpression)) return null;
+                  return literalExpressionSyntax.Token.ValueText;
+              }
               """)
+        
+    
     };
 #>
 <#=Using#>
@@ -77,7 +107,7 @@ namespace <#=NameSpace#>
     {
 <#foreach(var (name,text) in methods){#>
 <#
-      var target = text.Replace("\n", "\n        ");#>
+      var target = text(name).Replace("\n", "\n        ");#>
         <#=target#>
 
 	    internal const string <#=name#>Text =

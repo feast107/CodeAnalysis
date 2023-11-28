@@ -89,7 +89,12 @@ namespace Feast.CodeAnalysis.Utils
                 case { IsParameter: true }:
                     return IsAssignableTo(another, resolvedTypes);
                 case { IsInterface: true } when IsInterface:
-                    if (FullName != another.FullName) return false;
+                    if (FullName != another.FullName)
+                    {
+                        return Interfaces
+                            .Where(x => x.FullName == another.FullName)
+                            .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
+                    };
                     if (!IsGeneric && !another.IsGeneric) return true;
                     if (GenericTypes.Count != another.GenericTypes.Count) return false;
                     return !GenericTypes
@@ -279,7 +284,12 @@ namespace Feast.CodeAnalysis.Utils
                         case { IsParameter: true }:
                             return IsAssignableTo(another, resolvedTypes);
                         case { IsInterface: true } when IsInterface:
-                            if (FullName != another.FullName) return false;
+                            if (FullName != another.FullName)
+                            {
+                                return Interfaces
+                                    .Where(x => x.FullName == another.FullName)
+                                    .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
+                            };
                             if (!IsGeneric && !another.IsGeneric) return true;
                             if (GenericTypes.Count != another.GenericTypes.Count) return false;
                             return !GenericTypes

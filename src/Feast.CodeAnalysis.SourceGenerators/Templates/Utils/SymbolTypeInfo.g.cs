@@ -16,7 +16,7 @@ namespace Feast.CodeAnalysis.Utils
             Namespace = type.ContainingNamespace.MetadataName == string.Empty
                 ? null
                 : type.ContainingNamespace.ToDisplayString();
-            origin = new(() => type.OriginalDefinition == type
+            origin = new(() => SymbolEqualityComparer.Default.Equals(type, type.OriginalDefinition)
                 ? null
                 : new SymbolTypeInfo(type.OriginalDefinition));
             if (type.BaseType != null) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
@@ -91,7 +91,7 @@ namespace Feast.CodeAnalysis.Utils
                     Namespace = type.ContainingNamespace.MetadataName == string.Empty
                         ? null
                         : type.ContainingNamespace.ToDisplayString();
-                    origin = new(() => type.OriginalDefinition == type
+                    origin = new(() => SymbolEqualityComparer.Default.Equals(type, type.OriginalDefinition)
                         ? null
                         : new SymbolTypeInfo(type.OriginalDefinition));
                     if (type.BaseType != null) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
