@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
+using ISymbolExtensions = Feast.CodeAnalysis.SourceGenerators.Templates.ISymbolExtensions;
 
-namespace Feast.CodeAnalysis.Generators;
+namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
 // ReSharper disable once InconsistentNaming
 [Generator]
@@ -12,10 +13,9 @@ public class ISymbolExtensionsGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
-            ctx.AddSource(Global.GenerateFileName(ClassName),
-                Global.Generate(ClassName,
-                    ISymbolExtensions.GetFullyQualifiedNameText,
-                    ISymbolExtensions.TryGetAttributeWithFullyQualifiedMetadataNameText
+            ctx.AddSource(GenerateFileName(ClassName),
+                Generate(ClassName,
+                    GetGenerateTexts(typeof(ISymbolExtensions))
                 )
             );
         });

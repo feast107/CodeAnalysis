@@ -41,6 +41,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems*{bbb1a609-763c-4529-9fb9-365a9d3b383a}*SharedItemsImports = 13
-		Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems*{df6b52b6-2c70-4b5d-b4a1-4356b7dee5ee}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

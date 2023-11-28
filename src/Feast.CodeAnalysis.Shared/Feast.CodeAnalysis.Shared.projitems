@@ -59,5 +59,8 @@
     <Content Include="$(MSBuildThisFileDirectory)ITypeSymbolExtensions.g.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </Content>
+    <Content Include="$(MSBuildThisFileDirectory)Utils\RuntimeTypeInfo.g.tt" />
+    <Content Include="$(MSBuildThisFileDirectory)Utils\SymbolTypeInfo.g.tt" />
+    <Content Include="$(MSBuildThisFileDirectory)Utils\TypeInfo.g.tt" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Internal;
+﻿using Feast.CodeAnalysis.SourceGenerators.Templates;
+using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.Generators;
+namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
 // ReSharper disable once InconsistentNaming
 [Generator]
@@ -12,17 +12,17 @@ public class ExtendedClassGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
-            ctx.AddSource(Global.GenerateFileName(nameof(Global)), 
+            ctx.AddSource(GenerateFileName(nameof(Global)), 
                 """
                 #if !ROSLYN_4_3_1_OR_GREATER
                 using Microsoft.CodeAnalysis.Internal;
                 #endif
                 """);
-            ctx.AddSource(Global.GenerateFileName(nameof(GeneratorAttributeSyntaxContext)),
+            ctx.AddSource(GenerateFileName(nameof(GeneratorAttributeSyntaxContext)),
                 GeneratorAttributeSyntaxContext.GeneratorAttributeSyntaxContextText);
-            ctx.AddSource(Global.GenerateFileName("ImmutableArrayBuilder{T}"),
+            ctx.AddSource(GenerateFileName("ImmutableArrayBuilder{T}"),
                 ImmutableArrayBuilder<object>.ImmutableArrayBuilderText);
-            ctx.AddSource(Global.GenerateFileName(nameof(SyntaxValueProviderExtensions)),
+            ctx.AddSource(GenerateFileName(nameof(SyntaxValueProviderExtensions)),
                 SyntaxValueProviderExtensions.SyntaxValueProviderText);
         });
     }

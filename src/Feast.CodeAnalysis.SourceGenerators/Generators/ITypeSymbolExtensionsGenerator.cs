@@ -1,6 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using System.Reflection;
+using Feast.CodeAnalysis.SourceGenerators.Templates;
+using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.Generators;
+namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
 [Generator]
 public class ITypeSymbolExtensionsGenerator : IIncrementalGenerator
@@ -11,11 +14,9 @@ public class ITypeSymbolExtensionsGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
-            ctx.AddSource(Global.GenerateFileName(ClassName),
-                Global.Generate(ClassName,
-                    ITypeSymbolExtensions.AppendFullyQualifiedMetadataNameText,
-                    ITypeSymbolExtensions.HasFullyQualifiedMetadataNameText
-                ));
+            ctx.AddSource(GenerateFileName(ClassName),
+                Generate(ClassName,GetGenerateTexts(typeof(ITypeSymbolExtensions)))
+            );
         });
     }
 }

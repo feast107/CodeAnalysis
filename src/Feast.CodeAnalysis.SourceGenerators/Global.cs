@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 
-namespace Feast.CodeAnalysis;
+namespace Feast.CodeAnalysis.SourceGenerators;
 
 internal static class Global
 {
@@ -35,4 +37,9 @@ internal static class Global
 
     internal const string CodeAnalysis = $"global::{GenerateNamespace}";
   
+    
+    internal static string[] GetGenerateTexts(Type type) =>
+        type.GetFields(BindingFlags.NonPublic | BindingFlags.Static)
+            .Where(x => x.Name.EndsWith("Text"))
+            .Select(x => (x.GetValue(null) as string)!).ToArray();
 }
