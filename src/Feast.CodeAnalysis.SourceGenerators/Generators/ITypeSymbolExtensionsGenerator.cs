@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
-using Feast.CodeAnalysis.SourceGenerators.Templates;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 

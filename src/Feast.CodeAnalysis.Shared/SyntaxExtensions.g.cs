@@ -4,7 +4,17 @@ namespace Microsoft.CodeAnalysis
 {
     internal static class SyntaxExtensions
     {
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax)
+        {
+            return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+        }
+        
         public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax syntax)
+        {
+            return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax syntax)
         {
             return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
         }
@@ -12,18 +22,28 @@ namespace Microsoft.CodeAnalysis
 	    internal const string GetAllAttributesText =
         """
         
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax)
+        {
+            return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+        }
+        
         public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax syntax)
+        {
+            return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax syntax)
         {
             return syntax.AttributeLists.SelectMany(attributeListSyntax => attributeListSyntax.Attributes);
         }
         """;
 
-        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax syntax, 
+        private static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> attributes, 
             global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
             global::System.String fullAttributeName, 
             global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
         {
-            foreach (var attributeSyntax in syntax.GetAllAttributes())
+            foreach (var attributeSyntax in attributes)
             {
                 if(cancellationToken.IsCancellationRequested)
                     yield break;
@@ -36,16 +56,40 @@ namespace Microsoft.CodeAnalysis
                     yield return attributeSyntax;
             }
         }
-
-	    internal const string GetSpecifiedAttributesText =
-        """
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+        }
         
         public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax syntax, 
             global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
             global::System.String fullAttributeName, 
             global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
         {
-            foreach (var attributeSyntax in syntax.GetAllAttributes())
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax syntax, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+        }
+
+	    internal const string GetSpecifiedAttributesText =
+        """
+        
+        private static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> attributes, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+            foreach (var attributeSyntax in attributes)
             {
                 if(cancellationToken.IsCancellationRequested)
                     yield break;
@@ -57,6 +101,30 @@ namespace Microsoft.CodeAnalysis
                 if (attributeName == fullAttributeName)
                     yield return attributeSyntax;
             }
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax syntax, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
+        }
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetSpecifiedAttributes(this global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax syntax, 
+            global::Microsoft.CodeAnalysis.SemanticModel semanticModel, 
+            global::System.String fullAttributeName, 
+            global::System.Threading.CancellationToken cancellationToken = default (global::System.Threading.CancellationToken))
+        {
+              return syntax.GetAllAttributes().GetSpecifiedAttributes(semanticModel, fullAttributeName, cancellationToken);
         }
         """;
 
@@ -103,6 +171,24 @@ namespace Microsoft.CodeAnalysis
             global::System.String fullAttributeName)
         {
             return syntax.GetSpecifiedAttribute(semanticModel, fullAttributeName) is not null;
+        }
+        """;
+
+        public static global::System.String? GetArgumentString(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax literalExpressionSyntax) return null;
+            if (!literalExpressionSyntax.IsKind(global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.StringLiteralExpression)) return null;
+            return literalExpressionSyntax.Token.ValueText;
+        }
+
+	    internal const string GetArgumentStringText =
+        """
+        
+        public static global::System.String? GetArgumentString(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax literalExpressionSyntax) return null;
+            if (!literalExpressionSyntax.IsKind(global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.StringLiteralExpression)) return null;
+            return literalExpressionSyntax.Token.ValueText;
         }
         """;
 

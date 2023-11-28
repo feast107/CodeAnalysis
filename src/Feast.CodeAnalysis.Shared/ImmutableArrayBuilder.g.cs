@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 #nullable enable
 namespace Microsoft.CodeAnalysis
 {
-    
+    #nullable enable
     /// <summary>
     /// A helper type to build sequences of values with pooled buffers.
     /// </summary>
@@ -288,7 +288,7 @@ namespace Microsoft.CodeAnalysis
             using System.Runtime.CompilerServices;
            
             namespace Microsoft.CodeAnalysis;     
-            
+            #nullable enable
             /// <summary>
             /// A helper type to build sequences of values with pooled buffers.
             /// </summary>

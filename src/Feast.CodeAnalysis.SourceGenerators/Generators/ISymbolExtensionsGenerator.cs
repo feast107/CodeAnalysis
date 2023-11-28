@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using ISymbolExtensions = Feast.CodeAnalysis.SourceGenerators.Templates.ISymbolExtensions;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 

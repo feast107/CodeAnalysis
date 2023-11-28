@@ -5,13 +5,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
+using System.Threading;
 using System;
 using System.Collections.Immutable;
-using System.Threading;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     /// <summary>
     /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
@@ -34,11 +32,11 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
         /// langword="true"/> for <paramref name="predicate"/> and which have a matching <see cref="AttributeData"/> whose
         /// <see cref="AttributeData.AttributeClass"/> has the same fully qualified, metadata name as <paramref
         /// name="fullyQualifiedMetadataName"/>.</param>
-        public static IncrementalValuesProvider<T> ForAttributeWithMetadataName<T>(
-            this SyntaxValueProvider syntaxValueProvider,
-            String fullyQualifiedMetadataName,
-            Func<SyntaxNode, CancellationToken, Boolean> predicate,
-            Func<GeneratorAttributeSyntaxContext, CancellationToken, T> transform)
+        public static global::Microsoft.CodeAnalysis.IncrementalValuesProvider<T> ForAttributeWithMetadataName<T>(
+            this global::Microsoft.CodeAnalysis.SyntaxValueProvider syntaxValueProvider,
+            global::System.String fullyQualifiedMetadataName,
+            global::System.Func<global::Microsoft.CodeAnalysis.SyntaxNode, global::System.Threading.CancellationToken, global::System.Boolean> predicate,
+            global::System.Func<global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
         {
             return
                 syntaxValueProvider
@@ -72,7 +70,7 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
     
                         // Create the GeneratorAttributeSyntaxContext value to pass to the input transform. The attributes array
                         // will only ever have a single value, but that's fine with the attributes the various generators look for.
-                        GeneratorAttributeSyntaxContext syntaxContext = new(
+                        global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext syntaxContext = new(
                             targetNode: context.Node,
                             targetSymbol: symbol,
                             semanticModel: context.SemanticModel,

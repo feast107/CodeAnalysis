@@ -11,6 +11,7 @@ using System.Collections.Immutable;
 #nullable enable
 namespace Microsoft.CodeAnalysis
 {
+    #nullable enable
     /// <summary>
     /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
     /// </summary>
@@ -103,6 +104,7 @@ namespace Microsoft.CodeAnalysis
             using System.Collections.Immutable;
            
             namespace Microsoft.CodeAnalysis;     
+            #nullable enable
             /// <summary>
             /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
             /// </summary>

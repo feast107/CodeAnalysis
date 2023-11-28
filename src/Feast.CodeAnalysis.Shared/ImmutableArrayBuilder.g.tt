@@ -21,7 +21,7 @@
                 """;
     const string Macro = "";
     const string body = $$"""
-               
+               #nullable enable
                /// <summary>
                /// A helper type to build sequences of values with pooled buffers.
                /// </summary>

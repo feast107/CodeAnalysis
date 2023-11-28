@@ -1,13 +1,10 @@
-﻿#nullable enable
-using System;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates
+﻿using System.Linq;
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     internal static class ISymbolExtensions
     {
-        public static String GetFullyQualifiedName(this ISymbol symbol)
+        public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
         {
             return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         }
@@ -29,9 +26,9 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
         /// <param name="name">The attribute name to look for.</param>
         /// <param name="attributeData">The resulting attribute, if it was found.</param>
         /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
-        public static bool TryGetAttributeWithFullyQualifiedMetadataName(this ISymbol symbol, 
-            String name, 
-            [NotNullWhen(true)] out AttributeData? attributeData)
+        public static bool TryGetAttributeWithFullyQualifiedMetadataName(this global::Microsoft.CodeAnalysis.ISymbol symbol, 
+            global::System.String name, 
+            [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out global::Microsoft.CodeAnalysis.AttributeData? attributeData)
         {
             foreach (AttributeData attribute in symbol.GetAttributes())
             {

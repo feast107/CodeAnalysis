@@ -25,6 +25,7 @@
     const string GeneratorAttributeSyntaxContext = "global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext";
 
     const string body = $$"""
+                        #nullable enable
                         /// <summary>
                         /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
                         /// </summary>

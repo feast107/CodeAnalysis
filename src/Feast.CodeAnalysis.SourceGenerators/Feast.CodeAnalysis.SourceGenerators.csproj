@@ -53,6 +53,22 @@
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>ImmutableArrayBuilder.g.cs</LastGenOutput>
       </None>
+      <None Update="Templates\GeneratorAttributeSyntaxContext.g.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>GeneratorAttributeSyntaxContext.g.cs</LastGenOutput>
+      </None>
+      <None Update="Templates\ISymbolExtensions.g.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>ISymbolExtensions.g.cs</LastGenOutput>
+      </None>
+      <None Update="Templates\SyntaxExtensions.g.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>SyntaxExtensions.g.cs</LastGenOutput>
+      </None>
+      <None Update="Templates\SyntaxValueProviderExtensions.g.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>SyntaxValueProviderExtensions.g.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -78,6 +94,18 @@
       </Compile>
       <Compile Update="Templates\ImmutableArrayBuilder.g.cs">
         <DependentUpon>ImmutableArrayBuilder.g.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Templates\GeneratorAttributeSyntaxContext.g.cs">
+        <DependentUpon>GeneratorAttributeSyntaxContext.g.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Templates\ISymbolExtensions.g.cs">
+        <DependentUpon>ISymbolExtensions.g.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Templates\SyntaxExtensions.g.cs">
+        <DependentUpon>SyntaxExtensions.g.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Templates\SyntaxValueProviderExtensions.g.cs">
+        <DependentUpon>SyntaxValueProviderExtensions.g.tt</DependentUpon>
       </Compile>
     </ItemGroup>
 

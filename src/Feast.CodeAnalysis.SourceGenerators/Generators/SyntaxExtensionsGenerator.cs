@@ -1,5 +1,4 @@
-﻿using Feast.CodeAnalysis.SourceGenerators.Templates;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
@@ -12,8 +11,13 @@ public class SyntaxExtensionsGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
+
             ctx.AddSource(GenerateFileName(ClassName),
-                Generate(ClassName, GetGenerateTexts(typeof(SyntaxExtensions))
+                Generate(ClassName, 
+                    SyntaxExtensions.GetAllAttributesText,
+                    SyntaxExtensions.GetSpecifiedAttributesText,
+                    SyntaxExtensions.GetSpecifiedAttributeText,
+                    SyntaxExtensions.HasSpecifiedAttributeText
                 ));
         });
     }
