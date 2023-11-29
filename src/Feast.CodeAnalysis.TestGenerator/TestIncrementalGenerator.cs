@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
-using Feast.CodeAnalysis.Extensions;
+using Feast.CodeAnalysis.Utils;
 using G;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -79,6 +79,9 @@ namespace Feast.CodeAnalysis.TestGenerator
                              .GetMembers()
                              .OfType<IPropertySymbol>())
                 {
+                    var t    = typeof(IEnumerable<>);
+                    var rt   = (RuntimeTypeInfo)t;
+                    var to = rt.Origin;
                     var type = TypeInfo.FromSymbol(prop.Type);
                     var can  = typeof(Foo).IsAssignableTo(prop.Type);
                     var can2 = typeof(Foo).IsAssignableFrom(prop.Type);

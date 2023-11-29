@@ -1,4 +1,3 @@
-using Feast.CodeAnalysis.Generators;
 using Feast.CodeAnalysis.TestGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
