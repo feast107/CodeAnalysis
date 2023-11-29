@@ -22,7 +22,11 @@
     const string StatementSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.StatementSyntax";
     const string CancellationToken = "global::System.Threading.CancellationToken";
     const string NotSupported = "global::System.NotSupportedException";
+    const string SyntaxFactory = "global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory";
     const string ClassName = "Syntax";
+    const string NameSyntax = "Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax";
+    const string NameSpaceDeclarationSyntax = "Microsoft.CodeAnalysis.CSharp.Syntax.NamespaceDeclarationSyntax";
+    const string ClassDeclarationSyntax = "Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax";
     
     var methods = new List<(string name,Func<string,string> text)>
     {
@@ -94,9 +98,68 @@
                   if (!literalExpressionSyntax.IsKind({{SyntaxKind}}.StringLiteralExpression)) return null;
                   return literalExpressionSyntax.Token.ValueText;
               }
-              """)
-        
-    
+              """),
+        ("ToNameSyntax",
+            x=>$$"""
+              public static {{NameSyntax}} {{x}}(this string text, int offset = 0, bool consumeFullText = true)
+              {
+                  return {{SyntaxFactory}}.ParseName(text, offset, consumeFullText);
+              }
+              """),
+        ("ToNamespaceDeclaration",
+            x=>$$"""
+              public static {{NameSpaceDeclarationSyntax}} {{x}}(this {{NameSyntax}} syntax)
+              {
+                  return {{SyntaxFactory}}.NamespaceDeclaration(syntax);
+              }
+              """),
+        ("ToClassDeclaration",
+            x=>$$"""
+              public static {{ClassDeclarationSyntax}} {{x}}(this string identifier)
+              {
+                  return {{SyntaxFactory}}.ClassDeclaration(identifier);
+              }
+              """),
+        ("AddMembers",
+            x=>$$"""
+              public static {{CompilationUnitSyntax}} {{x}}(this {{CompilationUnitSyntax}} syntax, params {{String}}[] members)
+              {
+                  return syntax.AddMembers(members.Select(x => {{SyntaxFactory}}.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+              }
+              
+              public static {{ClassDeclarationSyntax}} {{x}}(this {{ClassDeclarationSyntax}} syntax, params {{String}}[] members)
+              {
+                  return syntax.AddMembers(members.Select(x => {{SyntaxFactory}}.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+              }
+              """),
+        ("AddUsings",
+            x=>$$"""
+              public static {{CompilationUnitSyntax}} {{x}}(this {{CompilationUnitSyntax}} syntax, params {{String}}[] usings)
+              {
+                  return syntax.AddUsings(usings.Select(x => {{SyntaxFactory}}.UsingDirective({{SyntaxFactory}}.ParseName(x))).ToArray());
+              }
+              """),
+        ("AddNamespace",
+            x=>$$"""
+              public static {{CompilationUnitSyntax}} {{x}}(this {{CompilationUnitSyntax}} syntax, {{String}} @namespace)
+              {
+                  return syntax.AddMembers({{SyntaxFactory}}.NamespaceDeclaration({{SyntaxFactory}}.ParseName(@namespace)));
+              }
+              """),
+        ("AddModifiers",
+            x=>$$"""
+              public static {{ClassDeclarationSyntax}} {{x}}(this {{ClassDeclarationSyntax}} syntax, params {{SyntaxKind}}[] items)
+              {
+                  return syntax.AddModifiers(items.Select(x => {{SyntaxFactory}}.Token(x)).ToArray());
+              }
+              """),
+        ("AddBaseListTypes",
+            x=>$$"""
+              public static {{ClassDeclarationSyntax}} {{x}}(this {{ClassDeclarationSyntax}} syntax, params string[] identifiers)
+              {
+                  return syntax.AddBaseListTypes(identifiers.Select(x => {{SyntaxFactory}}.SimpleBaseType({{SyntaxFactory}}.IdentifierName(x))).ToArray());
+              }
+              """),
     };
 #>
 <#=Using#>

@@ -1,11 +1,11 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
-#nullable enable
-namespace Feast.CodeAnalysis.Utils
+namespace Feast.CodeAnalysis.SourceGenerators.Templates.Utils
 {
     [DebuggerDisplay("{FullName}")]
     public abstract class TypeInfo

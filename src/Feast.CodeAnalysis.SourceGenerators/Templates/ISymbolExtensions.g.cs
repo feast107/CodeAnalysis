@@ -1,6 +1,7 @@
-﻿using System.Linq;
-#nullable enable
-namespace Microsoft.CodeAnalysis
+﻿#nullable enable
+using Microsoft.CodeAnalysis;
+
+namespace Feast.CodeAnalysis.SourceGenerators.Templates
 {
     internal static class ISymbolExtensions
     {

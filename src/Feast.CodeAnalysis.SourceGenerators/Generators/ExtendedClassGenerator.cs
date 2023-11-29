@@ -1,3 +1,4 @@
+using Feast.CodeAnalysis.SourceGenerators.Templates;
 using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;

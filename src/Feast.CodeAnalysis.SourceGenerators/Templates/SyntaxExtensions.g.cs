@@ -142,5 +142,127 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax ToNameSyntax(this string text, int offset = 0, bool consumeFullText = true)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(text, offset, consumeFullText);
+        }
+
+	    internal const string ToNameSyntaxText =
+        """
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax ToNameSyntax(this string text, int offset = 0, bool consumeFullText = true)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(text, offset, consumeFullText);
+        }
+        """;
+
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.NamespaceDeclarationSyntax ToNamespaceDeclaration(this Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax syntax)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.NamespaceDeclaration(syntax);
+        }
+
+	    internal const string ToNamespaceDeclarationText =
+        """
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.NamespaceDeclarationSyntax ToNamespaceDeclaration(this Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax syntax)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.NamespaceDeclaration(syntax);
+        }
+        """;
+
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax ToClassDeclaration(this string identifier)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ClassDeclaration(identifier);
+        }
+
+	    internal const string ToClassDeclarationText =
+        """
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax ToClassDeclaration(this string identifier)
+        {
+            return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ClassDeclaration(identifier);
+        }
+        """;
+
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddMembers(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, params global::System.String[] members)
+        {
+            return syntax.AddMembers(members.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+        }
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddMembers(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params global::System.String[] members)
+        {
+            return syntax.AddMembers(members.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+        }
+
+	    internal const string AddMembersText =
+        """
+        
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddMembers(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, params global::System.String[] members)
+        {
+            return syntax.AddMembers(members.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+        }
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddMembers(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params global::System.String[] members)
+        {
+            return syntax.AddMembers(members.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseMemberDeclaration(x) ?? throw new global::System.Exception($"Text : {x} , Parse failed")).ToArray());
+        }
+        """;
+
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddUsings(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, params global::System.String[] usings)
+        {
+            return syntax.AddUsings(usings.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.UsingDirective(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(x))).ToArray());
+        }
+
+	    internal const string AddUsingsText =
+        """
+        
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddUsings(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, params global::System.String[] usings)
+        {
+            return syntax.AddUsings(usings.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.UsingDirective(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(x))).ToArray());
+        }
+        """;
+
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddNamespace(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, global::System.String @namespace)
+        {
+            return syntax.AddMembers(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.NamespaceDeclaration(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(@namespace)));
+        }
+
+	    internal const string AddNamespaceText =
+        """
+        
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax AddNamespace(this global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax syntax, global::System.String @namespace)
+        {
+            return syntax.AddMembers(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.NamespaceDeclaration(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(@namespace)));
+        }
+        """;
+
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddModifiers(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params global::Microsoft.CodeAnalysis.CSharp.SyntaxKind[] items)
+        {
+            return syntax.AddModifiers(items.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.Token(x)).ToArray());
+        }
+
+	    internal const string AddModifiersText =
+        """
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddModifiers(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params global::Microsoft.CodeAnalysis.CSharp.SyntaxKind[] items)
+        {
+            return syntax.AddModifiers(items.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.Token(x)).ToArray());
+        }
+        """;
+
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddBaseListTypes(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params string[] identifiers)
+        {
+            return syntax.AddBaseListTypes(identifiers.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.SimpleBaseType(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.IdentifierName(x))).ToArray());
+        }
+
+	    internal const string AddBaseListTypesText =
+        """
+        
+        public static Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax AddBaseListTypes(this Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax syntax, params string[] identifiers)
+        {
+            return syntax.AddBaseListTypes(identifiers.Select(x => global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.SimpleBaseType(global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.IdentifierName(x))).ToArray());
+        }
+        """;
+
     }
 }

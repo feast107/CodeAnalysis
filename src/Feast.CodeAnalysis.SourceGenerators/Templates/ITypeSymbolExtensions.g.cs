@@ -1,7 +1,8 @@
-using System;
-using System.Linq;
 #nullable enable
-namespace Microsoft.CodeAnalysis
+using System;
+using Microsoft.CodeAnalysis;
+
+namespace Feast.CodeAnalysis.SourceGenerators.Templates
 {
     internal static class ITypeSymbolExtensions
     {
@@ -13,7 +14,7 @@ namespace Microsoft.CodeAnalysis
         /// <returns>Whether <paramref name="symbol"/> has a full name equals to <paramref name="name"/>.</returns>
         public static global::System.Boolean HasFullyQualifiedMetadataName(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.String name)
         {
-            using global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder = global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char>.Rent();
+            using global::Feast.CodeAnalysis.SourceGenerators.Templates.ImmutableArrayBuilder<global::System.Char> builder = global::Feast.CodeAnalysis.SourceGenerators.Templates.ImmutableArrayBuilder<global::System.Char>.Rent();
         
             symbol.AppendFullyQualifiedMetadataName(in builder);
         
@@ -45,9 +46,9 @@ namespace Microsoft.CodeAnalysis
         /// <param name="symbol">The input <see cref="ITypeSymbol"/> instance.</param>
         /// <param name="builder">The target <see cref="ImmutableArrayBuilder{T}"/> instance.</param>
         private static void AppendFullyQualifiedMetadataName(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, 
-            in global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
+            in global::Feast.CodeAnalysis.SourceGenerators.Templates.ImmutableArrayBuilder<global::System.Char> builder)
         {
-            static void BuildFrom(global::Microsoft.CodeAnalysis.ISymbol? symbol, in global::Microsoft.CodeAnalysis.ImmutableArrayBuilder<global::System.Char> builder)
+            static void BuildFrom(global::Microsoft.CodeAnalysis.ISymbol? symbol, in global::Feast.CodeAnalysis.SourceGenerators.Templates.ImmutableArrayBuilder<global::System.Char> builder)
             {
                 switch (symbol)
                 {
@@ -167,7 +168,7 @@ namespace Microsoft.CodeAnalysis
         public static bool IsAssignableFrom(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.Type type) => symbol.ToTypeInfo().IsAssignableTo(type);
         """;
 
-        public static global::Feast.CodeAnalysis.Utils.TypeInfo ToTypeInfo(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => global::Feast.CodeAnalysis.Utils.TypeInfo.FromSymbol(symbol);
+        public static global::Feast.CodeAnalysis.SourceGenerators.Templates.Utils.TypeInfo ToTypeInfo(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => global::Feast.CodeAnalysis.SourceGenerators.Templates.Utils.TypeInfo.FromSymbol(symbol);
 
 	    internal const string ToTypeInfoText =
         """
