@@ -1,6 +1,6 @@
-﻿using Feast.CodeAnalysis.SourceGenerators.Templates.Utils;
+﻿using Feast.CodeAnalysis.Utils;
 using Microsoft.CodeAnalysis;
-using TypeInfo = Feast.CodeAnalysis.SourceGenerators.Templates.Utils.TypeInfo;
+using TypeInfo = Feast.CodeAnalysis.Utils.TypeInfo;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 

@@ -1,9 +1,9 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates.Utils
+using Microsoft.CodeAnalysis;
+#nullable enable
+namespace Feast.CodeAnalysis.Utils
 {
     internal class RuntimeTypeInfo : TypeInfo
     {

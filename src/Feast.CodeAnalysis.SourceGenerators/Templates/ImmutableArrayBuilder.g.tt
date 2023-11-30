@@ -3,6 +3,8 @@
     const string NameSpace = "Microsoft.CodeAnalysis";
     const string ClassName = "ImmutableArrayBuilder";
     const string Comment = """
+                           #nullable enable
+                           
                            // Licensed to the .NET Foundation under one or more agreements.
                            // The .NET Foundation licenses this file to you under the MIT license.
                            // See the LICENSE file in the project root for more information.
@@ -21,7 +23,6 @@
                 """;
     const string Macro = "";
     const string body = $$"""
-               
                /// <summary>
                /// A helper type to build sequences of values with pooled buffers.
                /// </summary>

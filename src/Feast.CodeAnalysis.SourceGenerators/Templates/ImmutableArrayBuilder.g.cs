@@ -1,5 +1,7 @@
 
 
+#nullable enable
+
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
@@ -7,7 +9,6 @@
 // This file is ported and adapted from ComputeSharp (Sergio0694/ComputeSharp),
 // more info in ThirdPartyNotices.txt in the root of the project.
 
-#nullable enable
 using System;
 using System.Buffers;
 using System.Collections;
@@ -15,10 +16,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
-    
     /// <summary>
     /// A helper type to build sequences of values with pooled buffers.
     /// </summary>
@@ -273,6 +273,8 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
             """
             
 
+            #nullable enable
+            
             // Licensed to the .NET Foundation under one or more agreements.
             // The .NET Foundation licenses this file to you under the MIT license.
             // See the LICENSE file in the project root for more information.
@@ -289,7 +291,6 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
             using System.Runtime.CompilerServices;
            
             namespace Microsoft.CodeAnalysis;     
-            
             /// <summary>
             /// A helper type to build sequences of values with pooled buffers.
             /// </summary>

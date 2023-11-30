@@ -1,10 +1,9 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates.Utils
+#nullable enable
+namespace Feast.CodeAnalysis.Utils
 {
     internal class SymbolTypeInfo : TypeInfo
     {
