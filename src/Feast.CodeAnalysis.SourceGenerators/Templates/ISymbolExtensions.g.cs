@@ -1,7 +1,6 @@
-﻿#nullable enable
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates
+﻿using System.Linq;
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     internal static class ISymbolExtensions
     {
@@ -16,6 +15,20 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
         public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
         {
             return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        }
+        """;
+
+        public static bool IsInitOnly(this global::Microsoft.CodeAnalysis.IPropertySymbol symbol)
+        {
+            return !symbol.IsReadOnly && symbol.SetMethod!.IsInitOnly;
+        }
+
+	    internal const string IsInitOnlyText =
+        """
+        
+        public static bool IsInitOnly(this global::Microsoft.CodeAnalysis.IPropertySymbol symbol)
+        {
+            return !symbol.IsReadOnly && symbol.SetMethod!.IsInitOnly;
         }
         """;
 
