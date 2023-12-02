@@ -19,11 +19,10 @@ namespace Feast.CodeAnalysis.Utils
             origin = new(() => SymbolEqualityComparer.Default.Equals(type, type.OriginalDefinition)
                 ? null
                 : new SymbolTypeInfo(type.OriginalDefinition));
-            if (type.BaseType != null) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
+            if (type.TypeKind == TypeKind.Class) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
             switch (type)
             {
                 case INamedTypeSymbol namedTypeSymbol:
-                    IsInterface = type.BaseType == null;
                     interfaces = new(() =>
                         type.AllInterfaces
                             .Select(FromSymbol)
@@ -39,7 +38,6 @@ namespace Feast.CodeAnalysis.Utils
                         parameterSymbol.ConstraintTypes
                             .Select(FromSymbol)
                             .ToArray());
-                    IsParameter = true;
                     break;
             }
     
@@ -48,8 +46,10 @@ namespace Feast.CodeAnalysis.Utils
     
         public override string? Namespace   { get; }
         public override string  Name        { get; }
-        public override bool    IsParameter { get; }
-        public override bool    IsInterface { get; }
+        public override bool    IsClass     => type.TypeKind == TypeKind.Class;
+        public override bool    IsParameter => type.TypeKind == TypeKind.TypeParameter;
+        public override bool    IsInterface => type.TypeKind == TypeKind.Interface;
+        public override bool    IsEnum      => type.TypeKind == TypeKind.Enum;
     
         protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
         protected override Lazy<TypeInfo?>               origin           { get; } = new(() => null);
@@ -94,11 +94,10 @@ namespace Feast.CodeAnalysis.Utils
                     origin = new(() => SymbolEqualityComparer.Default.Equals(type, type.OriginalDefinition)
                         ? null
                         : new SymbolTypeInfo(type.OriginalDefinition));
-                    if (type.BaseType != null) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
+                    if (type.TypeKind == TypeKind.Class) baseClass = new(() => new SymbolTypeInfo(type.BaseType));
                     switch (type)
                     {
                         case INamedTypeSymbol namedTypeSymbol:
-                            IsInterface = type.BaseType == null;
                             interfaces = new(() =>
                                 type.AllInterfaces
                                     .Select(FromSymbol)
@@ -114,7 +113,6 @@ namespace Feast.CodeAnalysis.Utils
                                 parameterSymbol.ConstraintTypes
                                     .Select(FromSymbol)
                                     .ToArray());
-                            IsParameter = true;
                             break;
                     }
             
@@ -123,8 +121,10 @@ namespace Feast.CodeAnalysis.Utils
             
                 public override string? Namespace   { get; }
                 public override string  Name        { get; }
-                public override bool    IsParameter { get; }
-                public override bool    IsInterface { get; }
+                public override bool    IsClass     => type.TypeKind == TypeKind.Class;
+                public override bool    IsParameter => type.TypeKind == TypeKind.TypeParameter;
+                public override bool    IsInterface => type.TypeKind == TypeKind.Interface;
+                public override bool    IsEnum      => type.TypeKind == TypeKind.Enum;
             
                 protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
                 protected override Lazy<TypeInfo?>               origin           { get; } = new(() => null);

@@ -25,9 +25,19 @@ namespace Feast.CodeAnalysis.Utils
         public abstract bool IsParameter { get; }
     
         /// <summary>
+        /// 是否是类型
+        /// </summary>
+        public abstract bool IsClass { get; }
+    
+        /// <summary>
         /// 是否是接口
         /// </summary>
         public abstract bool IsInterface { get; }
+    
+        /// <summary>
+        /// 是否是枚举
+        /// </summary>
+        public abstract bool IsEnum { get; }
     
         /// <summary>
         /// 是否是泛型
@@ -104,7 +114,7 @@ namespace Feast.CodeAnalysis.Utils
                     return Interfaces
                         .Where(x => x.FullName == another.FullName)
                         .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
-                case { IsInterface: false } when !IsInterface:
+                case { IsClass: true } when IsClass:
                     return SameAs(another) || IsSubClassOf(another);
             }
     
@@ -133,7 +143,7 @@ namespace Feast.CodeAnalysis.Utils
                     return Interfaces
                         .Where(x => x.FullName == another.FullName)
                         .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another, resolvedTypes));
-                case { IsInterface: false } when !IsInterface:
+                case { IsClass: true } when IsClass:
                     resolvedTypes.Add(another);
                     return SameAs(another) || IsSubClassOf(another);
             }
@@ -220,9 +230,19 @@ namespace Feast.CodeAnalysis.Utils
                 public abstract bool IsParameter { get; }
             
                 /// <summary>
+                /// 是否是类型
+                /// </summary>
+                public abstract bool IsClass { get; }
+            
+                /// <summary>
                 /// 是否是接口
                 /// </summary>
                 public abstract bool IsInterface { get; }
+            
+                /// <summary>
+                /// 是否是枚举
+                /// </summary>
+                public abstract bool IsEnum { get; }
             
                 /// <summary>
                 /// 是否是泛型
@@ -299,7 +319,7 @@ namespace Feast.CodeAnalysis.Utils
                             return Interfaces
                                 .Where(x => x.FullName == another.FullName)
                                 .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
-                        case { IsInterface: false } when !IsInterface:
+                        case { IsClass: true } when IsClass:
                             return SameAs(another) || IsSubClassOf(another);
                     }
             
@@ -328,7 +348,7 @@ namespace Feast.CodeAnalysis.Utils
                             return Interfaces
                                 .Where(x => x.FullName == another.FullName)
                                 .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another, resolvedTypes));
-                        case { IsInterface: false } when !IsInterface:
+                        case { IsClass: true } when IsClass:
                             resolvedTypes.Add(another);
                             return SameAs(another) || IsSubClassOf(another);
                     }

@@ -142,6 +142,22 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax? GetArgumentType(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeOfExpressionSyntax typeOfExpression) return null;
+            return typeOfExpression.Type;
+        }
+
+	    internal const string GetArgumentTypeText =
+        """
+        
+        public static global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax? GetArgumentType(this global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax syntax)
+        {
+            if (syntax.Expression is not global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeOfExpressionSyntax typeOfExpression) return null;
+            return typeOfExpression.Type;
+        }
+        """;
+
         public static Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax ToNameSyntax(this string text, int offset = 0, bool consumeFullText = true)
         {
             return global::Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseName(text, offset, consumeFullText);

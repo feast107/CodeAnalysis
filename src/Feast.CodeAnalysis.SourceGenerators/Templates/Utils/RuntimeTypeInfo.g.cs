@@ -41,8 +41,10 @@ namespace Feast.CodeAnalysis.Utils
     
         public override string? Namespace   => type.Namespace;
         public override string  Name        => type.Name;
+        public override bool    IsClass     => type.IsClass;
         public override bool    IsParameter => type.IsGenericParameter;
         public override bool    IsInterface => type.IsInterface;
+        public override bool    IsEnum      => type.IsEnum;
     
         protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
         protected override Lazy<TypeInfo?>               origin           { get; } = new(() => null);
@@ -105,8 +107,10 @@ namespace Feast.CodeAnalysis.Utils
             
                 public override string? Namespace   => type.Namespace;
                 public override string  Name        => type.Name;
+                public override bool    IsClass     => type.IsClass;
                 public override bool    IsParameter => type.IsGenericParameter;
                 public override bool    IsInterface => type.IsInterface;
+                public override bool    IsEnum      => type.IsEnum;
             
                 protected override Lazy<TypeInfo?>               baseClass        { get; } = new(() => null);
                 protected override Lazy<TypeInfo?>               origin           { get; } = new(() => null);

@@ -1,21 +1,12 @@
-﻿using Feast.CodeAnalysis.SourceGenerators.Templates;
+﻿using System;
+using Feast.CodeAnalysis.SourceGenerators.Generators.Base;
 using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
 [Generator]
-public class SyntaxExtensionsGenerator : IIncrementalGenerator
+public class SyntaxExtensionsGenerator : AutoTextGenerator
 {
-    private const string ClassName = nameof(SyntaxExtensions);
-    
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        context.RegisterPostInitializationOutput(ctx =>
-        {
-
-            ctx.AddSource(GenerateFileName(ClassName),
-                Generate(ClassName, GetGenerateTexts(typeof(SyntaxExtensions))
-                ));
-        });
-    }
+    protected override string ClassName => nameof(SyntaxExtensions);
+    protected override Type   Type      => typeof(SyntaxExtensions);
 }

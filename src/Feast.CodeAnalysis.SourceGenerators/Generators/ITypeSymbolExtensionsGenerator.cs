@@ -1,20 +1,13 @@
-﻿using Feast.CodeAnalysis.SourceGenerators.Templates;
+﻿using System;
+using Feast.CodeAnalysis.SourceGenerators.Generators.Base;
 using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
 [Generator]
-public class ITypeSymbolExtensionsGenerator : IIncrementalGenerator
+public class ITypeSymbolExtensionsGenerator : AutoTextGenerator
 {
-    private const string ClassName = nameof(ITypeSymbolExtensions);
-    
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        context.RegisterPostInitializationOutput(ctx =>
-        {
-            ctx.AddSource(GenerateFileName(ClassName),
-                Generate(ClassName,GetGenerateTexts(typeof(ITypeSymbolExtensions)))
-            );
-        });
-    }
+    protected override string ClassName => nameof(ITypeSymbolExtensions);
+    protected override Type   Type      => typeof(ITypeSymbolExtensions);
+
 }

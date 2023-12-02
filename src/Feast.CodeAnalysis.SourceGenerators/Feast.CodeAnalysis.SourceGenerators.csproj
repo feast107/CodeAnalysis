@@ -69,6 +69,10 @@
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>SyntaxValueProviderExtensions.g.cs</LastGenOutput>
       </None>
+      <None Update="Templates\TypedConstantExtensions.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>TypedConstantExtensions.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -106,6 +110,11 @@
       </Compile>
       <Compile Update="Templates\SyntaxValueProviderExtensions.g.cs">
         <DependentUpon>SyntaxValueProviderExtensions.g.tt</DependentUpon>
+      </Compile>
+      <Compile Update="Templates\TypedConstantExtensions.cs">
+        <AutoGen>True</AutoGen>
+        <DesignTime>True</DesignTime>
+        <DependentUpon>TypedConstantExtensions.tt</DependentUpon>
       </Compile>
     </ItemGroup>
 

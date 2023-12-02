@@ -12,9 +12,11 @@
     const string IMethodSymbol = "global::Microsoft.CodeAnalysis.IMethodSymbol";
     const string SemanticModel = "global::Microsoft.CodeAnalysis.SemanticModel";
     const string SyntaxKind = "global::Microsoft.CodeAnalysis.CSharp.SyntaxKind";
+    const string TypeSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax";
     const string AttributeSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax";
     const string CompilationUnitSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax";
     const string LiteralExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax";
+    const string TypeOfExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.TypeOfExpressionSyntax";
     const string AttributeArgumentSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeArgumentSyntax";
     const string MemberDeclarationSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax";
     const string LambdaExpressionSyntax = "global::Microsoft.CodeAnalysis.CSharp.Syntax.LambdaExpressionSyntax";
@@ -97,6 +99,14 @@
                   if (syntax.Expression is not {{LiteralExpressionSyntax}} literalExpressionSyntax) return null;
                   if (!literalExpressionSyntax.IsKind({{SyntaxKind}}.StringLiteralExpression)) return null;
                   return literalExpressionSyntax.Token.ValueText;
+              }
+              """),
+        ("GetArgumentType",
+            x=>$$"""
+              public static {{TypeSyntax}}? {{x}}(this {{AttributeArgumentSyntax}} syntax)
+              {
+                  if (syntax.Expression is not {{TypeOfExpressionSyntax}} typeOfExpression) return null;
+                  return typeOfExpression.Type;
               }
               """),
         ("ToNameSyntax",

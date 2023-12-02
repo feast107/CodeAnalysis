@@ -1,22 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Feast.CodeAnalysis.SourceGenerators.Generators.Base;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.SourceGenerators.Generators;
 
-// ReSharper disable once InconsistentNaming
 [Generator]
-public class ISymbolExtensionsGenerator : IIncrementalGenerator
+public class ISymbolExtensionsGenerator : AutoTextGenerator
 {
-    private const string ClassName = nameof(ISymbolExtensions);
-
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        context.RegisterPostInitializationOutput(ctx =>
-        {
-            ctx.AddSource(GenerateFileName(ClassName),
-                Generate(ClassName,
-                    GetGenerateTexts(typeof(ISymbolExtensions))
-                )
-            );
-        });
-    }
+    protected override string ClassName => nameof(ISymbolExtensions);
+    protected override Type   Type      => typeof(ISymbolExtensions);
 }

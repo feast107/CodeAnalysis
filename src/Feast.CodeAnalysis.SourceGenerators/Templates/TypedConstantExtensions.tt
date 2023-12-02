@@ -1,0 +1,44 @@
+<#@ template language="C#" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    const string NameSpace = "Microsoft.CodeAnalysis";
+    const string Using = """
+                         
+                         """;
+    const string TypedConstant = "global::Microsoft.CodeAnalysis.TypedConstant";
+    const string TypedConstantKind = "global::Microsoft.CodeAnalysis.TypedConstantKind";
+    const string INamedTypeSymbol = "global::Microsoft.CodeAnalysis.INamedTypeSymbol";
+    const string ClassName = "TypedConstant";
+    
+    var methods = new List<(string name,Func<string,string> text)>
+    {
+        ("GetArgumentType",
+            x=>$$"""
+            public static {{INamedTypeSymbol}}? {{x}}(this {{TypedConstant}} constant)
+            {
+                return constant.Kind == {{TypedConstantKind}}.Type ? constant.Value as {{INamedTypeSymbol}} : null;
+            }
+            """),
+       
+    };
+#>
+<#=Using#>
+#nullable enable
+namespace <#=NameSpace#>
+{
+    internal static class <#=ClassName#>Extensions
+    {
+<#foreach(var (name,text) in methods){#>
+<#
+      var target = text(name).Replace("\n", "\n        ");#>
+        <#=target#>
+
+	    internal const string <#=name#>Text =
+        """
+        
+        <#=target#>
+        """;
+
+<#}#>
+    }
+}
