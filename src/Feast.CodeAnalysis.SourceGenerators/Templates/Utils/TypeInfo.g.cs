@@ -156,12 +156,11 @@ namespace Feast.CodeAnalysis.Utils
         /// </summary>
         /// <param name="another"></param>
         /// <returns></returns>
-        private bool IsSubClassOf(TypeInfo another)
+        public bool IsSubClassOf(TypeInfo another)
         {
-            if (IsParameter || another.IsParameter ||
-                IsInterface || another.IsInterface) return false;
+            if (!IsClass || !another.IsClass) return false;
             var parent = BaseClass;
-            while (parent != null)
+            while (parent is not null)
             {
                 if (another.SameAs(parent)) return true;
                 parent = parent.BaseClass;
@@ -197,6 +196,7 @@ namespace Feast.CodeAnalysis.Utils
         public static bool operator !=(TypeInfo one, TypeInfo another) => one.Equals(another);
         
         public static TypeInfo FromType(Type type) => new RuntimeTypeInfo(type);
+        public static TypeInfo FromType<T>() => new RuntimeTypeInfo(typeof(T));
         public static TypeInfo FromSymbol(ITypeSymbol symbol) => new SymbolTypeInfo(symbol);
     
         public static implicit operator TypeInfo(Type type) => FromType(type);
@@ -361,12 +361,11 @@ namespace Feast.CodeAnalysis.Utils
                 /// </summary>
                 /// <param name="another"></param>
                 /// <returns></returns>
-                private bool IsSubClassOf(TypeInfo another)
+                public bool IsSubClassOf(TypeInfo another)
                 {
-                    if (IsParameter || another.IsParameter ||
-                        IsInterface || another.IsInterface) return false;
+                    if (!IsClass || !another.IsClass) return false;
                     var parent = BaseClass;
-                    while (parent != null)
+                    while (parent is not null)
                     {
                         if (another.SameAs(parent)) return true;
                         parent = parent.BaseClass;
@@ -402,6 +401,7 @@ namespace Feast.CodeAnalysis.Utils
                 public static bool operator !=(TypeInfo one, TypeInfo another) => one.Equals(another);
                 
                 public static TypeInfo FromType(Type type) => new RuntimeTypeInfo(type);
+                public static TypeInfo FromType<T>() => new RuntimeTypeInfo(typeof(T));
                 public static TypeInfo FromSymbol(ITypeSymbol symbol) => new SymbolTypeInfo(symbol);
             
                 public static implicit operator TypeInfo(Type type) => FromType(type);
