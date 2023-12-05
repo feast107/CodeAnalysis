@@ -24,8 +24,8 @@ internal static class Global
 
           {{GenerateUsing}}
 
+          #nullable enable
           namespace {{GenerateNamespace}};
-
           public static partial class {{className}}
           {
           {{string.Concat(methods.Select(x=>$"\n{x}".Replace("\n", "\n\t")))}}

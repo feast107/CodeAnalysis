@@ -3,8 +3,9 @@
 <#
     const string NameSpace = "Microsoft.CodeAnalysis";
     const string Using = """
-                         
+                         using System.Linq;
                          """;
+    const string Enum = "global::System.Enum";
     const string TypedConstant = "global::Microsoft.CodeAnalysis.TypedConstant";
     const string TypedConstantKind = "global::Microsoft.CodeAnalysis.TypedConstantKind";
     const string INamedTypeSymbol = "global::Microsoft.CodeAnalysis.INamedTypeSymbol";
@@ -19,7 +20,27 @@
                 return constant.Kind == {{TypedConstantKind}}.Type ? constant.Value as {{INamedTypeSymbol}} : null;
             }
             """),
-       
+        ("GetArgumentString",
+            x=>$$"""
+            public static string? {{x}}(this {{TypedConstant}} constant)
+            {
+                return constant.Kind == {{TypedConstantKind}}.Primitive ? constant.Value as string : null;
+            }
+            """),
+        ("GetArgumentEnum",
+            x=>$$"""
+            public static T? {{x}}<T>(this {{TypedConstant}} constant) where T : {{Enum}}
+            {
+                return constant.Kind == {{TypedConstantKind}}.Array ? (T?)constant.Value : default;
+            }
+            """),
+        ("GetArgumentArray",
+            x=>$$"""
+            public static T?[]? {{x}}<T>(this {{TypedConstant}} constant)
+            {
+                return constant.Kind == {{TypedConstantKind}}.Array ? constant.Values.Select(x => (T?)x.Value).ToArray() : null;
+            }
+            """),
     };
 #>
 <#=Using#>
