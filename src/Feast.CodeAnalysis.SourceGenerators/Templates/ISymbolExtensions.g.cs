@@ -32,6 +32,62 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.SyntaxKind> GetSyntaxKind(this global::Microsoft.CodeAnalysis.Accessibility accessibility)
+        {
+            switch (accessibility)
+            {
+                case Accessibility.Public: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PublicKeyword;
+                    yield break;
+                case Accessibility.Protected: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
+                    yield break;
+                case Accessibility.Internal: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
+                    yield break;
+                case Accessibility.Private: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PrivateKeyword;
+                    yield break;
+                case Accessibility.ProtectedAndInternal: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
+                    yield break;
+                default: 
+                    throw new System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+            }
+        
+        }
+
+	    internal const string GetSyntaxKindText =
+        """
+        
+        public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.SyntaxKind> GetSyntaxKind(this global::Microsoft.CodeAnalysis.Accessibility accessibility)
+        {
+            switch (accessibility)
+            {
+                case Accessibility.Public: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PublicKeyword;
+                    yield break;
+                case Accessibility.Protected: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
+                    yield break;
+                case Accessibility.Internal: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
+                    yield break;
+                case Accessibility.Private: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PrivateKeyword;
+                    yield break;
+                case Accessibility.ProtectedAndInternal: 
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
+                    yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
+                    yield break;
+                default: 
+                    throw new System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+            }
+        
+        }
+        """;
+
         #if !ROSLYN_4_3_1_OR_GREATER
         /// <summary>
         /// Tries to get an attribute with the specified fully qualified metadata name.

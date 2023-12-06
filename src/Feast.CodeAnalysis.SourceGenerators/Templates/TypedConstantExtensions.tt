@@ -9,6 +9,7 @@
     const string TypedConstant = "global::Microsoft.CodeAnalysis.TypedConstant";
     const string TypedConstantKind = "global::Microsoft.CodeAnalysis.TypedConstantKind";
     const string INamedTypeSymbol = "global::Microsoft.CodeAnalysis.INamedTypeSymbol";
+    const string ArgumentException = "global::System.ArgumentException";
     const string ClassName = "TypedConstant";
     
     var methods = new List<(string name,Func<string,string> text)>
@@ -17,28 +18,35 @@
             x=>$$"""
             public static {{INamedTypeSymbol}}? {{x}}(this {{TypedConstant}} constant)
             {
-                return constant.Kind == {{TypedConstantKind}}.Type ? constant.Value as {{INamedTypeSymbol}} : null;
+                return constant.Kind == {{TypedConstantKind}}.Type ? constant.Value as {{INamedTypeSymbol}} : throw new {{ArgumentException}}("constant is not a type");
             }
             """),
         ("GetArgumentString",
             x=>$$"""
             public static string? {{x}}(this {{TypedConstant}} constant)
             {
-                return constant.Kind == {{TypedConstantKind}}.Primitive ? constant.Value as string : null;
+                return constant.Kind == {{TypedConstantKind}}.Primitive ? constant.Value as string : throw new {{ArgumentException}}("constant is not a string");
             }
             """),
         ("GetArgumentEnum",
             x=>$$"""
             public static T? {{x}}<T>(this {{TypedConstant}} constant) where T : {{Enum}}
             {
-                return constant.Kind == {{TypedConstantKind}}.Array ? (T?)constant.Value : default;
+                return constant.Kind == {{TypedConstantKind}}.Enum ? (T?)constant.Value : throw new {{ArgumentException}}("constant is not an enum");
+            }
+            """),
+        ("GetArgumentPrimitive",
+            x=>$$"""
+            public static T? {{x}}<T>(this {{TypedConstant}} constant) where T : struct
+            {
+                return constant.Kind == {{TypedConstantKind}}.Primitive ? (T?)constant.Value : throw new {{ArgumentException}}("constant is not a primitive");
             }
             """),
         ("GetArgumentArray",
             x=>$$"""
-            public static T?[]? {{x}}<T>(this {{TypedConstant}} constant)
+            public static T?[] {{x}}<T>(this {{TypedConstant}} constant)
             {
-                return constant.Kind == {{TypedConstantKind}}.Array ? constant.Values.Select(x => (T?)x.Value).ToArray() : null;
+                return constant.Kind == {{TypedConstantKind}}.Array ? constant.Values.Select(x => (T?)x.Value).ToArray() : throw new {{ArgumentException}}("constant is not an array");
             }
             """),
     };

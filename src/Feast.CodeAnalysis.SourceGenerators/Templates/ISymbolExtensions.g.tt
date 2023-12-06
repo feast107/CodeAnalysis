@@ -10,6 +10,9 @@
     const string IPropertySymbol = "global::Microsoft.CodeAnalysis.IPropertySymbol";
     const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
     const string ClassName = "ISymbol";
+    const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
+    const string SyntaxKind = "global::Microsoft.CodeAnalysis.CSharp.SyntaxKind";
+    const string Accessibility = "global::Microsoft.CodeAnalysis.Accessibility";
     const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
     var methods = new List<(string name,Func<string,string> text)>
     {
@@ -25,6 +28,34 @@
             public static bool {{x}}(this {{IPropertySymbol}} symbol)
             {
                 return !symbol.IsReadOnly && symbol.SetMethod!.IsInitOnly;
+            }
+            """),
+        ("GetSyntaxKind",
+            x=>$$"""
+            public static {{IEnumerable}}<{{SyntaxKind}}> {{x}}(this {{Accessibility}} accessibility)
+            {
+                switch (accessibility)
+                {
+                    case Accessibility.Public: 
+                        yield return {{SyntaxKind}}.PublicKeyword;
+                        yield break;
+                    case Accessibility.Protected: 
+                        yield return {{SyntaxKind}}.ProtectedKeyword;
+                        yield break;
+                    case Accessibility.Internal: 
+                        yield return {{SyntaxKind}}.InternalKeyword;
+                        yield break;
+                    case Accessibility.Private: 
+                        yield return {{SyntaxKind}}.PrivateKeyword;
+                        yield break;
+                    case Accessibility.ProtectedAndInternal: 
+                        yield return {{SyntaxKind}}.ProtectedKeyword;
+                        yield return {{SyntaxKind}}.InternalKeyword;
+                        yield break;
+                    default: 
+                        throw new System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+                }
+           
             }
             """),
         
