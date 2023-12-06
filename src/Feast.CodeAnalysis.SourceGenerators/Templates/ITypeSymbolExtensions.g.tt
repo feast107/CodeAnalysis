@@ -11,6 +11,8 @@
     const string ISymbol = "global::Microsoft.CodeAnalysis.ISymbol";
     const string ITypeSymbol = "global::Microsoft.CodeAnalysis.ITypeSymbol";
     const string INamespaceSymbol = "global::Microsoft.CodeAnalysis.INamespaceSymbol";
+    const string IErrorTypeSymbol = "global::Microsoft.CodeAnalysis.IErrorTypeSymbol";
+    const string INamespaceOrTypeSymbol = "global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol";
     const string ImmutableArrayBuilder = "global::Microsoft.CodeAnalysis.ImmutableArrayBuilder";
     const string SpecialType = "global::Microsoft.CodeAnalysis.SpecialType";
     const string ClassName = "ITypeSymbol";
@@ -89,6 +91,22 @@
                   BuildFrom(symbol, in builder);
               }
               """),
+        ("AsNoneErrorType",
+            x=>$$"""
+            public static T {{x}}<T>(this T symbol) where T : {{ITypeSymbol}}
+            {
+                return symbol is {{IErrorTypeSymbol}} errorTypeSymbol ? 
+                    (T)errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                    (T)symbol;
+            }
+            
+            public static {{INamespaceOrTypeSymbol}} {{x}}(this {{INamespaceOrTypeSymbol}} symbol)
+            {
+                return symbol is {{IErrorTypeSymbol}} errorTypeSymbol ? 
+                    ({{INamespaceOrTypeSymbol}})errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                    symbol;
+            }
+            """),
         ("IsAssignableTo",
             x =>
                 $$"""

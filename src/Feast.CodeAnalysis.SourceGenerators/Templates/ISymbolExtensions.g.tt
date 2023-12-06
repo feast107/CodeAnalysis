@@ -5,14 +5,15 @@
     const string Using = """
                          using System.Linq;
                          """;
+    const string ClassName = "ISymbol";
     const string String = "global::System.String";
     const string ISymbol = "global::Microsoft.CodeAnalysis.ISymbol";
-    const string IPropertySymbol = "global::Microsoft.CodeAnalysis.IPropertySymbol";
-    const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
-    const string ClassName = "ISymbol";
-    const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
     const string SyntaxKind = "global::Microsoft.CodeAnalysis.CSharp.SyntaxKind";
+    const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
+    const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
     const string Accessibility = "global::Microsoft.CodeAnalysis.Accessibility";
+    const string IPropertySymbol = "global::Microsoft.CodeAnalysis.IPropertySymbol";
+    const string IErrorTypeSymbol = "global::Microsoft.CodeAnalysis.IErrorTypeSymbol";
     const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
     var methods = new List<(string name,Func<string,string> text)>
     {

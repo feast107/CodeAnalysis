@@ -143,6 +143,38 @@ namespace Microsoft.CodeAnalysis
         }
         """;
 
+        public static T AsNoneErrorType<T>(this T symbol) where T : global::Microsoft.CodeAnalysis.ITypeSymbol
+        {
+            return symbol is global::Microsoft.CodeAnalysis.IErrorTypeSymbol errorTypeSymbol ? 
+                (T)errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                (T)symbol;
+        }
+        
+        public static global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol AsNoneErrorType(this global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol symbol)
+        {
+            return symbol is global::Microsoft.CodeAnalysis.IErrorTypeSymbol errorTypeSymbol ? 
+                (global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol)errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                symbol;
+        }
+
+	    internal const string AsNoneErrorTypeText =
+        """
+        
+        public static T AsNoneErrorType<T>(this T symbol) where T : global::Microsoft.CodeAnalysis.ITypeSymbol
+        {
+            return symbol is global::Microsoft.CodeAnalysis.IErrorTypeSymbol errorTypeSymbol ? 
+                (T)errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                (T)symbol;
+        }
+        
+        public static global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol AsNoneErrorType(this global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol symbol)
+        {
+            return symbol is global::Microsoft.CodeAnalysis.IErrorTypeSymbol errorTypeSymbol ? 
+                (global::Microsoft.CodeAnalysis.INamespaceOrTypeSymbol)errorTypeSymbol.CandidateSymbols.FirstOrDefault()! : 
+                symbol;
+        }
+        """;
+
         public static bool IsAssignableTo(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.Type type) => symbol.ToTypeInfo().IsAssignableTo(type);
         
         public static bool IsAssignableTo(this global::System.Type type, global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => symbol.ToTypeInfo().IsAssignableFrom(type);
