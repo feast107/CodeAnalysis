@@ -6,6 +6,8 @@
                          using System.Linq;
                          """;
     const string Enum = "global::System.Enum";
+    const string Type = "global::System.Type";
+    const string Array = "global::System.Array";
     const string TypedConstant = "global::Microsoft.CodeAnalysis.TypedConstant";
     const string TypedConstantKind = "global::Microsoft.CodeAnalysis.TypedConstantKind";
     const string INamedTypeSymbol = "global::Microsoft.CodeAnalysis.INamedTypeSymbol";
@@ -14,6 +16,64 @@
     
     var methods = new List<(string name,Func<string,string> text)>
     {
+        ("GetElementType",
+            x=>$$"""
+            private static {{Type}} GetElementType(this {{Type}} type)
+            {
+                return type.IsArray ? type.GetElementType()! : throw new {{ArgumentException}}("type is not an array");
+            }
+            """),
+        ("GenericList",
+            x=>$$"""
+            internal static object GenericList(this {{Type}} type, params object[] values)
+            {
+                var listType = type.MakeGenericType(type.GetGenericArguments());
+                var list = global::System.Activator.CreateInstance(listType);
+                var add = listType.GetMethod(nameof(global::System.Collections.Generic.List<object>.Add))!;
+                foreach(var value in values)
+                {
+                    add.Invoke(list, new object[] { value });
+                }
+                return list;
+            }
+           
+            private static object ToArray(object genericList)
+            {
+                var toArray = genericList.GetType().GetMethod(nameof(global::System.Collections.Generic.List<object>.ToArray))!;
+                return toArray.Invoke(genericList, null);
+            }
+            """),
+        ("GetArgumentValue",
+            x=>$$"""
+            public static object? {{x}}(this {{TypedConstant}} constant)
+            {
+                return constant.Kind switch
+                {
+                    {{TypedConstantKind}}.Array => constant.Values.Select(x => x.GetArgumentValue()).ToArray(),
+                    {{TypedConstantKind}}.Error => null,
+                    _                                                      => constant.Value
+                };
+            }
+            
+            public static object? GetArgumentValue(this {{TypedConstant}} constant, {{Type}} type)
+            {
+                var value = constant.GetArgumentValue();
+                if (!type.IsArray)
+                {
+                    if (type.IsEnum)
+                    {
+                        return value == null ? null : global::System.Enum.ToObject(type, (int)value);
+                    }
+            
+                    return value;
+                }
+            
+                if (value is not object[] arr) throw new global::System.ArgumentException("constant is not an array");
+                var ret = global::System.Array.CreateInstance(type, arr.Length);
+                global::System.Array.Copy(arr, ret, arr.Length);
+                return ret;
+            }
+            """),
         ("GetArgumentType",
             x=>$$"""
             public static {{INamedTypeSymbol}}? {{x}}(this {{TypedConstant}} constant)
