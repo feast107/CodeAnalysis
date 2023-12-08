@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 #nullable enable
 namespace Feast.CodeAnalysis.Utils
 {
@@ -63,6 +62,7 @@ namespace Feast.CodeAnalysis.Utils
                 : obj is TypeInfo typeInfo
                   && SameAs(typeInfo);
 
+        #region Text
 	    internal const string RuntimeTypeInfoText =
             """
             using System;
@@ -130,5 +130,7 @@ namespace Feast.CodeAnalysis.Utils
                           && SameAs(typeInfo);
             }
             """;
+        #endregion
+
     }
 }
