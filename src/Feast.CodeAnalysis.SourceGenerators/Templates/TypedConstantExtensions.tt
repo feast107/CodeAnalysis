@@ -57,6 +57,11 @@
             
             public static object? GetArgumentValue(this {{TypedConstant}} constant, {{Type}} type)
             {
+                if (type == typeof(global::System.Type))
+                {
+                    return null;
+                }
+                
                 var value = constant.GetArgumentValue();
                 if (!type.IsArray)
                 {

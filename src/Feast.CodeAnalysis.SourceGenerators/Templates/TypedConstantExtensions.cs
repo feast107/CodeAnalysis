@@ -70,6 +70,11 @@ namespace Microsoft.CodeAnalysis
         
         public static object? GetArgumentValue(this global::Microsoft.CodeAnalysis.TypedConstant constant, global::System.Type type)
         {
+            if (type == typeof(global::System.Type))
+            {
+                return null;
+            }
+            
             var value = constant.GetArgumentValue();
             if (!type.IsArray)
             {
@@ -102,6 +107,11 @@ namespace Microsoft.CodeAnalysis
         
         public static object? GetArgumentValue(this global::Microsoft.CodeAnalysis.TypedConstant constant, global::System.Type type)
         {
+            if (type == typeof(global::System.Type))
+            {
+                return null;
+            }
+            
             var value = constant.GetArgumentValue();
             if (!type.IsArray)
             {
