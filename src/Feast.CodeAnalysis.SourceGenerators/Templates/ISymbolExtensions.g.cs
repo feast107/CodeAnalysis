@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
                     yield break;
                 default: 
-                    throw new System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+                    throw new global::System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
             }
         
         }
@@ -82,7 +82,7 @@ namespace Microsoft.CodeAnalysis
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
                     yield break;
                 default: 
-                    throw new System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+                    throw new global::System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
             }
         
         }
