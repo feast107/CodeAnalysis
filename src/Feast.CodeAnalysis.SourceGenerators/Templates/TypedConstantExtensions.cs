@@ -87,7 +87,9 @@ namespace Microsoft.CodeAnalysis
             }
         
             if (value is not object[] arr) throw new global::System.ArgumentException("constant is not an array");
-            var ret = global::System.Array.CreateInstance(type, arr.Length);
+            var ret = global::System.Array.CreateInstance(
+                type.GetInterfaces()
+                    .First(static x => x.GenericTypeArguments.Length == 1 && !x.GenericTypeArguments[0].IsGenericParameter).GenericTypeArguments[0], arr.Length);
             global::System.Array.Copy(arr, ret, arr.Length);
             return ret;
         }
@@ -124,7 +126,9 @@ namespace Microsoft.CodeAnalysis
             }
         
             if (value is not object[] arr) throw new global::System.ArgumentException("constant is not an array");
-            var ret = global::System.Array.CreateInstance(type, arr.Length);
+            var ret = global::System.Array.CreateInstance(
+                type.GetInterfaces()
+                    .First(static x => x.GenericTypeArguments.Length == 1 && !x.GenericTypeArguments[0].IsGenericParameter).GenericTypeArguments[0], arr.Length);
             global::System.Array.Copy(arr, ret, arr.Length);
             return ret;
         }
