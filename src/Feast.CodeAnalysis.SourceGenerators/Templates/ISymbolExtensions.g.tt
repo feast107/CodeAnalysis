@@ -49,7 +49,7 @@
                     case Accessibility.Private: 
                         yield return {{SyntaxKind}}.PrivateKeyword;
                         yield break;
-                    case Accessibility.ProtectedAndInternal: 
+                    case Accessibility.ProtectedOrInternal: 
                         yield return {{SyntaxKind}}.ProtectedKeyword;
                         yield return {{SyntaxKind}}.InternalKeyword;
                         yield break;

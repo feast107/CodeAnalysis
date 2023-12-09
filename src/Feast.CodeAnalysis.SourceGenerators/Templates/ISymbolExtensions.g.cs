@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis
                 case Accessibility.Private: 
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PrivateKeyword;
                     yield break;
-                case Accessibility.ProtectedAndInternal: 
+                case Accessibility.ProtectedOrInternal: 
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
                     yield break;
@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis
                 case Accessibility.Private: 
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.PrivateKeyword;
                     yield break;
-                case Accessibility.ProtectedAndInternal: 
+                case Accessibility.ProtectedOrInternal: 
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.ProtectedKeyword;
                     yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
                     yield break;
