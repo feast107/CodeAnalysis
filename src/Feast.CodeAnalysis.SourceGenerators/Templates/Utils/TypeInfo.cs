@@ -11,81 +11,81 @@ namespace Feast.CodeAnalysis.Utils
     public abstract class TypeInfo
     {
         public string FullName => Namespace != null ? $"{Namespace}.{Name}" : Name;
-    
+
         /// <summary>
         /// when null if global::
         /// </summary>
         public abstract string? Namespace { get; }
-    
+
         public abstract string Name { get; }
-    
+
         /// <summary>
         /// 是否是泛型参数
         /// </summary>
         public abstract bool IsParameter { get; }
-    
+
         /// <summary>
         /// 是否是类型
         /// </summary>
         public abstract bool IsClass { get; }
-    
+
         /// <summary>
         /// 是否是接口
         /// </summary>
         public abstract bool IsInterface { get; }
-    
+
         /// <summary>
         /// 是否是枚举
         /// </summary>
         public abstract bool IsEnum { get; }
-    
+
         /// <summary>
         /// 是否是泛型
         /// </summary>
         public bool IsGeneric => GenericTypes.Count > 0;
-    
+
         /// <summary>
         /// 泛型参数
         /// </summary>
         public IReadOnlyList<TypeInfo> GenericTypes => genericTypes.Value;
-    
+
         protected abstract Lazy<IReadOnlyList<TypeInfo>> genericTypes { get; }
-    
+
         /// <summary>
         /// 基类，如果没有则为null
         /// </summary>
         public TypeInfo? BaseClass => baseClass.Value;
-    
+
         protected abstract Lazy<TypeInfo?> baseClass { get; }
-    
+
         /// <summary>
         /// 类型替换源
         /// </summary>
         public TypeInfo? Origin => origin.Value;
-    
+
         protected abstract Lazy<TypeInfo?> origin { get; }
-    
+
         /// <summary>
         /// 实现的所有接口
         /// </summary>
         public IReadOnlyList<TypeInfo> Interfaces => interfaces.Value;
-    
+
         protected abstract Lazy<IReadOnlyList<TypeInfo>> interfaces { get; }
-    
+
         /// <summary>
         /// 泛型参数下的约束
         /// </summary>
         public IReadOnlyList<TypeInfo> ConstrainedTypes => constrainedTypes.Value;
-    
+
         protected abstract Lazy<IReadOnlyList<TypeInfo>> constrainedTypes { get; }
-    
+
         /// <summary>
         /// 本类型是否可以从另一个类型赋值
         /// </summary>
         /// <param name="another"></param>
         /// <returns></returns>
         public bool IsAssignableFrom(TypeInfo another) => another.IsAssignableTo(this);
-    
+
         /// <summary>
         /// 本类型是否可以赋值给另一个类型
         /// </summary>
@@ -104,7 +104,7 @@ namespace Feast.CodeAnalysis.Utils
                         return Interfaces
                             .Where(x => x.FullName == another.FullName)
                             .Any(interfaceInfo => interfaceInfo.IsAssignableTo(another));
-                    };
+                    }
                     if (!IsGeneric && !another.IsGeneric) return true;
                     if (GenericTypes.Count != another.GenericTypes.Count) return false;
                     return !GenericTypes
@@ -117,13 +117,14 @@ namespace Feast.CodeAnalysis.Utils
                 case { IsClass: true } when IsClass:
                     return SameAs(another) || IsSubClassOf(another);
             }
-    
+
             return false;
         }
-    
+        
+
         private bool IsAssignableTo(TypeInfo another, List<TypeInfo> resolvedTypes)
         {
-            if(resolvedTypes.Contains(another)) return true;
+            if (resolvedTypes.Contains(another)) return true;
             switch (another)
             {
                 case { IsParameter: true }:
@@ -147,10 +148,10 @@ namespace Feast.CodeAnalysis.Utils
                     resolvedTypes.Add(another);
                     return SameAs(another) || IsSubClassOf(another);
             }
-    
+
             return false;
         }
-    
+
         /// <summary>
         /// 是否是另一个类型的子类
         /// </summary>
@@ -165,10 +166,10 @@ namespace Feast.CodeAnalysis.Utils
                 if (another.SameAs(parent)) return true;
                 parent = parent.BaseClass;
             }
-    
+
             return false;
         }
-    
+
         /// <summary>
         /// 是否相同
         /// </summary>
@@ -177,6 +178,7 @@ namespace Feast.CodeAnalysis.Utils
         public bool SameAs(TypeInfo another)
         {
             if (FullName != another.FullName) return false;                     //不同名
+            if (IsEnum   != another.IsEnum) return false;                       //枚举不一致
             if (!IsGeneric) return !another.IsGeneric;                          //泛型不一致
             if (!another.IsGeneric) return false;                               //泛型不一致
             if (GenericTypes.Count != another.GenericTypes.Count) return false; //泛型数量不一致
@@ -191,27 +193,29 @@ namespace Feast.CodeAnalysis.Utils
                 };
             }).Any();
         }
-        
+
         public static bool operator ==(TypeInfo one, TypeInfo another) => one.Equals(another);
-        public static bool operator !=(TypeInfo one, TypeInfo another) => one.Equals(another);
-        
+        public static bool operator !=(TypeInfo one, TypeInfo another) => !one.Equals(another);
+
         public static TypeInfo FromType(Type type) => new RuntimeTypeInfo(type);
         public static TypeInfo FromType<T>() => new RuntimeTypeInfo(typeof(T));
         public static TypeInfo FromSymbol(ITypeSymbol symbol) => new SymbolTypeInfo(symbol);
-    
+
         public static implicit operator TypeInfo(Type type) => FromType(type);
 
-	    internal const string TypeInfoText =
+        #region Text
+
+        internal const string TypeInfoText =
             """
             using System;
             using System.Collections.Generic;
             using Microsoft.CodeAnalysis;
             using System.Diagnostics;
             using System.Linq;
-            
-            #nullable enable 
-            namespace Feast.CodeAnalysis.Utils;    
-            
+
+            #nullable enable
+            namespace Feast.CodeAnalysis.Utils;
+
             [DebuggerDisplay("{FullName}")]
             public abstract class TypeInfo
             {
@@ -382,6 +386,7 @@ namespace Feast.CodeAnalysis.Utils
                 public bool SameAs(TypeInfo another)
                 {
                     if (FullName != another.FullName) return false;                     //不同名
+                    if (IsEnum   != another.IsEnum) return false;                       //枚举不一致
                     if (!IsGeneric) return !another.IsGeneric;                          //泛型不一致
                     if (!another.IsGeneric) return false;                               //泛型不一致
                     if (GenericTypes.Count != another.GenericTypes.Count) return false; //泛型数量不一致
@@ -407,5 +412,7 @@ namespace Feast.CodeAnalysis.Utils
                 public static implicit operator TypeInfo(Type type) => FromType(type);
             }
             """;
+
+        #endregion
     }
 }

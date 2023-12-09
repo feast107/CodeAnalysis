@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -12,7 +12,6 @@ namespace Feast.CodeAnalysis.Utils
         public SymbolTypeInfo(ITypeSymbol type)
         {
             this.type = type;
-            Name      = type.MetadataName;
             Namespace = type.ContainingNamespace.MetadataName == string.Empty
                 ? null
                 : type.ContainingNamespace.ToDisplayString();
@@ -45,7 +44,7 @@ namespace Feast.CodeAnalysis.Utils
         }
     
         public override string? Namespace   { get; }
-        public override string  Name        { get; }
+        public override string  Name        => type.MetadataName;
         public override bool    IsClass     => type.TypeKind == TypeKind.Class;
         public override bool    IsParameter => type.TypeKind == TypeKind.TypeParameter;
         public override bool    IsInterface => type.TypeKind == TypeKind.Interface;
@@ -72,6 +71,7 @@ namespace Feast.CodeAnalysis.Utils
                 : obj is TypeInfo typeInfo
                   && SameAs(typeInfo);
 
+        #region Text
 	    internal const string SymbolTypeInfoText =
             """
             using System;
@@ -87,7 +87,6 @@ namespace Feast.CodeAnalysis.Utils
                 public SymbolTypeInfo(ITypeSymbol type)
                 {
                     this.type = type;
-                    Name      = type.MetadataName;
                     Namespace = type.ContainingNamespace.MetadataName == string.Empty
                         ? null
                         : type.ContainingNamespace.ToDisplayString();
@@ -120,7 +119,7 @@ namespace Feast.CodeAnalysis.Utils
                 }
             
                 public override string? Namespace   { get; }
-                public override string  Name        { get; }
+                public override string  Name        => type.MetadataName;
                 public override bool    IsClass     => type.TypeKind == TypeKind.Class;
                 public override bool    IsParameter => type.TypeKind == TypeKind.TypeParameter;
                 public override bool    IsInterface => type.TypeKind == TypeKind.Interface;
@@ -148,6 +147,8 @@ namespace Feast.CodeAnalysis.Utils
                           && SameAs(typeInfo);
             }
             """;
+        #endregion
+
     }
 }
 

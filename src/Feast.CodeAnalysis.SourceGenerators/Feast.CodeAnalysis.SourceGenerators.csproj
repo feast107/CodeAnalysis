@@ -33,18 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Templates\Utils\RuntimeTypeInfo.g.tt">
-        <Generator>TextTemplatingFileGenerator</Generator>
-        <LastGenOutput>RuntimeTypeInfo.g.cs</LastGenOutput>
-      </None>
-      <None Update="Templates\Utils\TypeInfo.g.tt">
-        <Generator>TextTemplatingFileGenerator</Generator>
-        <LastGenOutput>TypeInfo.g.cs</LastGenOutput>
-      </None>
-      <None Update="Templates\Utils\SymbolTypeInfo.g.tt">
-        <Generator>TextTemplatingFileGenerator</Generator>
-        <LastGenOutput>SymbolTypeInfo.g.cs</LastGenOutput>
-      </None>
       <None Update="Templates\ITypeSymbolExtensions.g.tt">
         <Generator>TextTemplatingFileGenerator</Generator>
         <LastGenOutput>ITypeSymbolExtensions.g.cs</LastGenOutput>
@@ -76,21 +64,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Templates\Utils\RuntimeTypeInfo.g.cs">
-        <DependentUpon>RuntimeTypeInfo.g.tt</DependentUpon>
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-      </Compile>
-      <Compile Update="Templates\Utils\TypeInfo.g.cs">
-        <AutoGen>True</AutoGen>
-        <DesignTime>True</DesignTime>
-        <DependentUpon>TypeInfo.g.tt</DependentUpon>
-      </Compile>
-      <Compile Update="Templates\Utils\SymbolTypeInfo.g.cs">
-        <AutoGen>True</AutoGen>
-        <DesignTime>True</DesignTime>
-        <DependentUpon>SymbolTypeInfo.g.tt</DependentUpon>
-      </Compile>
       <Compile Update="Templates\ITypeSymbolExtensions.g.cs">
         <DependentUpon>ITypeSymbolExtensions.g.tt</DependentUpon>
         <DesignTime>True</DesignTime>
