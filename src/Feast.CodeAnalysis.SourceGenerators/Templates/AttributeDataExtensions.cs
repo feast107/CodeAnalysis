@@ -36,8 +36,8 @@ public static class AttributeDataExtensions
         var publicProps = attrType
             .GetProperties(global::System.Reflection.BindingFlags.Public |
                            global::System.Reflection.BindingFlags.Instance)
-            .Where(x => x.CanWrite)
-            .ToDictionary(x => x.Name, x => x);
+            .Where(static x => x.CanWrite)
+            .ToDictionary(static x => x.Name,static x => x);
         foreach (var argument in attributeData.NamedArguments)
         {
             if (!publicProps.TryGetValue(argument.Key, out var prop)) continue;
@@ -75,8 +75,8 @@ public static class AttributeDataExtensions
             var attribute   = (T)Activator.CreateInstance(typeof(T), args);
             var publicProps = attrType
                 .GetProperties(global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.Instance)
-                .Where(x => x.CanWrite)
-                .ToDictionary(x => x.Name, x => x);
+                .Where(static x => x.CanWrite)
+                .ToDictionary(static x => x.Name, static x => x);
             foreach (var argument in attributeData.NamedArguments)
             {
                 if(!publicProps.TryGetValue(argument.Key, out var prop)) continue;
