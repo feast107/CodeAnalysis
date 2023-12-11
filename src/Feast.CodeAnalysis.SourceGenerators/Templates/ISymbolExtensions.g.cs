@@ -4,6 +4,14 @@ namespace Microsoft.CodeAnalysis
 {
     internal static class ISymbolExtensions
     {
+        public static bool Is(this global::Microsoft.CodeAnalysis.ISymbol symbol, global::Microsoft.CodeAnalysis.ISymbol other) => global::Microsoft.CodeAnalysis.SymbolEqualityComparer.Default.Equals(symbol, other);
+
+	    internal const string IsText =
+        """
+        
+        public static bool Is(this global::Microsoft.CodeAnalysis.ISymbol symbol, global::Microsoft.CodeAnalysis.ISymbol other) => global::Microsoft.CodeAnalysis.SymbolEqualityComparer.Default.Equals(symbol, other);
+        """;
+
         public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
         {
             return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);

@@ -12,11 +12,16 @@
     const string IEnumerable = "global::System.Collections.Generic.IEnumerable";
     const string AttributeData = "global::Microsoft.CodeAnalysis.AttributeData";
     const string Accessibility = "global::Microsoft.CodeAnalysis.Accessibility";
+    const string SymbolEqualityComparer = "global::Microsoft.CodeAnalysis.SymbolEqualityComparer";
     const string IPropertySymbol = "global::Microsoft.CodeAnalysis.IPropertySymbol";
     const string IErrorTypeSymbol = "global::Microsoft.CodeAnalysis.IErrorTypeSymbol";
     const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
     var methods = new List<(string name,Func<string,string> text)>
     {
+        ("Is",
+            x=>$$"""
+                 public static bool {{x}}(this {{ISymbol}} symbol, {{ISymbol}} other) => {{SymbolEqualityComparer}}.Default.Equals(symbol, other);
+                 """),
         ("GetFullyQualifiedName",
             x=>$$"""
             public static {{String}} {{x}}(this {{ISymbol}} symbol)
