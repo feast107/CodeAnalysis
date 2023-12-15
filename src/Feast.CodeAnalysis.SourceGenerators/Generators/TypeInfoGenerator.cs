@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using TypeInfo = Feast.CodeAnalysis.Utils.TypeInfo;
 
-namespace Feast.CodeAnalysis.SourceGenerators.Generators;
+namespace Feast.CodeAnalysis.Generators;
 
 [Generator]
 public class TypeInfoGenerator: IIncrementalGenerator

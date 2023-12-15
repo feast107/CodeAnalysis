@@ -9,7 +9,7 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
 
-        <RootNamespace>Feast.CodeAnalysis.SourceGenerators</RootNamespace>
+        <RootNamespace>Feast.CodeAnalysis</RootNamespace>
         <PackageId>Feast.CodeAnalysis.SourceGenerators</PackageId>
 
     </PropertyGroup>

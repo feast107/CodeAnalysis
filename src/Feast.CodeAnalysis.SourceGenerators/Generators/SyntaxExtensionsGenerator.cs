@@ -1,8 +1,8 @@
 ﻿using System;
-using Feast.CodeAnalysis.SourceGenerators.Generators.Base;
+using Feast.CodeAnalysis.Generators.Base;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.SourceGenerators.Generators;
+namespace Feast.CodeAnalysis.Generators;
 
 [Generator]
 public class SyntaxExtensionsGenerator : AutoTextGenerator

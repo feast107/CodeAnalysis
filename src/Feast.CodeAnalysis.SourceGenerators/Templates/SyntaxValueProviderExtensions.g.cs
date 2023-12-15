@@ -5,12 +5,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
+using System.Threading;
 using System;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-
-namespace Feast.CodeAnalysis.SourceGenerators.Templates
+#nullable enable
+namespace Microsoft.CodeAnalysis
 {
     /// <summary>
     /// Extension methods for the <see cref="SyntaxValueProvider"/> type.
@@ -37,7 +36,7 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
             this global::Microsoft.CodeAnalysis.SyntaxValueProvider syntaxValueProvider,
             global::System.String fullyQualifiedMetadataName,
             global::System.Func<global::Microsoft.CodeAnalysis.SyntaxNode, global::System.Threading.CancellationToken, global::System.Boolean> predicate,
-            global::System.Func<global::Feast.CodeAnalysis.SourceGenerators.Templates.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
+            global::System.Func<global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
         {
             return
                 syntaxValueProvider
@@ -71,7 +70,7 @@ namespace Feast.CodeAnalysis.SourceGenerators.Templates
     
                         // Create the GeneratorAttributeSyntaxContext value to pass to the input transform. The attributes array
                         // will only ever have a single value, but that's fine with the attributes the various generators look for.
-                        global::Feast.CodeAnalysis.SourceGenerators.Templates.GeneratorAttributeSyntaxContext syntaxContext = new(
+                        global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext syntaxContext = new(
                             targetNode: context.Node,
                             targetSymbol: symbol,
                             semanticModel: context.SemanticModel,

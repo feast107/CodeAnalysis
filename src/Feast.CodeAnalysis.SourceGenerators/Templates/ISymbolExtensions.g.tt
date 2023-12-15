@@ -14,7 +14,6 @@
     const string Accessibility = "global::Microsoft.CodeAnalysis.Accessibility";
     const string SymbolEqualityComparer = "global::Microsoft.CodeAnalysis.SymbolEqualityComparer";
     const string IPropertySymbol = "global::Microsoft.CodeAnalysis.IPropertySymbol";
-    const string IErrorTypeSymbol = "global::Microsoft.CodeAnalysis.IErrorTypeSymbol";
     const string NotNullWhen = "global::System.Diagnostics.CodeAnalysis.NotNullWhen";
     var methods = new List<(string name,Func<string,string> text)>
     {

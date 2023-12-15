@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.SourceGenerators.Generators.Base;
+namespace Feast.CodeAnalysis.Generators.Base;
 
 public abstract class AutoTextGenerator : IIncrementalGenerator
 {

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.SourceGenerators.Templates;
+namespace Microsoft.CodeAnalysis;
 
 public static class AttributeDataExtensions
 {
@@ -47,7 +47,7 @@ public static class AttributeDataExtensions
         return attribute;
     }
 
-    internal static string ToAttributeText =
+    internal const string ToAttributeText =
         """
         internal static T ToAttribute<T>(this global::Microsoft.CodeAnalysis.AttributeData attributeData) where T : global::System.Attribute
         {

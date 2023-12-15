@@ -1,7 +1,7 @@
-using Feast.CodeAnalysis.SourceGenerators.Templates;
+using Feast.CodeAnalysis.SourceGenerators;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.SourceGenerators.Generators;
+namespace Feast.CodeAnalysis.Generators;
 
 // ReSharper disable once InconsistentNaming
 [Generator]
