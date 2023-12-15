@@ -19,11 +19,11 @@ public class ExtendedClassGenerator : IIncrementalGenerator
                 #endif
                 """);
             ctx.AddSource(GenerateFileName(nameof(GeneratorAttributeSyntaxContext)),
-                GeneratorAttributeSyntaxContext.GeneratorAttributeSyntaxContextText);
+                GeneratorAttributeSyntaxContext.Text);
             ctx.AddSource(GenerateFileName("ImmutableArrayBuilder{T}"),
-                ImmutableArrayBuilder<object>.ImmutableArrayBuilderText);
+                ImmutableArrayBuilder.Text);
             ctx.AddSource(GenerateFileName(nameof(SyntaxValueProviderExtensions)),
-                SyntaxValueProviderExtensions.SyntaxValueProviderText);
+                SyntaxValueProviderExtensions.Text);
         });
     }
 }

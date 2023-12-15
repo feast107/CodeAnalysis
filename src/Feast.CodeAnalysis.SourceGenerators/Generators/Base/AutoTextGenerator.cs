@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.Generators.Base;
@@ -14,9 +15,7 @@ public abstract class AutoTextGenerator : IIncrementalGenerator
         context.RegisterPostInitializationOutput(ctx =>
         {
             ctx.AddSource(GenerateFileName(ClassName),
-                Generate(ClassName,
-                    GetGenerateTexts(Type)
-                )
+                    GetGenerateTexts(Type).First()
             );
         });
     }

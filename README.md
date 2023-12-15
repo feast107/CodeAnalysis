@@ -1,25 +1,28 @@
 # CodeAnalysis
- Auto generated extensions for `Microsoft.CodeAnalysis`
+自动生成提供给 `SourceGenerator` 的扩展
 
 ## Require
 
 + PolySharp
 
-## Extra
+## Comment
 
-+ `TypeInfo` in `Feast.CodeAnalysis.Utils`
+我们需要 `源代码生成器`
 
-    ``` csharp
-    TypeInfo.FromSymbol(ITypeSymcol); // SymbolTypeInfo
-    TypeInfo.FromType(Type);          // RuntimeTypeInfo
-    TypeInfo.FromType<T>();           // RuntimeTypeInfo
-    ```
+因为我们需要生成更多的代码
 
-    Provides common description between compile time `Symbol` and run time `Type`
+我们需要 `源代码生成器` 的 `源代码生成器`
 
-    Includes relation comparation:
+因为 `源代码生成器` 现在还不够强大
 
-    + TypeInfo.SameAs(TypeInfo)
-    + TypeInfo.IsAssignableTo(TypeInfo)
-    + TypeInfo.IsAssignableFrom(TypeInfo)
-    + TypeInfo.IsSubClassOf(TypeInfo)
+我们需要 `源代码生成器` 的 `源代码生成器` 的 `源代码生成器`
+
+因为 `源代码生成器` 的 `源代码生成器` 现在还不能自举
+
+由此可见
+
+道生一，一生二，二生三，三生万物
+
+总结
+
+玩源生玩的。
