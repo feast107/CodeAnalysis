@@ -1,5 +1,6 @@
 ﻿using Feast.CodeAnalysis.CompileTime;
 using Microsoft.CodeAnalysis;
+using CompileTimeExtensions = Feast.CodeAnalysis.CompileTime.CompileTimeExtensions;
 
 namespace Feast.CodeAnalysis.Generators;
 
@@ -20,6 +21,7 @@ public class CompileTimeGenerator: IIncrementalGenerator
             ctx.AddSource(GenerateFileName(nameof(ParameterInfo)), ParameterInfo.Text);
             ctx.AddSource(GenerateFileName(nameof(PropertyInfo)), PropertyInfo.Text);
             ctx.AddSource(GenerateFileName(nameof(Type)), Type.Text);
+            ctx.AddSource(GenerateFileName(nameof(CompileTimeExtensions)), CompileTimeExtensions.Text);
         });
     }
 }
