@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Feast.CodeAnalysis;
 
 #nullable enable
 namespace Microsoft.CodeAnalysis;
@@ -42,29 +41,31 @@ internal static class TypedConstantExtensions
             _                                                      => constant.Value
         };
     }
-        
-    public static object? GetArgumentValue(this global::Microsoft.CodeAnalysis.TypedConstant constant, global::System.Type type)
+
+    public static object? GetArgumentValue(this global::Microsoft.CodeAnalysis.TypedConstant constant,
+        global::System.Type type)
     {
+        var value = constant.GetArgumentValue();
         if (type == typeof(global::System.Type))
         {
-            return null;
+            return value == null ? null : (value as global::Microsoft.CodeAnalysis.INamedTypeSymbol)!.ToType();
         }
-            
-        var value = constant.GetArgumentValue();
+
         if (!type.IsArray)
         {
             if (type.IsEnum)
             {
                 return value == null ? null : global::System.Enum.ToObject(type, (int)value);
             }
-        
+
             return value;
         }
-        
+
         if (value is not object[] arr) throw new global::System.ArgumentException("constant is not an array");
         var ret = global::System.Array.CreateInstance(
             type.GetInterfaces()
-                .First(static x => x.GenericTypeArguments.Length == 1 && !x.GenericTypeArguments[0].IsGenericParameter).GenericTypeArguments[0], arr.Length);
+                .First(static x => x.GenericTypeArguments.Length == 1 && !x.GenericTypeArguments[0].IsGenericParameter)
+                .GenericTypeArguments[0], arr.Length);
         global::System.Array.Copy(arr, ret, arr.Length);
         return ret;
     }
