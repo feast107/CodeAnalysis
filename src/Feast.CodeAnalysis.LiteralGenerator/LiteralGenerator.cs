@@ -84,13 +84,21 @@ public class LiteralGenerator : IIncrementalGenerator
                         }
                     }
 
-                    var sourceNamespace = (classDeclare.Parent as NamespaceDeclarationSyntax)!;
+
+                    var sourceNamespace =
+                        classDeclare.Parent switch
+                        {
+                            BaseNamespaceDeclarationSyntax namespaceSymbol => namespaceSymbol!,
+                            CompilationUnitSyntax compilationUnitSyntax =>
+                                (compilationUnitSyntax.Members.First(x => x is BaseNamespaceDeclarationSyntax) as
+                                    BaseNamespaceDeclarationSyntax)!,
+                        };
                     var  newNamespace = sourceNamespace.ReplaceNode(
                         classDeclare,
                         classDeclare.WithAttributeLists(attrList));
                     var file            = sourceNamespace.Parent!;
                     file = file.ReplaceNode(sourceNamespace, newNamespace);
-                    while (file is NamespaceDeclarationSyntax namespaceSymbol)
+                    while (file is BaseNamespaceDeclarationSyntax namespaceSymbol)
                     {
                         file = namespaceSymbol.Parent;
                     }

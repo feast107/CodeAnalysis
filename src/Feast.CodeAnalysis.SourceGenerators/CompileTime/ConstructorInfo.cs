@@ -1,88 +1,86 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.CompileTime
+namespace Feast.CodeAnalysis.CompileTime;
+
+[Literal("Feast.CodeAnalysis.CompileTime.ConstructorInfo")]
+internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol constructor) : global::System.Reflection.ConstructorInfo
 {
-    [Literal("Feast.CodeAnalysis.CompileTime.ConstructorInfo")]
-    internal partial class ConstructorInfo(IMethodSymbol constructor) : global::System.Reflection.ConstructorInfo
+    public override object[] GetCustomAttributes(bool inherit) =>
+        constructor
+            .GetAttributes()
+            .CastArray<object>()
+            .ToArray();
+
+    public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
+        constructor
+            .GetAttributes()
+            .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
+            .Cast<object>()
+            .ToArray();
+
+    public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
+        constructor
+            .GetAttributes()
+            .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
+
+    public override global::System.Type DeclaringType =>
+        new global::Feast.CodeAnalysis.CompileTime.Type(
+            (constructor.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+
+    public override string Name => constructor.MetadataName;
+
+    public override global::System.Type ReflectedType =>
+        new global::Feast.CodeAnalysis.CompileTime.Type(constructor.ReturnType);
+
+    public override global::System.Reflection.MethodImplAttributes GetMethodImplementationFlags() =>
+        throw new global::System.NotSupportedException();
+
+    public override global::System.Reflection.ParameterInfo[] GetParameters() =>
+        constructor
+            .Parameters
+            .Select(static x =>
+                (global::System.Reflection.ParameterInfo)
+                new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(x))
+            .ToArray();
+
+    public override object Invoke(object obj,
+        global::System.Reflection.BindingFlags invokeAttr,
+        global::System.Reflection.Binder binder,
+        object[] parameters,
+        global::System.Globalization.CultureInfo culture) =>
+        throw new global::System.NotSupportedException();
+
+    public override global::System.Reflection.MethodAttributes Attributes
     {
-        public override object[] GetCustomAttributes(bool inherit) =>
-            constructor
-                .GetAttributes()
-                .CastArray<object>()
-                .ToArray();
-
-        public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-            constructor
-                .GetAttributes()
-                .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
-                .Cast<object>()
-                .ToArray();
-
-        public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-            constructor
-                .GetAttributes()
-                .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
-
-        public override global::System.Type DeclaringType =>
-            new global::Feast.CodeAnalysis.CompileTime.Type(
-                (constructor.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
-
-        public override string Name => constructor.MetadataName;
-
-        public override global::System.Type ReflectedType =>
-            new global::Feast.CodeAnalysis.CompileTime.Type(constructor.ReturnType);
-
-        public override global::System.Reflection.MethodImplAttributes GetMethodImplementationFlags() =>
-            throw new global::System.NotSupportedException();
-
-        public override global::System.Reflection.ParameterInfo[] GetParameters() =>
-            constructor
-                .Parameters
-                .Select(static x =>
-                    (global::System.Reflection.ParameterInfo)
-                    new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(x))
-                .ToArray();
-
-        public override object Invoke(object obj,
-            global::System.Reflection.BindingFlags invokeAttr,
-            global::System.Reflection.Binder binder,
-            object[] parameters,
-            global::System.Globalization.CultureInfo culture) =>
-            throw new global::System.NotSupportedException();
-
-        public override global::System.Reflection.MethodAttributes Attributes
+        get
         {
-            get
+            var ret = global::System.Reflection.MethodAttributes.PrivateScope;
+            if (constructor.IsStatic)
+                ret |= global::System.Reflection.MethodAttributes.Static;
+            if (constructor.IsVirtual)
+                ret |= global::System.Reflection.MethodAttributes.Virtual;
+            if (constructor.IsAbstract)
+                ret |= global::System.Reflection.MethodAttributes.Abstract;
+            switch (constructor.DeclaredAccessibility)
             {
-                var ret = global::System.Reflection.MethodAttributes.PrivateScope;
-                if (constructor.IsStatic)
-                    ret |= global::System.Reflection.MethodAttributes.Static;
-                if (constructor.IsVirtual)
-                    ret |= global::System.Reflection.MethodAttributes.Virtual;
-                if (constructor.IsAbstract)
-                    ret |= global::System.Reflection.MethodAttributes.Abstract;
-                switch (constructor.DeclaredAccessibility)
-                {
-                    case Microsoft.CodeAnalysis.Accessibility.Public:
-                        ret |= global::System.Reflection.MethodAttributes.Public;
-                        break;
-                    case Microsoft.CodeAnalysis.Accessibility.Protected or Microsoft.CodeAnalysis.Accessibility.Private:
-                        ret |= global::System.Reflection.MethodAttributes.Private;
-                        break;
-                }
-
-                return ret;
+                case Microsoft.CodeAnalysis.Accessibility.Public:
+                    ret |= global::System.Reflection.MethodAttributes.Public;
+                    break;
+                case Microsoft.CodeAnalysis.Accessibility.Protected or Microsoft.CodeAnalysis.Accessibility.Private:
+                    ret |= global::System.Reflection.MethodAttributes.Private;
+                    break;
             }
+
+            return ret;
         }
-
-        public override global::System.RuntimeMethodHandle MethodHandle => throw new global::System.NotSupportedException();
-
-        public override object Invoke(global::System.Reflection.BindingFlags invokeAttr,
-            global::System.Reflection.Binder binder,
-            object[] parameters,
-            global::System.Globalization.CultureInfo culture) =>
-            throw new global::System.NotSupportedException();
     }
+
+    public override global::System.RuntimeMethodHandle MethodHandle => throw new global::System.NotSupportedException();
+
+    public override object Invoke(global::System.Reflection.BindingFlags invokeAttr,
+        global::System.Reflection.Binder binder,
+        object[] parameters,
+        global::System.Globalization.CultureInfo culture) =>
+        throw new global::System.NotSupportedException();
 }

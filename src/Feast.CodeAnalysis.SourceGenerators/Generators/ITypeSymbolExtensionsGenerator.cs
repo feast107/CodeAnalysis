@@ -7,7 +7,6 @@ namespace Feast.CodeAnalysis.Generators;
 [Generator]
 public class ITypeSymbolExtensionsGenerator : AutoTextGenerator
 {
-    protected override string ClassName => nameof(ITypeSymbolExtensions);
-    protected override Type   Type      => typeof(ITypeSymbolExtensions);
+    protected override Type[] Types => [typeof(ITypeSymbolExtensions)];
 
 }

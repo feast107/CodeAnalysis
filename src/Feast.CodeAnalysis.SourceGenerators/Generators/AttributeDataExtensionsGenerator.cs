@@ -7,6 +7,5 @@ namespace Feast.CodeAnalysis.Generators;
 [Generator]
 public class AttributeDataExtensionsGenerator : AutoTextGenerator
 {
-    protected override string ClassName => nameof(AttributeDataExtensions);
-    protected override Type   Type      => typeof(AttributeDataExtensions);
+    protected override Type[] Types => [typeof(AttributeDataExtensions)];
 }

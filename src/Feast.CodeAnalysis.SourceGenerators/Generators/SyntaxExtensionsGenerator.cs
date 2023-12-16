@@ -7,6 +7,5 @@ namespace Feast.CodeAnalysis.Generators;
 [Generator]
 public class SyntaxExtensionsGenerator : AutoTextGenerator
 {
-    protected override string ClassName => nameof(SyntaxExtensions);
-    protected override Type   Type      => typeof(SyntaxExtensions);
+    protected override Type[] Types => [typeof(SyntaxExtensions)];
 }

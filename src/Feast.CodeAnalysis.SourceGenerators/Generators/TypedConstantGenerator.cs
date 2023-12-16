@@ -7,6 +7,5 @@ namespace Feast.CodeAnalysis.Generators;
 [Generator]
 public class TypedConstantGenerator : AutoTextGenerator
 {
-    protected override string ClassName => nameof(TypedConstantExtensions);
-    protected override Type   Type      => typeof(TypedConstantExtensions);
+    protected override Type[] Types => [typeof(TypedConstantExtensions)];
 }

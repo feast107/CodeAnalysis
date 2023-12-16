@@ -1,27 +1,28 @@
 ﻿using Feast.CodeAnalysis.CompileTime;
+using Feast.CodeAnalysis.Generators.Base;
 using Microsoft.CodeAnalysis;
+using AttributeData = Feast.CodeAnalysis.CompileTime.AttributeData;
 using CompileTimeExtensions = Feast.CodeAnalysis.CompileTime.CompileTimeExtensions;
 
 namespace Feast.CodeAnalysis.Generators;
 
 [Generator]
-public class CompileTimeGenerator: IIncrementalGenerator
+public class CompileTimeGenerator: AutoTextGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        context.RegisterPostInitializationOutput(ctx =>
-        {
-            ctx.AddSource(GenerateFileName(nameof(Assembly)), Assembly.Text);
-            ctx.AddSource(GenerateFileName(nameof(ConstructorInfo)), ConstructorInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(EventInfo)), EventInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(FieldInfo)), FieldInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(MemberInfo)), MemberInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(MethodInfo)), MethodInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(Module)), Module.Text);
-            ctx.AddSource(GenerateFileName(nameof(ParameterInfo)), ParameterInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(PropertyInfo)), PropertyInfo.Text);
-            ctx.AddSource(GenerateFileName(nameof(Type)), Type.Text);
-            ctx.AddSource(GenerateFileName(nameof(CompileTimeExtensions)), CompileTimeExtensions.Text);
-        });
-    }
+    protected override System.Type[] Types =>
+    [
+        typeof(Assembly),
+        typeof(AttributeData),
+        typeof(ConstructorInfo),
+        typeof(EventInfo),
+        typeof(FieldInfo),
+        typeof(MemberInfo),
+        typeof(MethodInfo),
+        typeof(Module),
+        typeof(ParameterInfo),
+        typeof(PropertyInfo),
+        typeof(Type),
+        typeof(CompileTimeExtensions),
+        typeof(TypeEqualityComparer)
+    ];
 }
