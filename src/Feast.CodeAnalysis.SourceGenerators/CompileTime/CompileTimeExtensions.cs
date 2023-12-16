@@ -34,4 +34,7 @@ public static partial class CompileTimeExtensions
 
     public static global::System.Reflection.ParameterInfo ToParameterInfo(this IParameterSymbol symbol) =>
         new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(symbol);
+
+    public static bool IsAssignableTo(this global::System.Type type, global::System.Type another) =>
+        another.IsAssignableFrom(type);
 }

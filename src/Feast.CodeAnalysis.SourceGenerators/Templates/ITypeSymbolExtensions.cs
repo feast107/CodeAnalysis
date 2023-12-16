@@ -87,31 +87,12 @@ internal static class ITypeSymbolExtensions
             symbol;
     }
 
-
-    public static bool IsAssignableTo(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.Type type) => symbol.ToTypeInfo().IsAssignableTo(type);
-        
-    public static bool IsAssignableTo(this global::System.Type type, global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => symbol.ToTypeInfo().IsAssignableFrom(type);
-
-
-    public static bool IsAssignableFrom(this global::System.Type type, global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => symbol.ToTypeInfo().IsAssignableTo(type);
-        
-    public static bool IsAssignableFrom(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol, global::System.Type type) => symbol.ToTypeInfo().IsAssignableTo(type);
-
-
-    public static global::Feast.CodeAnalysis.Utils.TypeInfo ToTypeInfo(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => global::Feast.CodeAnalysis.Utils.TypeInfo.FromSymbol(symbol);
-
-
     public static bool IsJsonBool(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) => 
         symbol.SpecialType == global::Microsoft.CodeAnalysis.SpecialType.System_Boolean;
 
     public static bool IsJsonNumber(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) =>
         symbol is { SpecialType: >= global::Microsoft.CodeAnalysis.SpecialType.System_SByte and <= global::Microsoft.CodeAnalysis.SpecialType.System_Single };
-        
-
 
     public static bool IsJsonString(this global::Microsoft.CodeAnalysis.ITypeSymbol symbol) =>
         symbol.SpecialType is global::Microsoft.CodeAnalysis.SpecialType.System_String or global::Microsoft.CodeAnalysis.SpecialType.System_Char;
-
-
-
 }

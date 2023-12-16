@@ -4,7 +4,6 @@ using TypeInfo = Feast.CodeAnalysis.Utils.TypeInfo;
 
 namespace Feast.CodeAnalysis.Generators;
 
-[Generator]
 public class TypeInfoGenerator: IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
