@@ -35,9 +35,14 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     public override string Name      => Symbol.MetadataName;
 
     public override string FullName =>
-        $"{Namespace}.{Name}{(!IsGenericType
-            ? string.Empty
-            : '[' + string.Join(",", GenericTypeArguments.Select(x => $"[{x.AssemblyQualifiedName}]")) + ']')}";
+        Symbol.TypeKind switch
+        {
+            TypeKind.Array   => $"{GetElementType()!.FullName}[]",
+            TypeKind.Pointer => $"{GetElementType()!.FullName}*",
+            _ => $"{Namespace}.{Name}{(!IsGenericType
+                ? string.Empty
+                : '[' + string.Join(",", GenericTypeArguments.Select(x => $"[{x.AssemblyQualifiedName}]")) + ']')}"
+        };
 
     public override string AssemblyQualifiedName => $"{FullName}, {Assembly.FullName}";
         
@@ -189,12 +194,6 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         return global::System.Array.Empty<global::System.Reflection.ConstructorInfo>();
     }
 
-    public override global::System.Type? GetElementType()
-    {
-        if (Symbol is not global::Microsoft.CodeAnalysis.INamedTypeSymbol namedTypeSymbol) return null;
-        if (!namedTypeSymbol.IsGenericType || namedTypeSymbol.TypeParameters.Length != 1) return null;
-        return new global::Feast.CodeAnalysis.CompileTime.Type(namedTypeSymbol.TypeParameters[0]);
-    }
 
     public override global::System.Reflection.EventInfo? GetEvent(string name,
         global::System.Reflection.BindingFlags bindingAttr)
@@ -382,8 +381,29 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.PropertyInfo(ret);
     }
 
-    protected override bool HasElementTypeImpl() => Symbol.IsReferenceType;
-    protected override bool IsValueTypeImpl() => Symbol.TypeKind == global::Microsoft.CodeAnalysis.TypeKind.Struct;
+    protected override bool HasElementTypeImpl() =>
+        Symbol.TypeKind    == global::Microsoft.CodeAnalysis.TypeKind.Array
+        || Symbol.TypeKind == global::Microsoft.CodeAnalysis.TypeKind.Pointer 
+        || Symbol.IsReferenceType;
+
+    public override global::System.Type? GetElementType() =>
+        Symbol switch
+        {
+            { TypeKind: global::Microsoft.CodeAnalysis.TypeKind.Array } => new
+                global::Feast.CodeAnalysis.CompileTime.Type(Symbol.Interfaces
+                    .First(x => x.TypeArguments.Length == 1).TypeArguments[0]),
+            { TypeKind: global::Microsoft.CodeAnalysis.TypeKind.Pointer } when
+                Symbol is global::Microsoft.CodeAnalysis.IPointerTypeSymbol pointer =>
+                new global::Feast.CodeAnalysis.CompileTime.Type(pointer.PointedAtType),
+            { IsReferenceType: true } => this,
+            _                         => null
+        };
+
+
+    protected override bool IsValueTypeImpl() =>
+        Symbol.TypeKind is
+            global::Microsoft.CodeAnalysis.TypeKind.Struct
+            or global::Microsoft.CodeAnalysis.TypeKind.Structure;
         
     public override global::System.Type? GetNestedType(string name,
         global::System.Reflection.BindingFlags bindingAttr)

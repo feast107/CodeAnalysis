@@ -17,14 +17,7 @@ public static class AttributeDataExtensions
         {
             var param = x.GetParameters();
             if (param.Length != attributeData.AttributeConstructor.Parameters.Length) return false;
-            return !param.Where((t, i) =>
-                {
-                    var typeName1 = $"global::{t.ParameterType.FullName}";
-                    var argType   = attributeData.AttributeConstructor.Parameters[i].Type;
-                    var typeName2 = $"{argType.ContainingNamespace.GetFullyQualifiedName()}.{argType.MetadataName}";
-                    return typeName1 != typeName2;
-                })
-                .Any();
+            return !param.Where((t, i) =>  attributeData.AttributeConstructor.Parameters[i].Type.ToType().FullName != t.ParameterType.FullName).Any();
         });
         if (ctor == null) throw new global::System.MissingMethodException("Cannot find best match ctor for attribute");
         var param = ctor.GetParameters();
