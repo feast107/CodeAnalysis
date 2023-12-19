@@ -11,15 +11,11 @@ internal static class ISymbolExtensions
         global::Microsoft.CodeAnalysis.ISymbol other) =>
         global::Microsoft.CodeAnalysis.SymbolEqualityComparer.Default.Equals(symbol, other);
 
-    public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol)
-    {
-        return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-    }
+    public static string GlobalName(this global::Microsoft.CodeAnalysis.ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-    public static bool IsInitOnly(this global::Microsoft.CodeAnalysis.IPropertySymbol symbol)
-    {
-        return !symbol.IsReadOnly && symbol.SetMethod!.IsInitOnly;
-    }
+    public static global::System.String GetFullyQualifiedName(this global::Microsoft.CodeAnalysis.ISymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+    public static bool IsInitOnly(this global::Microsoft.CodeAnalysis.IPropertySymbol symbol) => !symbol.IsReadOnly && symbol.SetMethod!.IsInitOnly;
 
 
     public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.SyntaxKind>
