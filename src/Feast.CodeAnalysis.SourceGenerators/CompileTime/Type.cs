@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -82,8 +83,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
 
     public override global::System.Type UnderlyingSystemType =>
         new global::Feast.CodeAnalysis.CompileTime.Type(Symbol);
-
-
+    
     public override bool IsGenericType => Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol
     {
         TypeArguments.Length: > 0
@@ -100,7 +100,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     public override bool IsGenericTypeDefinition =>
         Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol namedType &&
         namedType.TypeParameters.Length > namedType.TypeArguments.Length;
-
+    
     public override bool IsConstructedGenericType =>
         Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol namedType &&
         namedType.TypeParameters.Length == namedType.TypeArguments.Length;
@@ -111,7 +111,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
             : Array.Empty<System.Type>();
-
+    
     public override System.Type[] GetGenericParameterConstraints()
     {
         if (Symbol is not global::Microsoft.CodeAnalysis.ITypeParameterSymbol typeParameterSymbol)
@@ -367,6 +367,17 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             or global::Microsoft.CodeAnalysis.SpecialType.System_Object
             or global::Microsoft.CodeAnalysis.SpecialType.System_String;
 
+    public override Array GetEnumValues() =>
+        IsEnum
+            ? Symbol.GetMembers()
+                .OfType<global::Microsoft.CodeAnalysis.IFieldSymbol>()
+                .Select(x => x.ConstantValue)
+                .ToArray()
+            : throw new global::System.InvalidOperationException();
+
+    public override GenericParameterAttributes GenericParameterAttributes =>
+        throw new global::System.InvalidOperationException();
+
     protected override global::System.Reflection.PropertyInfo? GetPropertyImpl(string name,
         global::System.Reflection.BindingFlags bindingAttr,
         global::System.Reflection.Binder binder,
@@ -380,6 +391,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
                 Qualified(x, bindingAttr) && new Type(x.Type).Equals(returnType));
        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.PropertyInfo(ret);
     }
+
 
     protected override bool HasElementTypeImpl() =>
         Symbol.TypeKind    == global::Microsoft.CodeAnalysis.TypeKind.Array

@@ -1,5 +1,8 @@
 ﻿global using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -49,6 +52,7 @@ public class LiteralGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),
             (ctx, t) =>
             {
+                HashSet<string> files = new();
                 foreach (var syntax in t.Right)
                 {
                     var config = syntax.Attributes.First(x =>
@@ -80,7 +84,7 @@ public class LiteralGenerator : IIncrementalGenerator
 
                         if (attrs.Count > 0)
                         {
-                           attrList = attrList.Add(AttributeList(attrs));
+                            attrList = attrList.Add(AttributeList(attrs));
                         }
                     }
 
@@ -93,21 +97,20 @@ public class LiteralGenerator : IIncrementalGenerator
                                 (compilationUnitSyntax.Members.First(x => x is BaseNamespaceDeclarationSyntax) as
                                     BaseNamespaceDeclarationSyntax)!,
                         };
-                    var  newNamespace = sourceNamespace.ReplaceNode(
+                    var newNamespace = sourceNamespace.ReplaceNode(
                         classDeclare,
                         classDeclare.WithAttributeLists(attrList));
-                    var file            = sourceNamespace.Parent!;
+                    var file = sourceNamespace.Parent!;
                     file = file.ReplaceNode(sourceNamespace, newNamespace);
                     while (file is BaseNamespaceDeclarationSyntax namespaceSymbol)
                     {
                         file = namespaceSymbol.Parent;
                     }
 
-                   
-                    var full = 
+                    var full =
                         file!
-                        .NormalizeWhitespace()
-                        .GetText(Encoding.UTF8);
+                            .NormalizeWhitespace()
+                            .GetText(Encoding.UTF8);
                     var @namespace = string.Join(".", fullClassName.Take(fullClassName.Length - 1));
                     var className  = fullClassName.Last();
                     var content = $"internal const string {fieldName} = \"\"\"\n"
@@ -121,9 +124,9 @@ public class LiteralGenerator : IIncrementalGenerator
                                     ClassDeclaration(className)
                                         .AddModifiers(Token(SyntaxKind.PartialKeyword))
                                         .AddMembers(ParseMemberDeclaration(content)!)
-                                    ));
-                    ctx.AddSource($"{className}.g.cs", code.NormalizeWhitespace().GetText(Encoding.UTF8));
-
+                                ));
+                    var fileName = Path.GetFileNameWithoutExtension(file?.GetLocation().SourceTree?.FilePath ?? string.Empty);
+                    ctx.AddSource($"{fileName}.g.cs", code.NormalizeWhitespace().GetText(Encoding.UTF8));
                 }
             });
     }

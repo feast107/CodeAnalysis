@@ -23,6 +23,6 @@ public class CompileTimeGenerator: AutoTextGenerator
         typeof(PropertyInfo),
         typeof(Type),
         typeof(CompileTimeExtensions),
-        typeof(TypeEqualityComparer)
+        typeof(TypeEqualityComparer),
     ];
 }
