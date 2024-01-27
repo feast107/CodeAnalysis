@@ -41,7 +41,7 @@ public class LiteralGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
-            ctx.AddSource("LiteralAttribute.g.cs", SourceText.From(LiteralAttribute, Encoding.UTF8));
+            ctx.AddSource($"{nameof(LiteralAttribute)}.g.cs", SourceText.From(LiteralAttribute, Encoding.UTF8));
         });
         
         var provider = context.SyntaxProvider
@@ -88,7 +88,8 @@ public class LiteralGenerator : IIncrementalGenerator
                         }
                     }
 
-
+                    (classDeclare.Members.FirstOrDefault(x => x is MethodDeclarationSyntax)
+                        as MethodDeclarationSyntax)?.FullQualifiedTypeNameMethod(syntax.SemanticModel);
                     var sourceNamespace =
                         classDeclare.Parent switch
                         {
