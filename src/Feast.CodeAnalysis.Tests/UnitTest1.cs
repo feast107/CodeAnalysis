@@ -1,8 +1,8 @@
-using Feast.CodeAnalysis.TestGenerator;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 namespace Feast.CodeAnalysis.Tests;
-using AnotherName = AnotherClass;
 
 public class Tests
 {
@@ -12,22 +12,29 @@ public class Tests
     {
     }
 
+    public string Current([CallerFilePath] string path = "") => path;
+    public string Dir([CallerFilePath] string path = "") => Path.GetDirectoryName(path)!;
+    
     [Test]
     public void Test()
     {
+        var          file = Path.Combine(Dir(),"AnotherClass.cs");
         // Create an instance of the source generator.
-        var generator = new TestIncrementalGenerator();
+        var generator = new LiteralGenerator.LiteralGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.
         var driver = CSharpGeneratorDriver.Create(generator);
 
         // We need to create a compilation with the required source code.
         var compilation = CSharpCompilation.Create(nameof(Tests),
-            new[] { CSharpSyntaxTree.ParseText(CodeText) },
+            new[] { CSharpSyntaxTree.ParseText(File.ReadAllText(file)) },
             new[]
             {
                 // To support 'System.Attribute' inheritance, add reference to 'System.Private.CoreLib'.
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(StringBuilder).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Array).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(IEnumerable<>).Assembly.Location),
             });
 
         // Run generators and retrieve all results.

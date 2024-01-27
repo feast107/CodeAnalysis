@@ -1,5 +1,4 @@
 ﻿global using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -52,7 +51,6 @@ public class LiteralGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),
             (ctx, t) =>
             {
-                HashSet<string> files = new();
                 foreach (var syntax in t.Right)
                 {
                     var config = syntax.Attributes.First(x =>
@@ -88,8 +86,6 @@ public class LiteralGenerator : IIncrementalGenerator
                         }
                     }
 
-                    (classDeclare.Members.FirstOrDefault(x => x is MethodDeclarationSyntax)
-                        as MethodDeclarationSyntax)?.FullQualifiedTypeNameMethod(syntax.SemanticModel);
                     var sourceNamespace =
                         classDeclare.Parent switch
                         {
@@ -100,7 +96,7 @@ public class LiteralGenerator : IIncrementalGenerator
                         };
                     var newNamespace = sourceNamespace.ReplaceNode(
                         classDeclare,
-                        classDeclare.WithAttributeLists(attrList));
+                        classDeclare.FullQualifiedClass(syntax.SemanticModel).WithAttributeLists(attrList));
                     var file = sourceNamespace.Parent!;
                     file = file.ReplaceNode(sourceNamespace, newNamespace);
                     while (file is BaseNamespaceDeclarationSyntax namespaceSymbol)

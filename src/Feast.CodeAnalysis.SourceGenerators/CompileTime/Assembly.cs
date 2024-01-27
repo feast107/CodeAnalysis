@@ -7,21 +7,21 @@ namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.Assembly")]
 internal partial class Assembly(global::Microsoft.CodeAnalysis.IAssemblySymbol symbol)
-    : global::System.Reflection.Assembly , global::System.IEquatable<global::System.Reflection.Assembly>
+    : global::System.Reflection.Assembly, IEquatable<global::System.Reflection.Assembly>
 {
-    internal readonly global::Microsoft.CodeAnalysis.IAssemblySymbol Symbol = symbol;
-    public override  string FullName       => Symbol.GetFullyQualifiedName();
-    public override  string Location       => Symbol.Locations.FirstOrDefault()?.GetLineSpan().Path ?? string.Empty;
-    public override  bool   ReflectionOnly => !Symbol.CanBeReferencedByName;
-        
-    public override global::System.Collections.Generic.IEnumerable<global::System.Reflection.Module> Modules => Symbol
-        .Modules
-        .Select(static x => new global::Feast.CodeAnalysis.CompileTime.Module(x));
+    internal readonly IAssemblySymbol Symbol = symbol;
+    public override   string          FullName => Symbol.GetFullyQualifiedName();
+    public override   string          Location => Symbol.Locations.FirstOrDefault()?.GetLineSpan().Path ?? string.Empty;
+    public override   bool            ReflectionOnly => !Symbol.CanBeReferencedByName;
 
-    public override global::System.Collections.Generic.IEnumerable<global::System.Type> ExportedTypes => Symbol
+    public override System.Collections.Generic.IEnumerable<global::System.Reflection.Module> Modules => Symbol
+        .Modules
+        .Select(static x => new Module(x));
+
+    public override System.Collections.Generic.IEnumerable<global::System.Type> ExportedTypes => Symbol
         .GetForwardedTypes()
-        .Where(static x => x.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public)
-        .Select(static x => new global::Feast.CodeAnalysis.CompileTime.Type(x));
+        .Where(static x => x.DeclaredAccessibility == Accessibility.Public)
+        .Select(static x => new Type(x));
 
     public bool Equals(global::System.Reflection.Assembly? other)
     {

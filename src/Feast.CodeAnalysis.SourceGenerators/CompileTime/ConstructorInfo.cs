@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
@@ -25,50 +26,49 @@ internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSym
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
     public override global::System.Type DeclaringType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(
-            (constructor.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+        new Type((constructor.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
 
     public override string Name => constructor.MetadataName;
 
     public override global::System.Type ReflectedType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(constructor.ReturnType);
+        new Type(constructor.ReturnType);
 
-    public override global::System.Reflection.MethodImplAttributes GetMethodImplementationFlags() =>
-        throw new global::System.NotSupportedException();
+    public override System.Reflection.MethodImplAttributes GetMethodImplementationFlags() =>
+        throw new NotSupportedException();
 
     public override global::System.Reflection.ParameterInfo[] GetParameters() =>
         constructor
             .Parameters
             .Select(static x =>
                 (global::System.Reflection.ParameterInfo)
-                new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(x))
+                new ParameterInfo(x))
             .ToArray();
 
     public override object Invoke(object obj,
-        global::System.Reflection.BindingFlags invokeAttr,
-        global::System.Reflection.Binder binder,
+        BindingFlags invokeAttr,
+        Binder binder,
         object[] parameters,
-        global::System.Globalization.CultureInfo culture) =>
-        throw new global::System.NotSupportedException();
+        System.Globalization.CultureInfo culture) =>
+        throw new NotSupportedException();
 
-    public override global::System.Reflection.MethodAttributes Attributes
+    public override MethodAttributes Attributes
     {
         get
         {
-            var ret = global::System.Reflection.MethodAttributes.PrivateScope;
+            var ret = MethodAttributes.PrivateScope;
             if (constructor.IsStatic)
-                ret |= global::System.Reflection.MethodAttributes.Static;
+                ret |= MethodAttributes.Static;
             if (constructor.IsVirtual)
-                ret |= global::System.Reflection.MethodAttributes.Virtual;
+                ret |= MethodAttributes.Virtual;
             if (constructor.IsAbstract)
-                ret |= global::System.Reflection.MethodAttributes.Abstract;
+                ret |= MethodAttributes.Abstract;
             switch (constructor.DeclaredAccessibility)
             {
                 case Microsoft.CodeAnalysis.Accessibility.Public:
-                    ret |= global::System.Reflection.MethodAttributes.Public;
+                    ret |= MethodAttributes.Public;
                     break;
                 case Microsoft.CodeAnalysis.Accessibility.Protected or Microsoft.CodeAnalysis.Accessibility.Private:
-                    ret |= global::System.Reflection.MethodAttributes.Private;
+                    ret |= MethodAttributes.Private;
                     break;
             }
 

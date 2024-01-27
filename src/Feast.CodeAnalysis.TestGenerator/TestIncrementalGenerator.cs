@@ -2,12 +2,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
-using Feast.CodeAnalysis.Utils;
-using G;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using TypeInfo = Feast.CodeAnalysis.Utils.TypeInfo;
 
 namespace Feast.CodeAnalysis.TestGenerator
 {
@@ -44,14 +41,14 @@ namespace Feast.CodeAnalysis.TestGenerator
                     SourceText.From(AttributeSourceCode, Encoding.UTF8));
             });
             // Add the marker attribute to the compilation.
-            var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
+            /*var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
                 $"{Namespace}.{AttributeName}",
                 (ctx, t) => ctx is ClassDeclarationSyntax,
                 (ctx, t) => (ctx.TargetNode as ClassDeclarationSyntax)!);
 
             // Generate the source code.
             context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),
-                (ctx, t) => GenerateCode(ctx, t.Left, t.Right));
+                (ctx, t) => GenerateCode(ctx, t.Left, t.Right));*/
         }
 
    
@@ -80,12 +77,7 @@ namespace Feast.CodeAnalysis.TestGenerator
                              .OfType<IPropertySymbol>())
                 {
                     var t    = typeof(IEnumerable<>);
-                    var rt   = (RuntimeTypeInfo)t;
-                    var to = rt.Origin;
-                    var type = TypeInfo.FromSymbol(prop.Type);
-                    var can  = typeof(Foo).IsAssignableTo(prop.Type);
-                    var can2 = typeof(Foo).IsAssignableFrom(prop.Type);
-                    var eq   = typeof(Foo) == TypeInfo.FromSymbol(prop.Type);
+                   
                     Debugger.Break();
                 }
     
