@@ -4,17 +4,26 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
-
+        
+        <Version>0.1.0</Version>
+        <FileVersion>0.1.0</FileVersion>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        
+        <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis</Title>
+        <PackageId>Feast.CodeAnalysis</PackageId>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Copyright>Copyright Feast. All rights reserved.</Copyright>
         <Description>Auto generate extensions for Microsoft.CodeAnalysis</Description>
-        <Copyright>(c) Feast. All rights reserved.</Copyright>
+        <RepositoryType>git</RepositoryType>
         <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
         <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageTags>roslyn;generator;enhance;extension</PackageTags>
+        <PackageReleaseNotes>alpha</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup Label="Package">

@@ -73,7 +73,7 @@ public class LiteralGenerator : IIncrementalGenerator
                     {
                         var attrs = new SeparatedSyntaxList<AttributeSyntax>();
                         attrs = attributeList.Attributes
-                            .Where(attribute => attrSymbols[index].AttributeClass!.ToDisplayString() != AttributeName)
+                            .Where(_ => attrSymbols[index].AttributeClass!.ToDisplayString() != AttributeName)
                             .Aggregate(attrs, (current, attribute) => current.Add(attribute));
 
                         if (attrs.Count > 0)
@@ -85,7 +85,7 @@ public class LiteralGenerator : IIncrementalGenerator
                     var sourceNamespace =
                         classDeclare.Parent switch
                         {
-                            BaseNamespaceDeclarationSyntax namespaceSymbol => namespaceSymbol!,
+                            BaseNamespaceDeclarationSyntax namespaceSymbol => namespaceSymbol,
                             CompilationUnitSyntax compilationUnitSyntax =>
                                 (compilationUnitSyntax.Members.First(x => x is BaseNamespaceDeclarationSyntax) as
                                     BaseNamespaceDeclarationSyntax)!,
