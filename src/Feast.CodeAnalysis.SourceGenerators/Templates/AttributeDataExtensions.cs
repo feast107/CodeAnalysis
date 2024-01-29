@@ -7,11 +7,11 @@ namespace Microsoft.CodeAnalysis;
 [Literal($"Feast.CodeAnalysis.{nameof(AttributeDataExtensions)}")]
 public static class AttributeDataExtensions
 {
-    internal static T ToAttribute<T>(this global::Microsoft.CodeAnalysis.AttributeData attributeData)
+    internal static T ToAttribute<T>(this AttributeData attributeData)
         where T : global::System.Attribute
     {
         if (attributeData.AttributeConstructor == null)
-            throw new global::System.ArgumentException("Attribute constructor not found");
+            throw new ArgumentException("Attribute constructor not found");
         var attrType = typeof(T);
         var ctor = attrType.GetConstructors().FirstOrDefault(x =>
         {
@@ -19,7 +19,7 @@ public static class AttributeDataExtensions
             if (param.Length != attributeData.AttributeConstructor.Parameters.Length) return false;
             return !param.Where((t, i) =>  attributeData.AttributeConstructor.Parameters[i].Type.ToType().FullName != t.ParameterType.FullName).Any();
         });
-        if (ctor == null) throw new global::System.MissingMethodException("Cannot find best match ctor for attribute");
+        if (ctor == null) throw new MissingMethodException("Cannot find best match ctor for attribute");
         var param = ctor.GetParameters();
         var args = attributeData.ConstructorArguments
             .Select((x, i) => x.GetArgumentValue(param[i].ParameterType))
@@ -27,8 +27,8 @@ public static class AttributeDataExtensions
 
         var attribute = (T)Activator.CreateInstance(typeof(T), args);
         var publicProps = attrType
-            .GetProperties(global::System.Reflection.BindingFlags.Public |
-                           global::System.Reflection.BindingFlags.Instance)
+            .GetProperties(System.Reflection.BindingFlags.Public |
+                           System.Reflection.BindingFlags.Instance)
             .Where(static x => x.CanWrite)
             .ToDictionary(static x => x.Name,static x => x);
         foreach (var argument in attributeData.NamedArguments)

@@ -1,15 +1,14 @@
 ﻿global using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Feast.CodeAnalysis.LiteralGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Feast.CodeAnalysis.LiteralGenerator;
+namespace Feast.CodeAnalysis.Generators.LiteralGenerator;
 
 [Generator(LanguageNames.CSharp)]
 public class LiteralGenerator : IIncrementalGenerator
@@ -18,15 +17,17 @@ public class LiteralGenerator : IIncrementalGenerator
     
     private const string LiteralAttribute =
         """
-        using System;
-        namespace System;
         #nullable enable
-        [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface)]
-        public class LiteralAttribute : Attribute
+        using System;
+        namespace System
         {
-            public string? FieldName { get; set; }
-        
-            public LiteralAttribute(string belongToFullyQualifiedClassName){ }
+            [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface)]
+            public class LiteralAttribute : Attribute
+            {
+                public string? FieldName { get; set; }
+            
+                public LiteralAttribute(string belongToFullyQualifiedClassName){ }
+            }
         }
         """;
     
@@ -68,17 +69,12 @@ public class LiteralGenerator : IIncrementalGenerator
                     var attrList     = new SyntaxList<AttributeListSyntax>();
                     var classSymbol  = (syntax.TargetSymbol as INamedTypeSymbol)!;
                     var attrSymbols  = classSymbol.GetAttributes();
-                    var count        = 0;
                     foreach (var (attributeList, index) in classDeclare.AttributeLists.Select((x, i) => (x, i)))
                     {
                         var attrs = new SeparatedSyntaxList<AttributeSyntax>();
-                        foreach (var attribute in attributeList.Attributes)
-                        {
-                            if (attrSymbols[count++].AttributeClass!.ToDisplayString() != AttributeName)
-                            {
-                                attrs = attrs.Add(attribute);
-                            }
-                        }
+                        attrs = attributeList.Attributes
+                            .Where(attribute => attrSymbols[index].AttributeClass!.ToDisplayString() != AttributeName)
+                            .Aggregate(attrs, (current, attribute) => current.Add(attribute));
 
                         if (attrs.Count > 0)
                         {
@@ -110,9 +106,10 @@ public class LiteralGenerator : IIncrementalGenerator
                             .GetText(Encoding.UTF8);
                     var @namespace = string.Join(".", fullClassName.Take(fullClassName.Length - 1));
                     var className  = fullClassName.Last();
-                    var content = $"internal const string {fieldName} = \"\"\"\n"
-                                  + full
-                                  + "\n\"\"\";";
+                    var content = $"internal static string {fieldName} = \"\"\"\n"
+                                  + full.ToString().Replace("\"\"\"","\"^\"\"")
+                                  + "\n\"\"\""
+                                  + ".Replace(\"\\\"^\\\"\\\"\",\"\\\"\\\"\\\"\");";
                     var code = CompilationUnit()
                         .AddMembers(
                             NamespaceDeclaration(IdentifierName(@namespace))
@@ -123,7 +120,7 @@ public class LiteralGenerator : IIncrementalGenerator
                                         .AddMembers(ParseMemberDeclaration(content)!)
                                 ));
                     var fileName = Path.GetFileNameWithoutExtension(file?.GetLocation().SourceTree?.FilePath ?? string.Empty);
-                    ctx.AddSource($"{fileName}.g.cs", code.NormalizeWhitespace().GetText(Encoding.UTF8));
+                    ctx.AddSource($"{@namespace}.{className}.g.cs", code.NormalizeWhitespace().GetText(Encoding.UTF8));
                 }
             });
     }

@@ -20,7 +20,7 @@ public class Tests
     {
         var          file = Path.Combine(Dir(),"AnotherClass.cs");
         // Create an instance of the source generator.
-        var generator = new LiteralGenerator.LiteralGenerator();
+        var generator = new Generators.LiteralGenerator.LiteralGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.
         var driver = CSharpGeneratorDriver.Create(generator);

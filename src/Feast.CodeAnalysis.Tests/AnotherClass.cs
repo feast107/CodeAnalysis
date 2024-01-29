@@ -9,6 +9,9 @@ public class AnotherClass
     {
         A
     }
+
+    public string Member = nameof(Member);
+    
     public string Getter
     {
         get

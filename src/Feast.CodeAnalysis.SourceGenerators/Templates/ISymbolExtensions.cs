@@ -40,7 +40,7 @@ internal static class ISymbolExtensions
                 yield return global::Microsoft.CodeAnalysis.CSharp.SyntaxKind.InternalKeyword;
                 yield break;
             default:
-                throw new global::System.ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
+                throw new ArgumentOutOfRangeException(nameof(accessibility), accessibility, null);
         }
     }
 
@@ -54,12 +54,12 @@ internal static class ISymbolExtensions
     /// <param name="attributeData">The resulting attribute, if it was found.</param>
     /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
     public static bool TryGetAttributeWithFullyQualifiedMetadataName(
-        this global::Microsoft.CodeAnalysis.ISymbol symbol,
-        global::System.String name,
+        this ISymbol symbol,
+        string name,
         [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
-        out global::Microsoft.CodeAnalysis.AttributeData? attributeData)
+        out AttributeData? attributeData)
     {
-        foreach (AttributeData attribute in symbol.GetAttributes())
+        foreach (var attribute in symbol.GetAttributes())
         {
             if (attribute.AttributeClass?.HasFullyQualifiedMetadataName(name) == true)
             {

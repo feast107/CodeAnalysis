@@ -5,13 +5,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Feast.CodeAnalysis.LiteralGenerator;
 
-public static class General
+public static partial class General
 {
     public static string FullName(this INamespaceSymbol symbol)
     {
         var name   = symbol.Name;
         var parent = symbol.ContainingNamespace;
-        while (parent != null)
+        while (parent is { IsGlobalNamespace: false })
         {
             name   = parent.Name + '.' + name;
             parent = parent.ContainingNamespace;
@@ -34,6 +34,8 @@ public static class General
     {
         if (syntax == null) return string.Empty;
         if (syntax.IsVar) return "var ";
+        if (syntax is IdentifierNameSyntax { Identifier.ValueText: "nameof" })
+            return "nameof";
         if (syntax is not GenericNameSyntax generic)
             return semanticModel
                 .GetSymbolInfo(syntax)
@@ -74,7 +76,7 @@ public static class General
         SemanticModel semanticModel)
     {
         return syntax
-            .WithDeclaration(syntax.Declaration
+            .WithDeclaration(syntax.Declaration.FullQualifiedVariableDeclaration(semanticModel)
                 .WithType(syntax.Declaration.Type.FullName(semanticModel).ParseTypeName())
                 .WithVariables(syntax.Declaration.Variables.Aggregate(
                     new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
@@ -142,7 +144,7 @@ public static class General
                     .WithStatement(ifStatement.Statement.FullQualifiedStatement(semanticModel)),
             LocalDeclarationStatementSyntax declaration =>
                 declaration
-                    .WithDeclaration(declaration.Declaration
+                    .WithDeclaration(declaration.Declaration.FullQualifiedVariableDeclaration(semanticModel)
                         .WithType(declaration.Declaration.Type.FullName(semanticModel).ParseTypeName())
                         .WithVariables(declaration.Declaration.Variables.Aggregate(
                             new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
@@ -167,6 +169,9 @@ public static class General
                                                 caseSwitchLabel.Value.FullQualifiedExpression(semanticModel)),
                                         _ => ll
                                     })))))),
+            ThrowStatementSyntax throwStatement =>
+                throwStatement
+                    .WithExpression(throwStatement.Expression?.FullQualifiedExpression(semanticModel)),
             _ => syntax
         });
     }
@@ -176,7 +181,7 @@ public static class General
     {
         if (syntax.Initializer is not null)
         {
-            syntax = syntax.WithInitializer(
+           return syntax.WithInitializer(
                 syntax.Initializer.WithValue(
                     syntax.Initializer.Value
                         .FullQualifiedExpression(semanticModel)));
@@ -247,15 +252,26 @@ public static class General
                 simpleLambda
                     .WithBlock(simpleLambda.Block?.FullQualifiedStatement(semanticModel))
                     .WithExpressionBody(simpleLambda.ExpressionBody?.FullQualifiedExpression(semanticModel)),
+            ThrowExpressionSyntax throwExpression =>
+                throwExpression
+                    .WithExpression(throwExpression.Expression.FullQualifiedExpression(semanticModel)),
             _ => syntax
         };
 
     public static ArgumentListSyntax FullQualifiedArgumentList(this ArgumentListSyntax syntax,
-        SemanticModel semanticModel)
-    {
-        return syntax.WithArguments(syntax.Arguments.Aggregate(
+        SemanticModel semanticModel) =>
+        syntax
+            .WithArguments(syntax.Arguments.Aggregate(
             new SeparatedSyntaxList<ArgumentSyntax>(),
             (s, x) =>
                 s.Add(x.WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))));
-    }
+    
+    public static VariableDeclarationSyntax FullQualifiedVariableDeclaration(this VariableDeclarationSyntax syntax,
+        SemanticModel semanticModel) =>
+        syntax
+            .WithType(syntax.Type.FullName(semanticModel).ParseTypeName())
+            .WithVariables(syntax.Variables.Aggregate(
+                new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
+                (s, v) =>
+                    s.Add(v.FullQualifiedVariable(semanticModel))));
 }

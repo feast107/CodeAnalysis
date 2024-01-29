@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feast.CodeAnalysis.TestGene
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Feast.CodeAnalysis.Shared", "Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.shproj", "{BBB1A609-763C-4529-9FB9-365A9D3B383A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feast.CodeAnalysis.LiteralGenerator", "Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj", "{40DB7380-D677-44DD-BB6B-73CD04EABA4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feast.CodeAnalysis.LiteralGenerator", "Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj", "{40DB7380-D677-44DD-BB6B-73CD04EABA4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +46,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems*{40db7380-d677-44dd-bb6b-73cd04eaba4f}*SharedItemsImports = 5
 		Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems*{bbb1a609-763c-4529-9fb9-365a9d3b383a}*SharedItemsImports = 13
+		Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems*{df6b52b6-2c70-4b5d-b4a1-4356b7dee5ee}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

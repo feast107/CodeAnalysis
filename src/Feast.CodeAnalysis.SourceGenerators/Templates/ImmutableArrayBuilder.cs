@@ -104,7 +104,7 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <inheritdoc/>
-        public override readonly string ToString()
+        public readonly override string ToString()
         {
             return this.writer!.WrittenSpan.ToString();
         }
