@@ -15,6 +15,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Feast.CodeAnalysis.Shared",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feast.CodeAnalysis.LiteralGenerator", "Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj", "{40DB7380-D677-44DD-BB6B-73CD04EABA4F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{0D81B43B-56BD-4560-99D1-99BC976F463D}"
+	ProjectSection(SolutionItems) = preProject
+		..\doc\Logo.ico = ..\doc\Logo.ico
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

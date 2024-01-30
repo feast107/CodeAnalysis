@@ -24,10 +24,17 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
         <PackageReleaseNotes>alpha</PackageReleaseNotes>
+        <PackageIcon>Logo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup Label="Package">
+        <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
+          <Link>Logo.png</Link>
+        </None>
+        <None Include="..\..\README.md" PackagePath="\" Pack="true" />
         <None Include="..\Feast.CodeAnalysis.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
+        
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +42,5 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
     </ItemGroup>
 </Project>
