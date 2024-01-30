@@ -3,7 +3,7 @@
 
 ## Requires
 
-+ PolySharp
++ [PolySharp](https://github.com/Sergio0694/PolySharp)
 
 ## Supports
 
