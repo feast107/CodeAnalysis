@@ -288,7 +288,11 @@ public static partial class General
             ObjectCreationExpressionSyntax objectCreation =>
                 objectCreation
                     .WithType(objectCreation.Type.FullName(semanticModel).ParseTypeName())
-                    .WithArgumentList(objectCreation.ArgumentList?.FullQualifiedArgumentList(semanticModel)),
+                    .WithArgumentList(objectCreation.ArgumentList?.FullQualifiedArgumentList(semanticModel))
+                    .WithInitializer(objectCreation.Initializer?.
+                        WithExpressions(objectCreation.Initializer.Expressions.Aggregate(
+                            new SeparatedSyntaxList<ExpressionSyntax>(), (s, e) => 
+                                s.Add(e.FullQualifiedExpression(semanticModel))))),
             ParenthesizedExpressionSyntax parenthesizedExpression =>
                 parenthesizedExpression
                     .WithExpression(parenthesizedExpression.Expression.FullQualifiedExpression(semanticModel)),

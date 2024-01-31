@@ -10,7 +10,7 @@ public class AnotherClass
         A
     }
 
-    public string[,][] Member = new string[4,typeof(StringBuilder).ToString().Length][];
+    public string[] Member = new List<string> { typeof(StringBuilder).Name }.ToArray();
     
     public string Getter
     {
