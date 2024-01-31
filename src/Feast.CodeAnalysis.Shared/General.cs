@@ -37,17 +37,27 @@ public static partial class General
         if (syntax.IsVar) return "var ";
         if (syntax is IdentifierNameSyntax { Identifier.ValueText: "nameof" })
             return "nameof";
-        if (syntax is not GenericNameSyntax generic)
-            return semanticModel
-                .GetSymbolInfo(syntax)
-                .Symbol?
-                .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + ' ';
-        var symbol = semanticModel.GetTypeInfo(generic).Type;
-        return (symbol is not null
-                ? symbol.OriginalDefinition.FullName()
-                : generic.Identifier.ValueText) + $"<{string.Join(",", generic.TypeArgumentList
-                    .Arguments
-                    .Select(x => x.FullName(semanticModel)))}>";
+        switch (syntax)
+        {
+            case ArrayTypeSyntax arrayType:
+                return arrayType.ElementType.FullName(semanticModel)
+                       + string.Concat(arrayType.RankSpecifiers.Select(
+                           x => x.WithSizes(x.Sizes.Aggregate(new SeparatedSyntaxList<ExpressionSyntax>(),
+                               (s, e) =>
+                                   s.Add(e.FullQualifiedExpression(semanticModel))))));
+            case GenericNameSyntax genericName:
+                var symbol = semanticModel.GetTypeInfo(genericName).Type;
+                return (symbol is not null
+                        ? symbol.OriginalDefinition.FullName()
+                        : genericName.Identifier.ValueText) + $"<{string.Join(",", genericName.TypeArgumentList
+                            .Arguments
+                            .Select(x => x.FullName(semanticModel)))}>";
+        }
+
+        return semanticModel
+            .GetSymbolInfo(syntax)
+            .Symbol?
+            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + ' ';
     }
 
     public static TypeSyntax ParseTypeName(this string name) => SyntaxFactory.ParseTypeName(name);
@@ -61,6 +71,7 @@ public static partial class General
             var tmp = NamespaceDeclaration(@namespace.Name);
             ret = tmp.AddMembers([@namespace]);
         }
+
         return (ret as MemberDeclarationSyntax)!;
     }
 
@@ -73,7 +84,7 @@ public static partial class General
                 .AddMembers([type]);
     }
 
-    public static CompilationUnitSyntax WithUsing(this MemberDeclarationSyntax member, CompilationUnitSyntax syntax) => 
+    public static CompilationUnitSyntax WithUsing(this MemberDeclarationSyntax member, CompilationUnitSyntax syntax) =>
         syntax
             .WithMembers([])
             .AddMembers(member);
@@ -88,7 +99,7 @@ public static partial class General
         BaseTypeDeclarationSyntax baseTypeDeclaration => baseTypeDeclaration.FullQualifiedType(semanticModel),
         _                                             => member
     };
-    
+
     public static BaseTypeDeclarationSyntax FullQualifiedType(this BaseTypeDeclarationSyntax type,
         SemanticModel semanticModel) => type switch
     {
@@ -117,16 +128,14 @@ public static partial class General
                     })));
 
     public static FieldDeclarationSyntax FullQualifiedField(this FieldDeclarationSyntax syntax,
-        SemanticModel semanticModel)
-    {
-        return syntax
+        SemanticModel semanticModel) =>
+        syntax
             .WithDeclaration(syntax.Declaration.FullQualifiedVariableDeclaration(semanticModel)
                 .WithType(syntax.Declaration.Type.FullName(semanticModel).ParseTypeName())
                 .WithVariables(syntax.Declaration.Variables.Aggregate(
                     new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
                     (s, v) =>
                         s.Add(v.FullQualifiedVariable(semanticModel)))));
-    }
 
     public static PropertyDeclarationSyntax FullQualifiedProperty(this PropertyDeclarationSyntax syntax,
         SemanticModel semanticModel) =>
@@ -168,9 +177,8 @@ public static partial class General
         (constructor.FullQualifiedBaseMethod(semanticModel) as ConstructorDeclarationSyntax)!;
 
     public static T FullQualifiedStatement<T>(this T syntax, SemanticModel semanticModel)
-        where T : StatementSyntax
-    {
-        return (T)(syntax switch
+        where T : StatementSyntax =>
+        (T)(syntax switch
         {
             BlockSyntax block =>
                 (object)Block(block.Statements.Aggregate(new SyntaxList<StatementSyntax>(),
@@ -214,7 +222,6 @@ public static partial class General
                     .WithExpression(throwStatement.Expression?.FullQualifiedExpression(semanticModel)),
             _ => syntax
         });
-    }
 
     public static VariableDeclaratorSyntax FullQualifiedVariable(this VariableDeclaratorSyntax syntax,
         SemanticModel semanticModel)
@@ -283,8 +290,8 @@ public static partial class General
                     .WithType(objectCreation.Type.FullName(semanticModel).ParseTypeName())
                     .WithArgumentList(objectCreation.ArgumentList?.FullQualifiedArgumentList(semanticModel)),
             ParenthesizedExpressionSyntax parenthesizedExpression =>
-                parenthesizedExpression.WithExpression(
-                    parenthesizedExpression.Expression.FullQualifiedExpression(semanticModel)),
+                parenthesizedExpression
+                    .WithExpression(parenthesizedExpression.Expression.FullQualifiedExpression(semanticModel)),
             ParenthesizedLambdaExpressionSyntax lambdaExpression =>
                 lambdaExpression
                     .WithExpressionBody(lambdaExpression.ExpressionBody?.FullQualifiedExpression(semanticModel)),
@@ -295,6 +302,9 @@ public static partial class General
             ThrowExpressionSyntax throwExpression =>
                 throwExpression
                     .WithExpression(throwExpression.Expression.FullQualifiedExpression(semanticModel)),
+            TypeOfExpressionSyntax typeOfExpression =>
+                typeOfExpression
+                    .WithType(typeOfExpression.Type.FullName(semanticModel).ParseTypeName()),
             _ => syntax
         };
 
@@ -306,8 +316,8 @@ public static partial class General
                 (l, x) => l.Add(
                     x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))
         );
- 
-    
+
+
     public static ArgumentListSyntax FullQualifiedArgumentList(this ArgumentListSyntax syntax,
         SemanticModel semanticModel) =>
         syntax
