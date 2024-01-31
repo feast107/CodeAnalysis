@@ -14,20 +14,8 @@ public class AnotherClass
     
     public string Getter
     {
-        get
-        {
-            return new global::System.Collections.Generic.List<E>().Where(static X =>
-            {
-                var i = 1;
-                if (i == (int)E.A)
-                {
-                    i |= (int)E.A;
-                    return i > 1;
-                }
+        get => new StringBuilder().ToString();
 
-                return X == (E)i;
-            }).ToString();
-        }
     }
 
     public string Generate(StringBuilder[] args, StringBuilder[] unused)

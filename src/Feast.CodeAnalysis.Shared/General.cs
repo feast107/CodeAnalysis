@@ -73,6 +73,11 @@ public static partial class General
                 .AddMembers([type]);
     }
 
+    public static CompilationUnitSyntax WithUsing(this MemberDeclarationSyntax member, CompilationUnitSyntax syntax) => 
+        syntax
+            .WithMembers([])
+            .AddMembers(member);
+
     public static MemberDeclarationSyntax FullQualifiedMember(this MemberDeclarationSyntax member,
         SemanticModel semanticModel) => member switch
     {
@@ -136,9 +141,9 @@ public static partial class General
                                 .WithStatements(x.Body.Statements.Aggregate(new SyntaxList<StatementSyntax>(),
                                     (l, ss) =>
                                         l.Add(ss.FullQualifiedStatement(semanticModel)))))
-                            .WithExpressionBody(syntax.ExpressionBody?
+                            .WithExpressionBody(x.ExpressionBody?
                                 .WithExpression(
-                                    syntax.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))))));
+                                    x.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))))));
 
     public static BaseMethodDeclarationSyntax FullQualifiedBaseMethod(this BaseMethodDeclarationSyntax method,
         SemanticModel semanticModel) =>

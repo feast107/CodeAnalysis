@@ -86,6 +86,7 @@ public class LiteralGenerator : IIncrementalGenerator
                         .FullQualifiedMember(syntax.SemanticModel)
                         .WithAttributeLists(attrList)
                         .FullNamespace(classSymbol)
+                        .WithUsing(typeDeclaration.SyntaxTree.GetCompilationUnitRoot())
                         .NormalizeWhitespace()
                         .GetText(Encoding.UTF8);
                     var @namespace = string.Join(".", fullClassName.Take(fullClassName.Length - 1));
