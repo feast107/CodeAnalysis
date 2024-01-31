@@ -21,7 +21,7 @@ public class LiteralGenerator : IIncrementalGenerator
         using System;
         namespace System
         {
-            [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface)]
+            [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Delegate)]
             public class LiteralAttribute : Attribute
             {
                 public string? FieldName { get; set; }
@@ -46,7 +46,7 @@ public class LiteralGenerator : IIncrementalGenerator
         
         var provider = context.SyntaxProvider
             .ForAttributeWithMetadataName(AttributeName,
-                (ctx, t) => ctx is TypeDeclarationSyntax,
+                (ctx, t) => ctx is MemberDeclarationSyntax,
                 transform: (ctx, t) => ctx);
 
         context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),
@@ -65,11 +65,11 @@ public class LiteralGenerator : IIncrementalGenerator
                         ? (config.NamedArguments[0].Value.Value as string)!
                         : "Text";
 
-                    var classDeclare = (syntax.TargetNode as TypeDeclarationSyntax)!;
-                    var attrList     = new SyntaxList<AttributeListSyntax>();
-                    var classSymbol  = (syntax.TargetSymbol as INamedTypeSymbol)!;
-                    var attrSymbols  = classSymbol.GetAttributes();
-                    foreach (var (attributeList, index) in classDeclare.AttributeLists.Select((x, i) => (x, i)))
+                    var typeDeclaration = (syntax.TargetNode as MemberDeclarationSyntax)!;
+                    var attrList        = new SyntaxList<AttributeListSyntax>();
+                    var classSymbol     = (syntax.TargetSymbol as INamedTypeSymbol)!;
+                    var attrSymbols     = classSymbol.GetAttributes();
+                    foreach (var (attributeList, index) in typeDeclaration.AttributeLists.Select((x, i) => (x, i)))
                     {
                         var attrs = new SeparatedSyntaxList<AttributeSyntax>();
                         attrs = attributeList.Attributes
@@ -82,28 +82,12 @@ public class LiteralGenerator : IIncrementalGenerator
                         }
                     }
 
-                    var sourceNamespace =
-                        classDeclare.Parent switch
-                        {
-                            BaseNamespaceDeclarationSyntax namespaceSymbol => namespaceSymbol,
-                            CompilationUnitSyntax compilationUnitSyntax =>
-                                (compilationUnitSyntax.Members.First(x => x is BaseNamespaceDeclarationSyntax) as
-                                    BaseNamespaceDeclarationSyntax)!,
-                        };
-                    var newNamespace = sourceNamespace.ReplaceNode(
-                        classDeclare,
-                        classDeclare.FullQualifiedClass(syntax.SemanticModel).WithAttributeLists(attrList));
-                    var file = sourceNamespace.Parent!;
-                    file = file.ReplaceNode(sourceNamespace, newNamespace);
-                    while (file is BaseNamespaceDeclarationSyntax namespaceSymbol)
-                    {
-                        file = namespaceSymbol.Parent;
-                    }
-
-                    var full =
-                        file!
-                            .NormalizeWhitespace()
-                            .GetText(Encoding.UTF8);
+                    var full = typeDeclaration
+                        .FullQualifiedMember(syntax.SemanticModel)
+                        .WithAttributeLists(attrList)
+                        .FullNamespace(classSymbol)
+                        .NormalizeWhitespace()
+                        .GetText(Encoding.UTF8);
                     var @namespace = string.Join(".", fullClassName.Take(fullClassName.Length - 1));
                     var className  = fullClassName.Last();
                     var content = $"internal static string {fieldName} = \"\"\"\n"
@@ -119,7 +103,6 @@ public class LiteralGenerator : IIncrementalGenerator
                                         .AddModifiers(Token(SyntaxKind.PartialKeyword))
                                         .AddMembers(ParseMemberDeclaration(content)!)
                                 ));
-                    var fileName = Path.GetFileNameWithoutExtension(file?.GetLocation().SourceTree?.FilePath ?? string.Empty);
                     ctx.AddSource($"{@namespace}.{className}.g.cs", code.NormalizeWhitespace().GetText(Encoding.UTF8));
                 }
             });

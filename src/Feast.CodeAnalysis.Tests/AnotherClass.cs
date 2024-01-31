@@ -2,7 +2,7 @@
 
 namespace Feast.CodeAnalysis.Tests;
 
-[System.Literal("Feast.CodeAnalysis.Tests.GlobalUsings")]
+[System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
 public class AnotherClass
 {
     public enum E

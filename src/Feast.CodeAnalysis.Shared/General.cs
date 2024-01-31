@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -51,14 +52,54 @@ public static partial class General
 
     public static TypeSyntax ParseTypeName(this string name) => SyntaxFactory.ParseTypeName(name);
 
-    public static TypeDeclarationSyntax FullQualifiedClass(this TypeDeclarationSyntax type,
-        SemanticModel semanticModel)
+    public static MemberDeclarationSyntax CleanNamespace(this BaseTypeDeclarationSyntax type)
     {
-        var ret = type.WithBaseList(type.BaseList?.WithTypes(type.BaseList.Types.Aggregate(
-                new SeparatedSyntaxList<BaseTypeSyntax>(), (s, x) =>
-                    s.Add(x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))))
-            .WithMembers(type.Members.Aggregate(new SyntaxList<MemberDeclarationSyntax>(),
-                (s, m) =>
+        var ret = type.Parent;
+        if (ret is ClassDeclarationSyntax) throw new ArgumentException("Should Not be on Nested Class");
+        while (ret is BaseNamespaceDeclarationSyntax @namespace)
+        {
+            var tmp = NamespaceDeclaration(@namespace.Name);
+            ret = tmp.AddMembers([@namespace]);
+        }
+        return (ret as MemberDeclarationSyntax)!;
+    }
+
+    public static MemberDeclarationSyntax FullNamespace(this MemberDeclarationSyntax type, ITypeSymbol symbol)
+    {
+        if (symbol.ContainingNamespace == null) return type;
+        return symbol.ContainingNamespace.IsGlobalNamespace
+            ? type
+            : NamespaceDeclaration(IdentifierName(symbol.ContainingNamespace.FullName().Remove(0, 8)))
+                .AddMembers([type]);
+    }
+
+    public static MemberDeclarationSyntax FullQualifiedMember(this MemberDeclarationSyntax member,
+        SemanticModel semanticModel) => member switch
+    {
+        DelegateDeclarationSyntax delegateDeclaration =>
+            delegateDeclaration
+                .WithReturnType(delegateDeclaration.ReturnType.FullName(semanticModel).ParseTypeName())
+                .WithParameterList(delegateDeclaration.ParameterList.FullQualifiedParameterList(semanticModel)),
+        BaseTypeDeclarationSyntax baseTypeDeclaration => baseTypeDeclaration.FullQualifiedType(semanticModel),
+        _                                             => member
+    };
+    
+    public static BaseTypeDeclarationSyntax FullQualifiedType(this BaseTypeDeclarationSyntax type,
+        SemanticModel semanticModel) => type switch
+    {
+        TypeDeclarationSyntax typeDeclaration => typeDeclaration.FullQualifiedClass(semanticModel),
+        _                                     => type,
+    };
+
+    public static TypeDeclarationSyntax FullQualifiedClass(this TypeDeclarationSyntax type,
+        SemanticModel semanticModel) =>
+        type
+            .WithBaseList(
+                type.BaseList?.WithTypes(
+                    type.BaseList.Types.Aggregate(new SeparatedSyntaxList<BaseTypeSyntax>(), (s, x) =>
+                        s.Add(x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))))
+            .WithMembers(
+                type.Members.Aggregate(new SyntaxList<MemberDeclarationSyntax>(), (s, m) =>
                     s.Add(m switch
                     {
                         FieldDeclarationSyntax field             => field.FullQualifiedField(semanticModel),
@@ -66,11 +107,9 @@ public static partial class General
                         MethodDeclarationSyntax method           => method.FullQualifiedMethod(semanticModel),
                         ConstructorDeclarationSyntax constructor => constructor.FullQualifiedBaseMethod(semanticModel),
                         BaseMethodDeclarationSyntax method       => method.FullQualifiedBaseMethod(semanticModel),
+                        BaseTypeDeclarationSyntax baseType       => baseType.FullQualifiedType(semanticModel),
                         _                                        => m
                     })));
-        var str = ret.ToFullString();
-        return ret;
-    }
 
     public static FieldDeclarationSyntax FullQualifiedField(this FieldDeclarationSyntax syntax,
         SemanticModel semanticModel)
@@ -102,21 +141,17 @@ public static partial class General
                                     syntax.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))))));
 
     public static BaseMethodDeclarationSyntax FullQualifiedBaseMethod(this BaseMethodDeclarationSyntax method,
-        SemanticModel semanticModel)
-    {
-        return method.WithParameterList(ParameterList(
-                method.ParameterList.Parameters.Aggregate(new SeparatedSyntaxList<ParameterSyntax>(),
-                    (l, x) => l.Add(
-                        x.WithType(x.Type.FullName(semanticModel).ParseTypeName())
-                            .WithAttributeLists([])))
-            ))
+        SemanticModel semanticModel) =>
+        method
+            .WithParameterList(
+                method.ParameterList.FullQualifiedParameterList(semanticModel))
             .WithExpressionBody(
                 method.ExpressionBody?.WithExpression(
                     method.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))
-            .WithBody(method.Body?.WithStatements(
-                method.Body.Statements.Aggregate(new SyntaxList<StatementSyntax>(),
-                    (l, s) => l.Add(s.FullQualifiedStatement(semanticModel)))));
-    }
+            .WithBody(
+                method.Body?.WithStatements(
+                    method.Body.Statements.Aggregate(new SyntaxList<StatementSyntax>(), (l, s) =>
+                        l.Add(s.FullQualifiedStatement(semanticModel)))));
 
     public static MethodDeclarationSyntax FullQualifiedMethod(this MethodDeclarationSyntax method,
         SemanticModel semanticModel) =>
@@ -181,7 +216,7 @@ public static partial class General
     {
         if (syntax.Initializer is not null)
         {
-           return syntax.WithInitializer(
+            return syntax.WithInitializer(
                 syntax.Initializer.WithValue(
                     syntax.Initializer.Value
                         .FullQualifiedExpression(semanticModel)));
@@ -258,14 +293,24 @@ public static partial class General
             _ => syntax
         };
 
+
+    public static ParameterListSyntax FullQualifiedParameterList(this ParameterListSyntax syntax,
+        SemanticModel semanticModel) =>
+        ParameterList(
+            syntax.Parameters.Aggregate(new SeparatedSyntaxList<ParameterSyntax>(),
+                (l, x) => l.Add(
+                    x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))
+        );
+ 
+    
     public static ArgumentListSyntax FullQualifiedArgumentList(this ArgumentListSyntax syntax,
         SemanticModel semanticModel) =>
         syntax
             .WithArguments(syntax.Arguments.Aggregate(
-            new SeparatedSyntaxList<ArgumentSyntax>(),
-            (s, x) =>
-                s.Add(x.WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))));
-    
+                new SeparatedSyntaxList<ArgumentSyntax>(),
+                (s, x) =>
+                    s.Add(x.WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))));
+
     public static VariableDeclarationSyntax FullQualifiedVariableDeclaration(this VariableDeclarationSyntax syntax,
         SemanticModel semanticModel) =>
         syntax
