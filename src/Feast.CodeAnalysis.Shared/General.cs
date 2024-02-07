@@ -130,22 +130,25 @@ public static partial class General
                         _                                        => m
                     })));
 
-    public static FieldDeclarationSyntax FullQualifiedField(this FieldDeclarationSyntax syntax,
+    public static FieldDeclarationSyntax FullQualifiedField(this FieldDeclarationSyntax field,
         SemanticModel semanticModel) =>
-        syntax
-            .WithDeclaration(syntax.Declaration.FullQualifiedVariableDeclaration(semanticModel)
-                .WithType(syntax.Declaration.Type.FullName(semanticModel).ParseTypeName())
-                .WithVariables(syntax.Declaration.Variables.Aggregate(
+        field
+            .WithDeclaration(field.Declaration.FullQualifiedVariableDeclaration(semanticModel)
+                .WithType(field.Declaration.Type.FullName(semanticModel).ParseTypeName())
+                .WithVariables(field.Declaration.Variables.Aggregate(
                     new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
                     (s, v) =>
                         s.Add(v.FullQualifiedVariable(semanticModel)))));
 
-    public static PropertyDeclarationSyntax FullQualifiedProperty(this PropertyDeclarationSyntax syntax,
+    public static PropertyDeclarationSyntax FullQualifiedProperty(this PropertyDeclarationSyntax property,
         SemanticModel semanticModel) =>
-        syntax
-            .WithType(syntax.Type.FullName(semanticModel).ParseTypeName())
+        property
+            .WithType(property.Type.FullName(semanticModel).ParseTypeName())
+            .WithExpressionBody(
+                property.ExpressionBody?.WithExpression(
+                    property.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))
             .WithAccessorList(
-                syntax.AccessorList?.WithAccessors(syntax.AccessorList.Accessors.Aggregate(
+                property.AccessorList?.WithAccessors(property.AccessorList.Accessors.Aggregate(
                     new SyntaxList<AccessorDeclarationSyntax>(),
                     (s, x) =>
                         s.Add(x
