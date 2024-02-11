@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis
             this global::Microsoft.CodeAnalysis.SyntaxValueProvider syntaxValueProvider,
             global::System.String fullyQualifiedMetadataName,
             global::System.Func<global::Microsoft.CodeAnalysis.SyntaxNode, global::System.Threading.CancellationToken, global::System.Boolean> predicate,
-            global::System.Func<global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
+            global::System.Func<global::Microsoft.CodeAnalysis.Internal.GeneratorAttributeSyntaxContext, global::System.Threading.CancellationToken, T> transform)
         {
             return
                 syntaxValueProvider
@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis
     
                         // Create the GeneratorAttributeSyntaxContext value to pass to the input transform. The attributes array
                         // will only ever have a single value, but that's fine with the attributes the various generators look for.
-                        global::Microsoft.CodeAnalysis.GeneratorAttributeSyntaxContext syntaxContext = new(
+                        global::Microsoft.CodeAnalysis.Internal.GeneratorAttributeSyntaxContext syntaxContext = new(
                             targetNode: context.Node,
                             targetSymbol: symbol,
                             semanticModel: context.SemanticModel,
