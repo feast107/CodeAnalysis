@@ -8,7 +8,7 @@ namespace Microsoft.CodeAnalysis;
 public static class AttributeDataExtensions
 {
     internal static T ToAttribute<T>(this AttributeData attributeData)
-        where T : global::System.Attribute
+        where T : Attribute
     {
         if (attributeData.AttributeConstructor == null)
             throw new ArgumentException("Attribute constructor not found");
@@ -17,7 +17,9 @@ public static class AttributeDataExtensions
         {
             var param = x.GetParameters();
             if (param.Length != attributeData.AttributeConstructor.Parameters.Length) return false;
-            return !param.Where((t, i) =>  attributeData.AttributeConstructor.Parameters[i].Type.ToType().FullName != t.ParameterType.FullName).Any();
+            return !param.Where((t, i) =>
+                    attributeData.AttributeConstructor.Parameters[i].Type.ToType().FullName != t.ParameterType.FullName)
+                .Any();
         });
         if (ctor == null) throw new MissingMethodException("Cannot find best match ctor for attribute");
         var param = ctor.GetParameters();
@@ -27,10 +29,9 @@ public static class AttributeDataExtensions
 
         var attribute = (T)Activator.CreateInstance(typeof(T), args);
         var publicProps = attrType
-            .GetProperties(System.Reflection.BindingFlags.Public |
-                           System.Reflection.BindingFlags.Instance)
+            .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
             .Where(static x => x.CanWrite)
-            .ToDictionary(static x => x.Name,static x => x);
+            .ToDictionary(static x => x.Name, static x => x);
         foreach (var argument in attributeData.NamedArguments)
         {
             if (!publicProps.TryGetValue(argument.Key, out var prop)) continue;

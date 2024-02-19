@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -42,9 +43,9 @@ public static partial class General
             case ArrayTypeSyntax arrayType:
                 return arrayType.ElementType.FullName(semanticModel)
                        + string.Concat(arrayType.RankSpecifiers.Select(
-                           x => x.WithSizes(x.Sizes.Aggregate(new SeparatedSyntaxList<ExpressionSyntax>(),
-                               (s, e) =>
-                                   s.Add(e.FullQualifiedExpression(semanticModel))))));
+                           x => x.WithSizes(x.Sizes
+                               .Select(e => e.FullQualifiedExpression(semanticModel))
+                               .ToSeparatedSyntaxList())));
             case GenericNameSyntax genericName:
                 var symbol = semanticModel.GetTypeInfo(genericName).Type;
                 return (symbol is not null
@@ -107,16 +108,34 @@ public static partial class General
         _                                     => type,
     };
 
+    public static SyntaxList<TypeParameterConstraintClauseSyntax> FullQualifiedConstraintClauses(
+        this SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses,
+        SemanticModel semanticModel) =>
+        constraintClauses
+            .Select(c =>
+                c.WithConstraints(c.Constraints
+                    .Select(x => x switch
+                    {
+                        TypeConstraintSyntax typeConstraint => typeConstraint
+                            .WithType(typeConstraint.Type.FullName(semanticModel).ParseTypeName()),
+                        _ => x
+                    })
+                    .ToSeparatedSyntaxList()))
+            .ToSyntaxList();
+
     public static TypeDeclarationSyntax FullQualifiedClass(this TypeDeclarationSyntax type,
         SemanticModel semanticModel) =>
         type
+            .WithConstraintClauses(
+                type.ConstraintClauses.FullQualifiedConstraintClauses(semanticModel))
             .WithBaseList(
                 type.BaseList?.WithTypes(
-                    type.BaseList.Types.Aggregate(new SeparatedSyntaxList<BaseTypeSyntax>(), (s, x) =>
-                        s.Add(x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))))
+                    type.BaseList.Types
+                        .Select(x => x.WithType(x.Type.FullName(semanticModel).ParseTypeName()))
+                        .ToSeparatedSyntaxList()))
             .WithMembers(
-                type.Members.Aggregate(new SyntaxList<MemberDeclarationSyntax>(), (s, m) =>
-                    s.Add(m switch
+                type.Members
+                    .Select(m => m switch
                     {
                         FieldDeclarationSyntax field        => field.FullQualifiedField(semanticModel),
                         PropertyDeclarationSyntax property  => property.FullQualifiedProperty(semanticModel),
@@ -128,17 +147,17 @@ public static partial class General
                         BaseMethodDeclarationSyntax method       => method.FullQualifiedBaseMethod(semanticModel),
                         BaseTypeDeclarationSyntax baseType       => baseType.FullQualifiedType(semanticModel),
                         _                                        => m
-                    })));
+                    })
+                    .ToSyntaxList());
 
     public static FieldDeclarationSyntax FullQualifiedField(this FieldDeclarationSyntax field,
         SemanticModel semanticModel) =>
         field
             .WithDeclaration(field.Declaration.FullQualifiedVariableDeclaration(semanticModel)
                 .WithType(field.Declaration.Type.FullName(semanticModel).ParseTypeName())
-                .WithVariables(field.Declaration.Variables.Aggregate(
-                    new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
-                    (s, v) =>
-                        s.Add(v.FullQualifiedVariable(semanticModel)))));
+                .WithVariables(field.Declaration.Variables
+                    .Select(x => x.FullQualifiedVariable(semanticModel))
+                    .ToSeparatedSyntaxList()));
 
     public static PropertyDeclarationSyntax FullQualifiedProperty(this PropertyDeclarationSyntax property,
         SemanticModel semanticModel) =>
@@ -148,17 +167,16 @@ public static partial class General
                 property.ExpressionBody?.WithExpression(
                     property.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))
             .WithAccessorList(
-                property.AccessorList?.WithAccessors(property.AccessorList.Accessors.Aggregate(
-                    new SyntaxList<AccessorDeclarationSyntax>(),
-                    (s, x) =>
-                        s.Add(x
-                            .WithBody(x.Body?
-                                .WithStatements(x.Body.Statements.Aggregate(new SyntaxList<StatementSyntax>(),
-                                    (l, ss) =>
-                                        l.Add(ss.FullQualifiedStatement(semanticModel)))))
-                            .WithExpressionBody(x.ExpressionBody?
-                                .WithExpression(
-                                    x.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))))));
+                property.AccessorList?.WithAccessors(property.AccessorList.Accessors
+                    .Select(x => x
+                        .WithBody(x.Body?
+                            .WithStatements(x.Body.Statements
+                                .Select(ss => ss.FullQualifiedStatement(semanticModel))
+                                .ToSyntaxList()))
+                        .WithExpressionBody(x.ExpressionBody?
+                            .WithExpression(
+                                x.ExpressionBody.Expression.FullQualifiedExpression(semanticModel))))
+                    .ToSyntaxList()));
 
     public static BaseMethodDeclarationSyntax FullQualifiedBaseMethod(this BaseMethodDeclarationSyntax method,
         SemanticModel semanticModel) =>
@@ -170,23 +188,25 @@ public static partial class General
                     method.ExpressionBody.Expression.FullQualifiedExpression(semanticModel)))
             .WithBody(
                 method.Body?.WithStatements(
-                    method.Body.Statements.Aggregate(new SyntaxList<StatementSyntax>(), (l, s) =>
-                        l.Add(s.FullQualifiedStatement(semanticModel)))));
+                    method.Body.Statements
+                        .Select(x => x.FullQualifiedStatement(semanticModel))
+                        .ToSyntaxList()));
 
     public static ConversionOperatorDeclarationSyntax FullQualifiedOperator(
         this ConversionOperatorDeclarationSyntax @operator,
         SemanticModel semanticModel) =>
         (@operator.FullQualifiedBaseMethod(semanticModel) as ConversionOperatorDeclarationSyntax)!
         .WithType(@operator.Type.FullName(semanticModel).ParseTypeName());
-    
+
     public static OperatorDeclarationSyntax FullQualifiedOperator(this OperatorDeclarationSyntax @operator,
         SemanticModel semanticModel) =>
         (@operator.FullQualifiedBaseMethod(semanticModel) as OperatorDeclarationSyntax)!
         .WithReturnType(@operator.ReturnType.FullName(semanticModel).ParseTypeName());
-    
+
     public static MethodDeclarationSyntax FullQualifiedMethod(this MethodDeclarationSyntax method,
         SemanticModel semanticModel) =>
         (method.FullQualifiedBaseMethod(semanticModel) as MethodDeclarationSyntax)!
+        .WithConstraintClauses(method.ConstraintClauses.FullQualifiedConstraintClauses(semanticModel))
         .WithReturnType(method.ReturnType.FullName(semanticModel).ParseTypeName());
 
     public static ConstructorDeclarationSyntax FullQualifiedConstructor(this ConstructorDeclarationSyntax constructor,
@@ -198,8 +218,9 @@ public static partial class General
         (T)(syntax switch
         {
             BlockSyntax block =>
-                (object)Block(block.Statements.Aggregate(new SyntaxList<StatementSyntax>(),
-                    (s, x) => s.Add(x.FullQualifiedStatement(semanticModel)))),
+                (object)Block(block.Statements
+                    .Select(x => x.FullQualifiedStatement(semanticModel))
+                    .ToSyntaxList()),
             ExpressionStatementSyntax expressionStatement =>
                 expressionStatement
                     .WithExpression(expressionStatement.Expression.FullQualifiedExpression(semanticModel)),
@@ -211,10 +232,9 @@ public static partial class General
                 declaration
                     .WithDeclaration(declaration.Declaration.FullQualifiedVariableDeclaration(semanticModel)
                         .WithType(declaration.Declaration.Type.FullName(semanticModel).ParseTypeName())
-                        .WithVariables(declaration.Declaration.Variables.Aggregate(
-                            new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
-                            (s, v) =>
-                                s.Add(v.FullQualifiedVariable(semanticModel))))),
+                        .WithVariables(declaration.Declaration.Variables
+                            .Select(x => x.FullQualifiedVariable(semanticModel))
+                            .ToSeparatedSyntaxList())),
             ReturnStatementSyntax returnStatement =>
                 returnStatement
                     .WithExpression(returnStatement.Expression?.FullQualifiedExpression(semanticModel)),
@@ -222,18 +242,20 @@ public static partial class General
                 switchStatement
                     .WithExpression(switchStatement.Expression.FullQualifiedExpression(semanticModel))
                     .WithSections(
-                        switchStatement.Sections.Aggregate(new SyntaxList<SwitchSectionSyntax>(), (l, s) =>
-                            l.Add(s.WithStatements(s.Statements.Aggregate(new SyntaxList<StatementSyntax>(), (ss, x) =>
-                                    ss.Add(x.FullQualifiedStatement(semanticModel))
-                                ))
-                                .WithLabels(s.Labels.Aggregate(new SyntaxList<SwitchLabelSyntax>(), (ls, ll) =>
-                                    ls.Add(ll switch
+                        switchStatement.Sections
+                            .Select(s => s
+                                .WithStatements(s.Statements
+                                    .Select(ss => ss.FullQualifiedStatement(semanticModel))
+                                    .ToSyntaxList())
+                                .WithLabels(s.Labels
+                                    .Select(ll => ll switch
                                     {
                                         CaseSwitchLabelSyntax caseSwitchLabel =>
                                             caseSwitchLabel.WithValue(
                                                 caseSwitchLabel.Value.FullQualifiedExpression(semanticModel)),
                                         _ => ll
-                                    })))))),
+                                    }).ToSyntaxList()))
+                            .ToSyntaxList()),
             ThrowStatementSyntax throwStatement =>
                 throwStatement
                     .WithExpression(throwStatement.Expression?.FullQualifiedExpression(semanticModel)),
@@ -254,10 +276,11 @@ public static partial class General
         return syntax;
     }
 
-    public static T FullQualifiedExpression<T>(this T syntax, SemanticModel semanticModel) 
+    public static T FullQualifiedExpression<T>(this T syntax, SemanticModel semanticModel)
         where T : ExpressionSyntax =>
         (T)(object)(syntax switch
         {
+         
             ArrayCreationExpressionSyntax arrayCreationExpression =>
                 arrayCreationExpression
                     .WithType(ArrayType(arrayCreationExpression.Type.FullName(semanticModel).ParseTypeName())),
@@ -276,26 +299,26 @@ public static partial class General
                 castExpression
                     .WithType(castExpression.Type.FullName(semanticModel).ParseTypeName())
                     .WithExpression(castExpression.Expression.FullQualifiedExpression(semanticModel)),
+            ConditionalAccessExpressionSyntax conditionalAccessExpression =>
+                conditionalAccessExpression
+                    .WithExpression(conditionalAccessExpression.Expression.FullQualifiedExpression(semanticModel))
+                    .WithWhenNotNull(conditionalAccessExpression.WhenNotNull.FullQualifiedExpression(semanticModel)),
             ConditionalExpressionSyntax conditionalExpression =>
                 conditionalExpression
                     .WithCondition(conditionalExpression.Condition.FullQualifiedExpression(semanticModel))
                     .WithWhenTrue(conditionalExpression.WhenTrue.FullQualifiedExpression(semanticModel))
                     .WithWhenFalse(conditionalExpression.WhenFalse.FullQualifiedExpression(semanticModel)),
-            GenericNameSyntax genericName =>
-                genericName.WithTypeArgumentList(
-                    genericName.TypeArgumentList.WithArguments(
-                        genericName.TypeArgumentList.Arguments.Aggregate(new SeparatedSyntaxList<TypeSyntax>(),
-                            (s, x) => s.Add(x.FullName(semanticModel).ParseTypeName())))),
-            IdentifierNameSyntax identifierName =>
-                identifierName.FullName(semanticModel).ParseTypeName(),
+            SimpleNameSyntax simpleName =>
+                simpleName.FullName(semanticModel).ParseTypeName(),
             ImplicitObjectCreationExpressionSyntax implicitObjectCreation =>
                 implicitObjectCreation
                     .WithArgumentList(implicitObjectCreation.ArgumentList.FullQualifiedArgumentList(semanticModel))
                     .WithInitializer(implicitObjectCreation.Initializer?.FullQualifiedExpression(semanticModel)),
-            InitializerExpressionSyntax initializer => 
+            InitializerExpressionSyntax initializer =>
                 initializer.WithExpressions(
-                    initializer.Expressions.Aggregate(new SeparatedSyntaxList<ExpressionSyntax>(), (s, e) => 
-                        s.Add(e.FullQualifiedExpression(semanticModel)))),
+                    initializer.Expressions
+                        .Select(x => x.FullQualifiedExpression(semanticModel))
+                        .ToSeparatedSyntaxList()),
             InvocationExpressionSyntax invocation =>
                 invocation
                     .WithExpression(invocation.Expression.FullQualifiedExpression(semanticModel))
@@ -306,28 +329,52 @@ public static partial class General
                         ? memberAccess.Name
                         : genericName.WithTypeArgumentList(
                             genericName.TypeArgumentList.WithArguments(
-                                genericName.TypeArgumentList.Arguments.Aggregate(
-                                    new SeparatedSyntaxList<TypeSyntax>(), (s, x) =>
-                                        s.Add(x.FullName(semanticModel).ParseTypeName())))))
+                                genericName.TypeArgumentList.Arguments
+                                    .Select(x => x.FullName(semanticModel).ParseTypeName())
+                                    .ToSeparatedSyntaxList())))
                     .WithExpression(memberAccess.Expression.FullQualifiedExpression(semanticModel)),
             ObjectCreationExpressionSyntax objectCreation =>
                 objectCreation
                     .WithType(objectCreation.Type.FullName(semanticModel).ParseTypeName())
                     .WithArgumentList(objectCreation.ArgumentList?.FullQualifiedArgumentList(semanticModel))
                     .WithInitializer(objectCreation.Initializer?.WithExpressions(
-                        objectCreation.Initializer.Expressions.Aggregate(
-                            new SeparatedSyntaxList<ExpressionSyntax>(), (s, e) =>
-                                s.Add(e.FullQualifiedExpression(semanticModel))))),
+                        objectCreation.Initializer.Expressions
+                            .Select(x => x.FullQualifiedExpression(semanticModel))
+                            .ToSeparatedSyntaxList())),
             ParenthesizedExpressionSyntax parenthesizedExpression =>
                 parenthesizedExpression
                     .WithExpression(parenthesizedExpression.Expression.FullQualifiedExpression(semanticModel)),
             ParenthesizedLambdaExpressionSyntax lambdaExpression =>
                 lambdaExpression
                     .WithExpressionBody(lambdaExpression.ExpressionBody?.FullQualifiedExpression(semanticModel)),
+            PostfixUnaryExpressionSyntax unaryExpression =>
+                unaryExpression
+                    .WithOperand(unaryExpression.Operand.FullQualifiedExpression(semanticModel)),
+            PrefixUnaryExpressionSyntax prefixUnaryExpression =>
+                prefixUnaryExpression
+                    .WithOperand(prefixUnaryExpression.Operand.FullQualifiedExpression(semanticModel)),
             SimpleLambdaExpressionSyntax simpleLambda =>
                 simpleLambda
                     .WithBlock(simpleLambda.Block?.FullQualifiedStatement(semanticModel))
                     .WithExpressionBody(simpleLambda.ExpressionBody?.FullQualifiedExpression(semanticModel)),
+            SwitchExpressionSyntax switchExpression =>
+                switchExpression
+                    .WithGoverningExpression(
+                        switchExpression.GoverningExpression.FullQualifiedExpression(semanticModel))
+                    .WithArms(switchExpression.Arms
+                        .Select(x =>
+                            x.WithPattern(x.Pattern switch
+                                {
+                                    ConstantPatternSyntax constantPattern => constantPattern
+                                        .WithExpression(constantPattern.Expression.FullQualifiedExpression(semanticModel)),
+                                    DeclarationPatternSyntax declarationPattern => declarationPattern
+                                        .WithType(declarationPattern.Type.FullName(semanticModel).ParseTypeName()),
+                                    TypePatternSyntax typePatternSyntax => typePatternSyntax
+                                        .WithType(typePatternSyntax.Type.FullName(semanticModel).ParseTypeName()),
+                                    _ => x.Pattern
+                                })
+                                .WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))
+                        .ToSeparatedSyntaxList()),
             ThrowExpressionSyntax throwExpression =>
                 throwExpression
                     .WithExpression(throwExpression.Expression.FullQualifiedExpression(semanticModel)),
@@ -340,27 +387,32 @@ public static partial class General
 
     public static ParameterListSyntax FullQualifiedParameterList(this ParameterListSyntax syntax,
         SemanticModel semanticModel) =>
-        ParameterList(
-            syntax.Parameters.Aggregate(new SeparatedSyntaxList<ParameterSyntax>(),
-                (l, x) => l.Add(
-                    x.WithType(x.Type.FullName(semanticModel).ParseTypeName())))
-        );
+        ParameterList(syntax.Parameters
+            .Select(x => x.WithType(x.Type.FullName(semanticModel).ParseTypeName()))
+            .ToSeparatedSyntaxList());
 
 
     public static ArgumentListSyntax FullQualifiedArgumentList(this ArgumentListSyntax syntax,
         SemanticModel semanticModel) =>
         syntax
-            .WithArguments(syntax.Arguments.Aggregate(
-                new SeparatedSyntaxList<ArgumentSyntax>(),
-                (s, x) =>
-                    s.Add(x.WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))));
+            .WithArguments(syntax.Arguments
+                .Select(x => x.WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))
+                .ToSeparatedSyntaxList());
 
     public static VariableDeclarationSyntax FullQualifiedVariableDeclaration(this VariableDeclarationSyntax syntax,
         SemanticModel semanticModel) =>
         syntax
             .WithType(syntax.Type.FullName(semanticModel).ParseTypeName())
-            .WithVariables(syntax.Variables.Aggregate(
-                new SeparatedSyntaxList<VariableDeclaratorSyntax>(),
-                (s, v) =>
-                    s.Add(v.FullQualifiedVariable(semanticModel))));
+            .WithVariables(syntax.Variables
+                .Select(x => x.FullQualifiedVariable(semanticModel))
+                .ToSeparatedSyntaxList());
+
+
+    public static SeparatedSyntaxList<T> ToSeparatedSyntaxList<T>(this IEnumerable<T> enumerable)
+        where T : SyntaxNode =>
+        enumerable.Aggregate(new SeparatedSyntaxList<T>(), (s, t) => s.Add(t));
+
+    public static SyntaxList<T> ToSyntaxList<T>(this IEnumerable<T> enumerable)
+        where T : SyntaxNode =>
+        enumerable.Aggregate(new SyntaxList<T>(), (s, t) => s.Add(t));
 }

@@ -1,33 +1,53 @@
 using System.Runtime.CompilerServices;
 using System.Text;
+using Feast.CodeAnalysis.TestGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+
 namespace Feast.CodeAnalysis.Tests;
 
 public class Tests
 {
-    
     [SetUp]
     public void Setup()
     {
+        var t = typeof(string[]).GetElementType();
     }
 
     public string Current([CallerFilePath] string path = "") => path;
     public string Dir([CallerFilePath] string path = "") => Path.GetDirectoryName(path)!;
-    
+
+    private const string Attribute =
+        """
+
+        namespace Feast.CodeAnalysis.TestGenerator
+        {
+            [AttributeUsage(AttributeTargets.Class)]
+            public class SampleAttribute(params Type[] types) : global::System.Attribute
+            {
+            }
+        }
+        """;
+
     [Test]
     public void Test()
     {
-        var          file = Path.Combine(Dir(),"AnotherClass.cs");
+        var file = Path.Combine(Dir(), "AnotherClass.cs");
         // Create an instance of the source generator.
-        var generator = new Generators.LiteralGenerator.LiteralGenerator();
+        var generator =
+            new Generators.LiteralGenerator.LiteralGenerator();
+            //new TestIncrementalGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.
         var driver = CSharpGeneratorDriver.Create(generator);
 
         // We need to create a compilation with the required source code.
         var compilation = CSharpCompilation.Create(nameof(Tests),
-            new[] { CSharpSyntaxTree.ParseText(File.ReadAllText(file)) },
+            new[]
+            {
+                CSharpSyntaxTree.ParseText(Attribute),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(file)),
+            },
             new[]
             {
                 // To support 'System.Attribute' inheritance, add reference to 'System.Private.CoreLib'.
@@ -45,21 +65,16 @@ public class Tests
     }
 
 
-
     public const string CodeText =
         """
-        using Generators;
-        using System.Collections.Generic;
+        using System;
         
-        namespace G;
-        [Analyze]
-        public class TestClass<T> where T : IEnumerable<T> {
-            public Foo Id { get; set; }
-            
-            public System.Collections.IEnumerable<T> Num { get;set; }
+        namespace Feast.CodeAnalysis.TestGenerator
+        {
+            [AttributeUsage(AttributeTargets.Class)]
+            public class SampleAttribute(params Type[] types) : global::System.Attribute
+            {
+            }
         }
-        
-        public class Foo : IEnumerable<Foo>;
         """;
 }
-
