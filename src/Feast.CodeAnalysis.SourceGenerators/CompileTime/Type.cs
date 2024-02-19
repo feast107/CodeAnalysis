@@ -8,9 +8,9 @@ namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.Type")]
 internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol) 
-    : global::System.Type, global::System.IEquatable<global::System.Type>
+    : global::System.Type, IEquatable<global::System.Type>
 {
-    internal readonly global::Microsoft.CodeAnalysis.ITypeSymbol Symbol = symbol;
+    internal readonly ITypeSymbol Symbol = symbol;
         
     public override object[] GetCustomAttributes(bool inherit) => Symbol
         .GetAttributes()
@@ -27,9 +27,9 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         .GetAttributes()
         .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Collections.Generic.IEnumerable<global::System.Reflection.CustomAttributeData>
+    public override System.Collections.Generic.IEnumerable<CustomAttributeData>
         CustomAttributes => Symbol.GetAttributes()
-        .Select(x => new global::Feast.CodeAnalysis.CompileTime.AttributeData(x));
+        .Select(x => new AttributeData(x));
 
     
     public override string Namespace => Symbol.ContainingNamespace.ToDisplayString();
@@ -47,66 +47,65 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
 
     public override string AssemblyQualifiedName => $"{FullName}, {Assembly.FullName}";
         
-    public override global::System.Guid GUID => throw new global::System.NotSupportedException();
+    public override Guid GUID => throw new NotSupportedException();
 
-    public override global::System.Reflection.MemberTypes MemberType => Symbol.ContainingType is not null
-        ? global::System.Reflection.MemberTypes.NestedType
-        : global::System.Reflection.MemberTypes.TypeInfo;
+    public override MemberTypes MemberType => Symbol.ContainingType is not null
+        ? MemberTypes.NestedType
+        : MemberTypes.TypeInfo;
     
     public override global::System.Type? BaseType =>
         Symbol.BaseType == null
             ? null
-            : new global::Feast.CodeAnalysis.CompileTime.Type(Symbol.BaseType);
+            : new Type(Symbol.BaseType);
         
     public override global::System.Type? ReflectedType =>
         Symbol.ContainingType is null
             ? null
-            : new global::Feast.CodeAnalysis.CompileTime.Type(Symbol.ContainingType);
+            : new Type(Symbol.ContainingType);
     
     public override global::System.Type? DeclaringType =>
         Symbol.ContainingType is null
             ? null
-            : new global::Feast.CodeAnalysis.CompileTime.Type(Symbol.ContainingType);
+            : new Type(Symbol.ContainingType);
 
-    public override global::System.Reflection.MethodBase? DeclaringMethod =>
-        Symbol.ContainingSymbol is not global::Microsoft.CodeAnalysis.IMethodSymbol methodSymbol
+    public override MethodBase? DeclaringMethod =>
+        Symbol.ContainingSymbol is not IMethodSymbol methodSymbol
             ? null
-            : new global::Feast.CodeAnalysis.CompileTime.MethodInfo(methodSymbol);
+            : new MethodInfo(methodSymbol);
 
-    public override bool IsEnum => Symbol.TypeKind == global::Microsoft.CodeAnalysis.TypeKind.Enum;
+    public override bool IsEnum => Symbol.TypeKind == TypeKind.Enum;
     
-    public override global::System.Reflection.Assembly Assembly =>
-        new global::Feast.CodeAnalysis.CompileTime.Assembly(Symbol.ContainingAssembly);
+    public override global::System.Reflection.Assembly Assembly => new Assembly(Symbol.ContainingAssembly);
 
     public override global::System.Reflection.Module Module =>
-        new global::Feast.CodeAnalysis.CompileTime.Module(Symbol.ContainingModule);
+        new Module(Symbol.ContainingModule);
 
     public override global::System.Type UnderlyingSystemType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(Symbol);
+        new Type(Symbol);
     
-    public override bool IsGenericType => Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol
+    public override bool IsGenericType => Symbol is INamedTypeSymbol
     {
         TypeArguments.Length: > 0
     };
 
-    public override bool ContainsGenericParameters => Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol
+    public override bool ContainsGenericParameters => Symbol is INamedTypeSymbol
     {
         TypeParameters.Length: > 0
     };
 
     public override bool IsGenericParameter =>
-        Symbol.TypeKind == global::Microsoft.CodeAnalysis.TypeKind.TypeParameter;
+        Symbol.TypeKind == TypeKind.TypeParameter;
 
     public override bool IsGenericTypeDefinition =>
-        Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol namedType &&
+        Symbol is INamedTypeSymbol namedType &&
         namedType.TypeParameters.Length > namedType.TypeArguments.Length;
     
     public override bool IsConstructedGenericType =>
-        Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol namedType &&
+        Symbol is INamedTypeSymbol namedType &&
         namedType.TypeParameters.Length == namedType.TypeArguments.Length;
 
     public override System.Type[] GenericTypeArguments =>
-        Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol { TypeArguments.Length: > 0 } typeSymbol
+        Symbol is INamedTypeSymbol { TypeArguments.Length: > 0 } typeSymbol
             ? typeSymbol.TypeArguments
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
@@ -114,336 +113,316 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     
     public override System.Type[] GetGenericParameterConstraints()
     {
-        if (Symbol is not global::Microsoft.CodeAnalysis.ITypeParameterSymbol typeParameterSymbol)
-            return global::System.Array.Empty<System.Type>();
+        if (Symbol is not ITypeParameterSymbol typeParameterSymbol)
+            return Array.Empty<System.Type>();
         return typeParameterSymbol.ConstraintTypes
             .Select(static x => (global::System.Type)new Type(x))
             .ToArray();
     }
 
-    protected override global::System.Reflection.TypeAttributes GetAttributeFlagsImpl()
+    protected override TypeAttributes GetAttributeFlagsImpl()
     {
         var ret = Symbol.TypeKind switch
         {
-            global::Microsoft.CodeAnalysis.TypeKind.Interface => global::System.Reflection.TypeAttributes.Interface,
-            global::Microsoft.CodeAnalysis.TypeKind.Class     => global::System.Reflection.TypeAttributes.Class,
-            _                                                 => global::System.Reflection.TypeAttributes.NotPublic
+            TypeKind.Interface => TypeAttributes.Interface,
+            TypeKind.Class     => TypeAttributes.Class,
+            _                  => TypeAttributes.NotPublic
         };
-        if (Symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public)
+        if (Symbol.DeclaredAccessibility == Accessibility.Public)
         {
-            ret |= global::System.Reflection.TypeAttributes.Public;
+            ret |= TypeAttributes.Public;
             if (Symbol.ContainingType != null)
             {
-                ret |= global::System.Reflection.TypeAttributes.NestedPublic;
+                ret |= TypeAttributes.NestedPublic;
             }
         }
         else if (
             Symbol is
             {
-                DeclaredAccessibility: Microsoft.CodeAnalysis.Accessibility.Private, ContainingType: not null
+                DeclaredAccessibility: Accessibility.Private, ContainingType: not null
             })
         {
-            ret |= global::System.Reflection.TypeAttributes.NestedPrivate;
+            ret |= TypeAttributes.NestedPrivate;
         }
 
         if (Symbol.IsAbstract)
         {
-            ret |= global::System.Reflection.TypeAttributes.Abstract;
+            ret |= TypeAttributes.Abstract;
         }
 
         if (Symbol.IsSealed)
         {
-            ret |= global::System.Reflection.TypeAttributes.Sealed;
+            ret |= TypeAttributes.Sealed;
         }
 
         return ret;
     }
 
     protected override global::System.Reflection.ConstructorInfo? GetConstructorImpl(
-        global::System.Reflection.BindingFlags bindingAttr,
-        global::System.Reflection.Binder binder,
-        global::System.Reflection.CallingConventions callConvention,
+        BindingFlags bindingAttr,
+        Binder binder,
+        CallingConventions callConvention,
         global::System.Type[] types,
-        global::System.Reflection.ParameterModifier[] modifiers)
+        ParameterModifier[] modifiers)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IMethodSymbol>()
+            .OfType<IMethodSymbol>()
             .FirstOrDefault(x =>
                 Qualified(x, bindingAttr) &&
-                !types.Where((c, i) => new global::Feast.CodeAnalysis.CompileTime.Type(x.Parameters[i].Type).Equals(c))
+                !types.Where((c, i) => new Type(x.Parameters[i].Type).Equals(c))
                     .Any());
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.ConstructorInfo(ret);
+        return ret == null ? null : new ConstructorInfo(ret);
     }
 
-    public override global::System.Reflection.ConstructorInfo[] GetConstructors(
-        global::System.Reflection.BindingFlags bindingAttr)
+    public override global::System.Reflection.ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
     {
         switch (Symbol.TypeKind)
         {
-            case global::Microsoft.CodeAnalysis.TypeKind.Class:
-            case global::Microsoft.CodeAnalysis.TypeKind.Array:
-            case global::Microsoft.CodeAnalysis.TypeKind.Delegate:
-            case global::Microsoft.CodeAnalysis.TypeKind.Struct:
-                return (Symbol as global::Microsoft.CodeAnalysis.INamedTypeSymbol)!.Constructors
+            case TypeKind.Class:
+            case TypeKind.Array:
+            case TypeKind.Delegate:
+            case TypeKind.Struct:
+                return (Symbol as INamedTypeSymbol)!.Constructors
                     .Select(static x =>
                         (global::System.Reflection.ConstructorInfo)
-                        new global::Feast.CodeAnalysis.CompileTime.ConstructorInfo(x))
+                        new ConstructorInfo(x))
                     .ToArray();
         }
 
-        return global::System.Array.Empty<global::System.Reflection.ConstructorInfo>();
+        return Array.Empty<global::System.Reflection.ConstructorInfo>();
     }
 
 
     public override global::System.Reflection.EventInfo? GetEvent(string name,
-        global::System.Reflection.BindingFlags bindingAttr)
+        BindingFlags bindingAttr)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IEventSymbol>()
+            .OfType<IEventSymbol>()
             .FirstOrDefault(x => x.Name == name && Qualified(x, bindingAttr));
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.EventInfo(ret);
+        return ret == null ? null : new EventInfo(ret);
     }
 
     public override global::System.Reflection.EventInfo[] GetEvents(
-        global::System.Reflection.BindingFlags bindingAttr)
+        BindingFlags bindingAttr)
     {
         return Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IEventSymbol>()
+            .OfType<IEventSymbol>()
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x =>
-                (global::System.Reflection.EventInfo)new global::Feast.CodeAnalysis.CompileTime.EventInfo(x))
+                (global::System.Reflection.EventInfo)new EventInfo(x))
             .ToArray();
     }
 
     public override global::System.Reflection.FieldInfo? GetField(string name,
-        global::System.Reflection.BindingFlags bindingAttr)
+        BindingFlags bindingAttr)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IFieldSymbol>()
+            .OfType<IFieldSymbol>()
             .FirstOrDefault(x => Qualified(x, bindingAttr) && x.Name == name);
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.FieldInfo(ret);
+        return ret == null ? null : new FieldInfo(ret);
     }
 
     public override global::System.Reflection.FieldInfo[] GetFields(
-        global::System.Reflection.BindingFlags bindingAttr) =>
+        BindingFlags bindingAttr) =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IFieldSymbol>()
+            .OfType<IFieldSymbol>()
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x =>
-                (global::System.Reflection.FieldInfo)new global::Feast.CodeAnalysis.CompileTime.FieldInfo(x))
+                (global::System.Reflection.FieldInfo)new FieldInfo(x))
             .ToArray();
 
-    private static bool Qualified(global::Microsoft.CodeAnalysis.ISymbol symbol,
-        global::System.Reflection.BindingFlags flags) =>
-        (!flags.HasFlag(global::System.Reflection.BindingFlags.Instance) || !symbol.IsStatic) &&
-        (!flags.HasFlag(global::System.Reflection.BindingFlags.Static)   || symbol.IsStatic)  &&
-        (!flags.HasFlag(global::System.Reflection.BindingFlags.Public) ||
-         symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public) &&
-        (!flags.HasFlag(global::System.Reflection.BindingFlags.NonPublic) ||
-         symbol.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public);
+    private static bool Qualified(ISymbol symbol,
+        BindingFlags flags) =>
+        (!flags.HasFlag(BindingFlags.Instance) || !symbol.IsStatic) &&
+        (!flags.HasFlag(BindingFlags.Static)   || symbol.IsStatic)  &&
+        (!flags.HasFlag(BindingFlags.Public) ||
+         symbol.DeclaredAccessibility == Accessibility.Public) &&
+        (!flags.HasFlag(BindingFlags.NonPublic) ||
+         symbol.DeclaredAccessibility != Accessibility.Public);
 
-    private static bool Qualified(global::Microsoft.CodeAnalysis.ISymbol symbol,
-        global::System.Reflection.MemberTypes memberTypes) =>
-        memberTypes is global::System.Reflection.MemberTypes.All || symbol switch
+    private static bool Qualified(ISymbol symbol,
+        MemberTypes memberTypes) =>
+        memberTypes is MemberTypes.All || symbol switch
         {
-            global::Microsoft.CodeAnalysis.IFieldSymbol =>
-                memberTypes.HasFlag(global::System.Reflection.MemberTypes.Field),
-            global::Microsoft.CodeAnalysis.IMethodSymbol method =>
-                method.MethodKind == global::Microsoft.CodeAnalysis.MethodKind.Constructor
-                    ? memberTypes.HasFlag(global::System.Reflection.MemberTypes.Constructor)
-                    : memberTypes.HasFlag(global::System.Reflection.MemberTypes.Method),
-            global::Microsoft.CodeAnalysis.IPropertySymbol =>
-                memberTypes.HasFlag(global::System.Reflection.MemberTypes.Property),
-            global::Microsoft.CodeAnalysis.IEventSymbol =>
-                memberTypes.HasFlag(global::System.Reflection.MemberTypes.Event),
-            global::Microsoft.CodeAnalysis.INamedTypeSymbol =>
-                memberTypes.HasFlag(global::System.Reflection.MemberTypes.NestedType),
-            _ => false
+            IFieldSymbol => memberTypes.HasFlag(MemberTypes.Field),
+            IMethodSymbol method => method.MethodKind == MethodKind.Constructor
+                ? memberTypes.HasFlag(MemberTypes.Constructor)
+                : memberTypes.HasFlag(MemberTypes.Method),
+            IPropertySymbol  => memberTypes.HasFlag(MemberTypes.Property),
+            IEventSymbol     => memberTypes.HasFlag(MemberTypes.Event),
+            INamedTypeSymbol => memberTypes.HasFlag(MemberTypes.NestedType),
+            _                => false
         };
     
     public override global::System.Reflection.MemberInfo[] GetMembers(
-        global::System.Reflection.BindingFlags bindingAttr) =>
+        BindingFlags bindingAttr) =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.ISymbol>()
+            .OfType<ISymbol>()
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x =>
-                (global::System.Reflection.MemberInfo)new global::Feast.CodeAnalysis.CompileTime.MemberInfo(x))
+                (global::System.Reflection.MemberInfo)new MemberInfo(x))
             .ToArray();
 
     protected override global::System.Reflection.MethodInfo? GetMethodImpl(string name,
-        global::System.Reflection.BindingFlags bindingAttr,
-        global::System.Reflection.Binder binder,
-        global::System.Reflection.CallingConventions callConvention,
+        BindingFlags bindingAttr,
+        Binder binder,
+        CallingConventions callConvention,
         global::System.Type[] types,
-        global::System.Reflection.ParameterModifier[] modifiers)
+        ParameterModifier[] modifiers)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IMethodSymbol>()
+            .OfType<IMethodSymbol>()
             .FirstOrDefault(x =>
                 x.Name == name && Qualified(x, bindingAttr) && x.Parameters.Length == types.Length
                 && !x.Parameters
-                    .Where((p, i) => types[i] != new global::Feast.CodeAnalysis.CompileTime.Type(p.Type))
+                    .Where((p, i) => types[i] != new Type(p.Type))
                     .Any());
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.MethodInfo(ret);
+        return ret == null ? null : new MethodInfo(ret);
     }
 
     public override global::System.Reflection.MethodInfo[] GetMethods(
-        global::System.Reflection.BindingFlags bindingAttr) =>
+        BindingFlags bindingAttr) =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IMethodSymbol>()
+            .OfType<IMethodSymbol>()
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x =>
-                (global::System.Reflection.MethodInfo)new global::Feast.CodeAnalysis.CompileTime.MethodInfo(x))
+                (global::System.Reflection.MethodInfo)new MethodInfo(x))
             .ToArray();
 
     public override global::System.Reflection.PropertyInfo[] GetProperties(
-        global::System.Reflection.BindingFlags bindingAttr) =>
+        BindingFlags bindingAttr) =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IPropertySymbol>()
+            .OfType<IPropertySymbol>()
             .Where(x => Qualified(x, bindingAttr))
-            .Select(static x =>
-                (global::System.Reflection.PropertyInfo)
-                new global::Feast.CodeAnalysis.CompileTime.PropertyInfo(x))
+            .Select(static x => (global::System.Reflection.PropertyInfo)new PropertyInfo(x))
             .ToArray();
 
     public override System.Reflection.EventInfo[] GetEvents() =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IEventSymbol>()
-            .Select(static x =>
-                (global::System.Reflection.EventInfo)
-                new global::Feast.CodeAnalysis.CompileTime.EventInfo(x))
+            .OfType<IEventSymbol>()
+            .Select(static x => (global::System.Reflection.EventInfo)new EventInfo(x))
             .ToArray();
 
     public override bool IsSerializable => Symbol.GetAttributes().Any(static x =>
-        x.AttributeClass?.ToType().Equals(typeof(global::System.SerializableAttribute)) is true);
+        x.AttributeClass?
+            .ToType()
+            .Equals(typeof(SerializableAttribute)) is true);
 
     public override System.Reflection.MemberInfo[] GetMember(string name,
-        global::System.Reflection.BindingFlags bindingAttr)
+        BindingFlags bindingAttr)
         => Symbol.GetMembers()
             .Where(x => Qualified(x, bindingAttr))
-            .Select(static x =>
-                (global::System.Reflection.MemberInfo)
-                new global::Feast.CodeAnalysis.CompileTime.MemberInfo(x))
+            .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
             .ToArray();
 
     public override System.Reflection.MemberInfo[] GetMember(string name,
-        global::System.Reflection.MemberTypes type,
-        global::System.Reflection.BindingFlags bindingAttr)
-        => this.Symbol.GetMembers()
+        MemberTypes type,
+        BindingFlags bindingAttr)
+        => Symbol.GetMembers()
             .Where(x => x.Name == name && Qualified(x, bindingAttr) && Qualified(x, type))
-            .Select(static x =>
-                (global::System.Reflection.MemberInfo)
-                new global::Feast.CodeAnalysis.CompileTime.MemberInfo(x))
+            .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
             .ToArray();
     public override bool IsEnumDefined(object value) =>
         IsEnum && Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IFieldSymbol>()
+            .OfType<IFieldSymbol>()
             .Any(x => x.ConstantValue == value);
 
     public override object InvokeMember(string name,
-        global::System.Reflection.BindingFlags invokeAttr,
-        global::System.Reflection.Binder binder,
+        BindingFlags invokeAttr,
+        Binder binder,
         object target,
         object[] args,
-        global::System.Reflection.ParameterModifier[] modifiers,
-        global::System.Globalization.CultureInfo culture,
-        string[] namedParameters) => throw new global::System.NotSupportedException();
+        ParameterModifier[] modifiers,
+        System.Globalization.CultureInfo culture,
+        string[] namedParameters) => throw new NotSupportedException();
 
-    protected override bool IsArrayImpl() =>
-        Symbol.SpecialType == global::Microsoft.CodeAnalysis.SpecialType.System_Array;
+    protected override bool IsArrayImpl() => Symbol.SpecialType == SpecialType.System_Array;
 
     protected override bool IsByRefImpl() => Symbol.IsReferenceType || Symbol.IsRefLikeType;
 
-    protected override bool IsCOMObjectImpl() => Symbol is global::Microsoft.CodeAnalysis.INamedTypeSymbol
+    protected override bool IsCOMObjectImpl() => Symbol is INamedTypeSymbol
     {
         IsComImport: true
     };
 
-    protected override bool IsPointerImpl() => Symbol.Kind == global::Microsoft.CodeAnalysis.SymbolKind.PointerType;
+    protected override bool IsPointerImpl() => Symbol.Kind == SymbolKind.PointerType;
 
     protected override bool IsPrimitiveImpl() =>
-        Symbol.SpecialType is >= global::Microsoft.CodeAnalysis.SpecialType.System_Boolean
-            and <= global::Microsoft.CodeAnalysis.SpecialType.System_Double
-            or global::Microsoft.CodeAnalysis.SpecialType.System_Object
-            or global::Microsoft.CodeAnalysis.SpecialType.System_String;
+        Symbol.SpecialType is >= SpecialType.System_Boolean
+            and <= SpecialType.System_Double
+            or SpecialType.System_Object
+            or SpecialType.System_String;
 
     public override Array GetEnumValues() =>
         IsEnum
             ? Symbol.GetMembers()
-                .OfType<global::Microsoft.CodeAnalysis.IFieldSymbol>()
+                .OfType<IFieldSymbol>()
                 .Select(x => x.ConstantValue)
                 .ToArray()
-            : throw new global::System.InvalidOperationException();
+            : throw new InvalidOperationException();
 
-    public override GenericParameterAttributes GenericParameterAttributes =>
-        throw new global::System.InvalidOperationException();
+    public override GenericParameterAttributes GenericParameterAttributes => throw new InvalidOperationException();
 
     protected override global::System.Reflection.PropertyInfo? GetPropertyImpl(string name,
-        global::System.Reflection.BindingFlags bindingAttr,
-        global::System.Reflection.Binder binder,
+        BindingFlags bindingAttr,
+        Binder binder,
         global::System.Type returnType,
         global::System.Type[] types,
-        global::System.Reflection.ParameterModifier[] modifiers)
+        ParameterModifier[] modifiers)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.IPropertySymbol>()
+            .OfType<IPropertySymbol>()
             .FirstOrDefault(x =>
                 Qualified(x, bindingAttr) && new Type(x.Type).Equals(returnType));
-       return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.PropertyInfo(ret);
+       return ret == null ? null : new PropertyInfo(ret);
     }
 
 
     protected override bool HasElementTypeImpl() =>
-        Symbol.TypeKind    == global::Microsoft.CodeAnalysis.TypeKind.Array
-        || Symbol.TypeKind == global::Microsoft.CodeAnalysis.TypeKind.Pointer 
+        Symbol.TypeKind    == TypeKind.Array
+        || Symbol.TypeKind == TypeKind.Pointer 
         || Symbol.IsReferenceType;
 
     public override global::System.Type? GetElementType() =>
         Symbol switch
         {
-            { TypeKind: global::Microsoft.CodeAnalysis.TypeKind.Array } => new
-                global::Feast.CodeAnalysis.CompileTime.Type(Symbol.Interfaces
-                    .First(x => x.TypeArguments.Length == 1).TypeArguments[0]),
-            { TypeKind: global::Microsoft.CodeAnalysis.TypeKind.Pointer } when
-                Symbol is global::Microsoft.CodeAnalysis.IPointerTypeSymbol pointer =>
-                new global::Feast.CodeAnalysis.CompileTime.Type(pointer.PointedAtType),
-            { IsReferenceType: true } => this,
-            _                         => null
+            { TypeKind: TypeKind.Array } => new
+                Type(Symbol.Interfaces.First(x => x.TypeArguments.Length == 1).TypeArguments[0]),
+            { TypeKind: TypeKind.Pointer } and IPointerTypeSymbol pointer => new Type(pointer.PointedAtType),
+            { IsReferenceType: true }                                     => this,
+            _                                                             => null
         };
 
-
     protected override bool IsValueTypeImpl() =>
-        Symbol.TypeKind is
-            global::Microsoft.CodeAnalysis.TypeKind.Struct
-            or global::Microsoft.CodeAnalysis.TypeKind.Structure;
+        Symbol.TypeKind is TypeKind.Struct or TypeKind.Structure;
         
     public override global::System.Type? GetNestedType(string name,
-        global::System.Reflection.BindingFlags bindingAttr)
+        BindingFlags bindingAttr)
     {
         var ret = Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.INamedTypeSymbol>()
+            .OfType<INamedTypeSymbol>()
             .FirstOrDefault(x => x.Name == name && Qualified(x, bindingAttr));
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.Type(ret);
+        return ret == null ? null : new Type(ret);
     }
 
     public override global::System.Type[] GetNestedTypes(global::System.Reflection.BindingFlags bindingAttr) =>
         Symbol.GetMembers()
-            .OfType<global::Microsoft.CodeAnalysis.INamedTypeSymbol>()
-            .Select(x => (global::System.Type)new global::Feast.CodeAnalysis.CompileTime.Type(x))
+            .OfType<INamedTypeSymbol>()
+            .Select(x => (global::System.Type)new Type(x))
             .ToArray();
 
     public override global::System.Type? GetInterface(string name, bool ignoreCase)
     {
         var ret = Symbol.AllInterfaces
             .FirstOrDefault(x => ignoreCase
-                ? string.Equals(name, x.Name, global::System.StringComparison.OrdinalIgnoreCase)
+                ? string.Equals(name, x.Name, StringComparison.OrdinalIgnoreCase)
                 : name == x.Name);
-        return ret == null ? null : new global::Feast.CodeAnalysis.CompileTime.Type(ret);
+        return ret == null ? null : new Type(ret);
     }
 
     public override global::System.Type[] GetInterfaces() =>
         Symbol.AllInterfaces
-            .Select(x => (global::System.Type)new global::Feast.CodeAnalysis.CompileTime.Type(x))
+            .Select(x => (global::System.Type)new Type(x))
             .ToArray();
 
     public override bool Equals(global::System.Type? o)
@@ -452,8 +431,8 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         {
             case null:
                 return false;
-            case global::Feast.CodeAnalysis.CompileTime.Type ct:
-                return global::Microsoft.CodeAnalysis.SymbolEqualityComparer.Default.Equals(ct.Symbol, Symbol);
+            case Type ct:
+                return SymbolEqualityComparer.Default.Equals(ct.Symbol, Symbol);
         }
 
         if (o.FullName != FullName) return false;

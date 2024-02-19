@@ -5,7 +5,8 @@ using System.Reflection;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.ConstructorInfo")]
-internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol constructor) : global::System.Reflection.ConstructorInfo
+internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol constructor)
+    : global::System.Reflection.ConstructorInfo
 {
     public override object[] GetCustomAttributes(bool inherit) =>
         constructor
@@ -33,7 +34,7 @@ internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSym
     public override global::System.Type ReflectedType =>
         new Type(constructor.ReturnType);
 
-    public override System.Reflection.MethodImplAttributes GetMethodImplementationFlags() =>
+    public override MethodImplAttributes GetMethodImplementationFlags() =>
         throw new NotSupportedException();
 
     public override global::System.Reflection.ParameterInfo[] GetParameters() =>
@@ -76,11 +77,10 @@ internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSym
         }
     }
 
-    public override global::System.RuntimeMethodHandle MethodHandle => throw new global::System.NotSupportedException();
+    public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
 
-    public override object Invoke(global::System.Reflection.BindingFlags invokeAttr,
-        global::System.Reflection.Binder binder,
+    public override object Invoke(BindingFlags invokeAttr,
+        Binder binder,
         object[] parameters,
-        global::System.Globalization.CultureInfo culture) =>
-        throw new global::System.NotSupportedException();
+        System.Globalization.CultureInfo culture) => throw new NotSupportedException();
 }

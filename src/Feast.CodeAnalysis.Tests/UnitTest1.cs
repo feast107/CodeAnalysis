@@ -11,7 +11,6 @@ public class Tests
     [SetUp]
     public void Setup()
     {
-        var t = typeof(string[]).GetElementType();
     }
 
     public string Current([CallerFilePath] string path = "") => path;

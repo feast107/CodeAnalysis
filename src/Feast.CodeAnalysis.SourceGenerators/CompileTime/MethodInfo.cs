@@ -23,52 +23,48 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
     public override global::System.Type DeclaringType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(
-            (method.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+        new Type((method.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
 
     public override string Name => method.MetadataName;
 
-    public override global::System.Type ReflectedType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(method.ReturnType);
+    public override global::System.Type ReflectedType => new Type(method.ReturnType);
 
-    public override global::System.Reflection.MethodImplAttributes GetMethodImplementationFlags()
+    public override System.Reflection.MethodImplAttributes GetMethodImplementationFlags()
     {
-        var ret = global::System.Reflection.MethodImplAttributes.Managed;
+        var ret = System.Reflection.MethodImplAttributes.Managed;
         return ret;
     }
 
     public override global::System.Reflection.ParameterInfo[] GetParameters() =>
         method
             .Parameters
-            .Select(static x =>
-                (global::System.Reflection.ParameterInfo)
-                new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(x))
+            .Select(static x => (global::System.Reflection.ParameterInfo)new ParameterInfo(x))
             .ToArray();
 
     public override object Invoke(object obj, 
-        global::System.Reflection.BindingFlags invokeAttr,
-        global::System.Reflection.Binder binder,
+        System.Reflection.BindingFlags invokeAttr,
+        System.Reflection.Binder binder,
         object[] parameters,
-        global::System.Globalization.CultureInfo culture) => throw new global::System.NotSupportedException();
+        System.Globalization.CultureInfo culture) => throw new NotSupportedException();
 
-    public override global::System.Reflection.MethodAttributes Attributes
+    public override System.Reflection.MethodAttributes Attributes
     {
         get
         {
-            var ret = global::System.Reflection.MethodAttributes.PrivateScope;
+            var ret = System.Reflection.MethodAttributes.PrivateScope;
             if (method.IsStatic)
-                ret |= global::System.Reflection.MethodAttributes.Static;
+                ret |= System.Reflection.MethodAttributes.Static;
             if (method.IsVirtual)
-                ret |= global::System.Reflection.MethodAttributes.Virtual;
+                ret |= System.Reflection.MethodAttributes.Virtual;
             if (method.IsAbstract)
-                ret |= global::System.Reflection.MethodAttributes.Abstract;
+                ret |= System.Reflection.MethodAttributes.Abstract;
             switch (method.DeclaredAccessibility)
             {
                 case Microsoft.CodeAnalysis.Accessibility.Public:
-                    ret |= global::System.Reflection.MethodAttributes.Public;
+                    ret |= System.Reflection.MethodAttributes.Public;
                     break;
                 case Microsoft.CodeAnalysis.Accessibility.Protected or Microsoft.CodeAnalysis.Accessibility.Private:
-                    ret |= global::System.Reflection.MethodAttributes.Private;
+                    ret |= System.Reflection.MethodAttributes.Private;
                     break;
             }
 
@@ -76,11 +72,10 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
         }
     }
 
-    public override global::System.RuntimeMethodHandle MethodHandle => throw new global::System.NotSupportedException();
+    public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
 
-    public override global::System.Reflection.MethodInfo GetBaseDefinition() =>
-        new global::Feast.CodeAnalysis.CompileTime.MethodInfo(method.OriginalDefinition);
+    public override global::System.Reflection.MethodInfo GetBaseDefinition() => new MethodInfo(method.OriginalDefinition);
 
-    public override global::System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes =>
-        throw new global::System.NotImplementedException();
+    public override System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes =>
+        throw new NotImplementedException();
 }

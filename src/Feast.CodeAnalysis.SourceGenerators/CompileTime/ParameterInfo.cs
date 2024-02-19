@@ -8,23 +8,22 @@ internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSy
 {
     public override string Name => parameter.MetadataName;
 
-    public override global::System.Type ParameterType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(parameter.Type);
+    public override global::System.Type ParameterType => new Type(parameter.Type);
 
-    public override global::System.Reflection.ParameterAttributes Attributes
+    public override System.Reflection.ParameterAttributes Attributes
     {
         get
         {
-            var ret = global::System.Reflection.ParameterAttributes.None;
+            var ret = System.Reflection.ParameterAttributes.None;
             if (parameter.IsOptional)
-                ret |= global::System.Reflection.ParameterAttributes.Optional;
+                ret |= System.Reflection.ParameterAttributes.Optional;
             switch (parameter.RefKind)
             {
-                case global::Microsoft.CodeAnalysis.RefKind.Out:
-                    ret |= global::System.Reflection.ParameterAttributes.Out;
+                case Microsoft.CodeAnalysis.RefKind.Out:
+                    ret |= System.Reflection.ParameterAttributes.Out;
                     break;
-                case global::Microsoft.CodeAnalysis.RefKind.In:
-                    ret |= global::System.Reflection.ParameterAttributes.In;
+                case Microsoft.CodeAnalysis.RefKind.In:
+                    ret |= System.Reflection.ParameterAttributes.In;
                     break;
             }
 

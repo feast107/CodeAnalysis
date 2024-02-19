@@ -13,8 +13,8 @@ public class AnotherClass<T> where T : IEnumerable<T>
     }
 
     public string[] Member = new List<string> { typeof(StringBuilder).Name }.ToArray();
-    
-    public string Getter => (Member as object)?.ToString();
+
+    public string Getter => Member switch { { Length: > 3 } => "" };
 
     public string Get() => Member switch
     {

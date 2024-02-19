@@ -280,7 +280,6 @@ public static partial class General
         where T : ExpressionSyntax =>
         (T)(object)(syntax switch
         {
-         
             ArrayCreationExpressionSyntax arrayCreationExpression =>
                 arrayCreationExpression
                     .WithType(ArrayType(arrayCreationExpression.Type.FullName(semanticModel).ParseTypeName())),
@@ -308,8 +307,7 @@ public static partial class General
                     .WithCondition(conditionalExpression.Condition.FullQualifiedExpression(semanticModel))
                     .WithWhenTrue(conditionalExpression.WhenTrue.FullQualifiedExpression(semanticModel))
                     .WithWhenFalse(conditionalExpression.WhenFalse.FullQualifiedExpression(semanticModel)),
-            SimpleNameSyntax simpleName =>
-                simpleName.FullName(semanticModel).ParseTypeName(),
+
             ImplicitObjectCreationExpressionSyntax implicitObjectCreation =>
                 implicitObjectCreation
                     .WithArgumentList(implicitObjectCreation.ArgumentList.FullQualifiedArgumentList(semanticModel))
@@ -323,6 +321,10 @@ public static partial class General
                 invocation
                     .WithExpression(invocation.Expression.FullQualifiedExpression(semanticModel))
                     .WithArgumentList(invocation.ArgumentList.FullQualifiedArgumentList(semanticModel)),
+            IsPatternExpressionSyntax isPatternExpression =>
+                isPatternExpression
+                    .WithExpression(isPatternExpression.Expression.FullQualifiedExpression(semanticModel))
+                    .WithPattern(isPatternExpression.Pattern.FullQualifiedPattern(semanticModel)),
             MemberAccessExpressionSyntax memberAccess =>
                 memberAccess
                     .WithName(memberAccess.Name is not GenericNameSyntax genericName
@@ -357,22 +359,18 @@ public static partial class General
                 simpleLambda
                     .WithBlock(simpleLambda.Block?.FullQualifiedStatement(semanticModel))
                     .WithExpressionBody(simpleLambda.ExpressionBody?.FullQualifiedExpression(semanticModel)),
+            SimpleNameSyntax simpleName =>
+                simpleName.FullName(semanticModel).ParseTypeName(),
             SwitchExpressionSyntax switchExpression =>
                 switchExpression
                     .WithGoverningExpression(
                         switchExpression.GoverningExpression.FullQualifiedExpression(semanticModel))
                     .WithArms(switchExpression.Arms
                         .Select(x =>
-                            x.WithPattern(x.Pattern switch
-                                {
-                                    ConstantPatternSyntax constantPattern => constantPattern
-                                        .WithExpression(constantPattern.Expression.FullQualifiedExpression(semanticModel)),
-                                    DeclarationPatternSyntax declarationPattern => declarationPattern
-                                        .WithType(declarationPattern.Type.FullName(semanticModel).ParseTypeName()),
-                                    TypePatternSyntax typePatternSyntax => typePatternSyntax
-                                        .WithType(typePatternSyntax.Type.FullName(semanticModel).ParseTypeName()),
-                                    _ => x.Pattern
-                                })
+                            x.WithWhenClause(
+                                    x.WhenClause?.WithCondition(
+                                        x.WhenClause.Condition.FullQualifiedExpression(semanticModel)))
+                                .WithPattern(x.Pattern.FullQualifiedPattern(semanticModel))
                                 .WithExpression(x.Expression.FullQualifiedExpression(semanticModel)))
                         .ToSeparatedSyntaxList()),
             ThrowExpressionSyntax throwExpression =>
@@ -384,6 +382,35 @@ public static partial class General
             _ => syntax
         });
 
+    public static PatternSyntax FullQualifiedPattern(this PatternSyntax syntax, SemanticModel semanticModel) =>
+        syntax switch
+        {
+            BinaryPatternSyntax binaryPattern =>
+                binaryPattern
+                    .WithLeft(binaryPattern.Left.FullQualifiedPattern(semanticModel))
+                    .WithRight(binaryPattern.Right.FullQualifiedPattern(semanticModel)),
+            ConstantPatternSyntax constantPattern =>
+                constantPattern
+                    .WithExpression(constantPattern.Expression.FullQualifiedExpression(semanticModel)),
+            DeclarationPatternSyntax declarationPattern =>
+                declarationPattern
+                    .WithType(declarationPattern.Type.FullName(semanticModel).ParseTypeName()),
+            RecursivePatternSyntax recursivePattern =>
+                recursivePattern
+                    .WithType(recursivePattern.Type.FullName(semanticModel).ParseTypeName())
+                    .WithPropertyPatternClause(recursivePattern.PropertyPatternClause?
+                        .WithSubpatterns(recursivePattern.PropertyPatternClause.Subpatterns
+                            .Select(x => x.WithPattern(x.Pattern.FullQualifiedPattern(semanticModel)))
+                            .ToSeparatedSyntaxList())),
+            RelationalPatternSyntax relationalPattern =>
+                relationalPattern
+                    .WithExpression(relationalPattern.Expression.FullQualifiedExpression(semanticModel)),
+            TypePatternSyntax typePatternSyntax =>
+                typePatternSyntax
+                    .WithType(typePatternSyntax.Type.FullName(semanticModel).ParseTypeName()),
+            _ => syntax
+        };
+    
 
     public static ParameterListSyntax FullQualifiedParameterList(this ParameterListSyntax syntax,
         SemanticModel semanticModel) =>

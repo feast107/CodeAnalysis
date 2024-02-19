@@ -22,37 +22,36 @@ internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol fie
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
 
-    public override global::System.Type DeclaringType =>
-        new global::Feast.CodeAnalysis.CompileTime.Type(field.ContainingType);
+    public override global::System.Type DeclaringType => new Type(field.ContainingType);
 
     public override string              Name          => field.MetadataName;
     public override global::System.Type ReflectedType => FieldType;
 
-    public override object GetValue(object obj) => throw new global::System.NotSupportedException();
+    public override object GetValue(object obj) => throw new NotSupportedException();
 
     public override void SetValue(object obj,
         object value,
-        global::System.Reflection.BindingFlags invokeAttr,
-        global::System.Reflection.Binder binder,
-        global::System.Globalization.CultureInfo culture) => throw new global::System.NotSupportedException();
+        System.Reflection.BindingFlags invokeAttr,
+        System.Reflection.Binder binder,
+        System.Globalization.CultureInfo culture) => throw new NotSupportedException();
 
-    public override global::System.Reflection.FieldAttributes Attributes
+    public override System.Reflection.FieldAttributes Attributes
     {
         get
         {
-            var ret                         = global::System.Reflection.FieldAttributes.PrivateScope;
-            if (field.IsStatic) ret         |= global::System.Reflection.FieldAttributes.Static;
-            if (field.IsReadOnly) ret       |= global::System.Reflection.FieldAttributes.InitOnly;
-            if (field.HasConstantValue) ret |= global::System.Reflection.FieldAttributes.HasDefault;
-            if (field.IsConst) ret          |= global::System.Reflection.FieldAttributes.Literal;
+            var ret                         = System.Reflection.FieldAttributes.PrivateScope;
+            if (field.IsStatic) ret         |= System.Reflection.FieldAttributes.Static;
+            if (field.IsReadOnly) ret       |= System.Reflection.FieldAttributes.InitOnly;
+            if (field.HasConstantValue) ret |= System.Reflection.FieldAttributes.HasDefault;
+            if (field.IsConst) ret          |= System.Reflection.FieldAttributes.Literal;
 
             switch (field.DeclaredAccessibility)
             {
-                case global::Microsoft.CodeAnalysis.Accessibility.Public:
-                    ret |= global::System.Reflection.FieldAttributes.Public;
+                case Microsoft.CodeAnalysis.Accessibility.Public:
+                    ret |= System.Reflection.FieldAttributes.Public;
                     break;
                 default:
-                    ret |= global::System.Reflection.FieldAttributes.Private;
+                    ret |= System.Reflection.FieldAttributes.Private;
                     break;
             }
 
