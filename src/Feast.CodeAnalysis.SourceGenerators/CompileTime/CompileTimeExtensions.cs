@@ -36,6 +36,10 @@ public static partial class CompileTimeExtensions
     public static ParameterInfo ToParameterInfo(this IParameterSymbol symbol) =>
         new global::Feast.CodeAnalysis.CompileTime.ParameterInfo(symbol);
 
-    public static bool IsAssignableTo(this global::System.Type type, global::System.Type another) =>
+    public static bool IsAssignableTo(this Type type, Type another) =>
         another.IsAssignableFrom(type);
+
+    public static int GenericParameterCount(this Type type) => !type.ContainsGenericParameters
+        ? 0
+        : int.Parse(type.Name.Split('`')[1]);
 }

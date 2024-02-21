@@ -32,4 +32,7 @@ internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSy
     }
 
     public override object? DefaultValue => parameter.ExplicitDefaultValue;
+
+    public override bool HasDefaultValue => parameter.HasExplicitDefaultValue;
+
 }

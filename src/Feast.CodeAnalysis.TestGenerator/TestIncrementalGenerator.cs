@@ -26,7 +26,7 @@ namespace Feast.CodeAnalysis.TestGenerator
 
             var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
                 $"{typeof(SampleAttribute).FullName}",
-                (ctx, t) => true,
+                (_, t) => true,
                 (ctx, t) => ctx);
 
             context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),

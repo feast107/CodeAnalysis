@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
@@ -22,14 +24,26 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
         method.GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Type DeclaringType =>
-        new Type((method.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+    public override global::System.Type DeclaringType => new Type((method.ContainingSymbol as ITypeSymbol)!);
 
     public override string Name => method.MetadataName;
 
     public override global::System.Type ReflectedType => new Type(method.ReturnType);
 
-    public override System.Reflection.MethodImplAttributes GetMethodImplementationFlags()
+    public override System.Type ReturnType => new Type(method.ReturnType);
+
+    public override System.Reflection.Module Module => new Module(method.ContainingModule);
+
+    public override bool IsGenericMethod => method.IsGenericMethod;
+
+    public override MemberTypes MemberType => method.MethodKind switch
+    {
+        MethodKind.Constructor                         => MemberTypes.Constructor,
+        MethodKind.StaticConstructor                   => MemberTypes.Constructor,
+        _                                              => MemberTypes.Method
+    };
+
+    public override MethodImplAttributes GetMethodImplementationFlags()
     {
         var ret = System.Reflection.MethodImplAttributes.Managed;
         return ret;
@@ -41,30 +55,32 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
             .Select(static x => (global::System.Reflection.ParameterInfo)new ParameterInfo(x))
             .ToArray();
 
+    public override bool ContainsGenericParameters => method.IsGenericMethod;
+
     public override object Invoke(object obj, 
-        System.Reflection.BindingFlags invokeAttr,
-        System.Reflection.Binder binder,
+        BindingFlags invokeAttr,
+        Binder binder,
         object[] parameters,
         System.Globalization.CultureInfo culture) => throw new NotSupportedException();
 
-    public override System.Reflection.MethodAttributes Attributes
+    public override MethodAttributes Attributes
     {
         get
         {
-            var ret = System.Reflection.MethodAttributes.PrivateScope;
+            var ret = MethodAttributes.PrivateScope;
             if (method.IsStatic)
-                ret |= System.Reflection.MethodAttributes.Static;
+                ret |= MethodAttributes.Static;
             if (method.IsVirtual)
-                ret |= System.Reflection.MethodAttributes.Virtual;
+                ret |= MethodAttributes.Virtual;
             if (method.IsAbstract)
-                ret |= System.Reflection.MethodAttributes.Abstract;
+                ret |= MethodAttributes.Abstract;
             switch (method.DeclaredAccessibility)
             {
-                case Microsoft.CodeAnalysis.Accessibility.Public:
-                    ret |= System.Reflection.MethodAttributes.Public;
+                case Accessibility.Public:
+                    ret |= MethodAttributes.Public;
                     break;
-                case Microsoft.CodeAnalysis.Accessibility.Protected or Microsoft.CodeAnalysis.Accessibility.Private:
-                    ret |= System.Reflection.MethodAttributes.Private;
+                case Accessibility.Protected or Accessibility.Private:
+                    ret |= MethodAttributes.Private;
                     break;
             }
 
@@ -76,6 +92,6 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
 
     public override global::System.Reflection.MethodInfo GetBaseDefinition() => new MethodInfo(method.OriginalDefinition);
 
-    public override System.Reflection.ICustomAttributeProvider ReturnTypeCustomAttributes =>
+    public override ICustomAttributeProvider ReturnTypeCustomAttributes =>
         throw new NotImplementedException();
 }

@@ -32,7 +32,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         .Select(x => new AttributeData(x));
 
     
-    public override string Namespace => Symbol.ContainingNamespace.ToDisplayString();
+    public override string Namespace => IsGenericParameter ? string.Empty : Symbol.ContainingNamespace.ToDisplayString();
     public override string Name      => Symbol.MetadataName;
 
     public override string FullName =>
@@ -40,7 +40,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         {
             TypeKind.Array   => $"{GetElementType()!.FullName}[]",
             TypeKind.Pointer => $"{GetElementType()!.FullName}*",
-            _ => $"{Namespace}.{Name}{(!IsGenericType
+            _ => $"{Namespace + (IsGenericParameter ? "" : ".")}{Name}{(!IsGenericType
                 ? string.Empty
                 : '[' + string.Join(",", GenericTypeArguments.Select(x => $"[{x.AssemblyQualifiedName}]")) + ']')}"
         };
@@ -233,12 +233,13 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
 
     private static bool Qualified(ISymbol symbol,
         BindingFlags flags) =>
-        (!flags.HasFlag(BindingFlags.Instance) || !symbol.IsStatic) &&
-        (!flags.HasFlag(BindingFlags.Static)   || symbol.IsStatic)  &&
-        (!flags.HasFlag(BindingFlags.Public) ||
-         symbol.DeclaredAccessibility == Accessibility.Public) &&
-        (!flags.HasFlag(BindingFlags.NonPublic) ||
-         symbol.DeclaredAccessibility != Accessibility.Public);
+        flags.HasFlag(BindingFlags.Instance) && !symbol.IsStatic
+        ||
+        flags.HasFlag(BindingFlags.Static) && symbol.IsStatic
+        ||
+        flags.HasFlag(BindingFlags.Public) && symbol.DeclaredAccessibility == Accessibility.Public 
+        ||
+        flags.HasFlag(BindingFlags.NonPublic) && symbol.DeclaredAccessibility != Accessibility.Public;
 
     private static bool Qualified(ISymbol symbol,
         MemberTypes memberTypes) =>
@@ -405,7 +406,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         return ret == null ? null : new Type(ret);
     }
 
-    public override global::System.Type[] GetNestedTypes(global::System.Reflection.BindingFlags bindingAttr) =>
+    public override global::System.Type[] GetNestedTypes(BindingFlags bindingAttr) =>
         Symbol.GetMembers()
             .OfType<INamedTypeSymbol>()
             .Select(x => (global::System.Type)new Type(x))
@@ -457,8 +458,17 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         return false;
     }
 
-    public override string ToString() =>
-        $"{Namespace}.{Name}{(!IsGenericType
-            ? string.Empty
-            : '[' + string.Join(",", GenericTypeArguments.Select(x => x.FullName)) + ']')}";
+    public override string ToString() => FullName;
+    
+    public static bool operator ==(Type? left, global::System.Type? right) =>
+        left?.Equals(right) ?? right is null;
+    
+    public static bool operator ==(global::System.Type? left, Type? right) =>
+        right?.Equals(left) ?? left is null;
+
+    public static bool operator !=(Type? left, global::System.Type? right) =>
+        !(left == right);
+    
+    public static bool operator !=(global::System.Type? left, Type? right) =>
+        !(left == right);
 }
