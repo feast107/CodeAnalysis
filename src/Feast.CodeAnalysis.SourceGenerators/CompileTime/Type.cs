@@ -92,7 +92,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     {
         TypeParameters.Length: > 0
     };
-
+    
     public override bool IsGenericParameter =>
         Symbol.TypeKind == TypeKind.TypeParameter;
 
@@ -110,16 +110,55 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
             : Array.Empty<System.Type>();
-    
-    public override System.Type[] GetGenericParameterConstraints()
+
+    public override GenericParameterAttributes GenericParameterAttributes
     {
-        if (Symbol is not ITypeParameterSymbol typeParameterSymbol)
-            return Array.Empty<System.Type>();
-        return typeParameterSymbol.ConstraintTypes
-            .Select(static x => (global::System.Type)new Type(x))
-            .ToArray();
+        get
+        {
+            var ret = GenericParameterAttributes.None;
+            if (Symbol is not ITypeParameterSymbol parameter) return ret;
+            if (parameter.HasReferenceTypeConstraint) ret |= GenericParameterAttributes.ReferenceTypeConstraint;
+            if (parameter.HasNotNullConstraint) ret       |= GenericParameterAttributes.NotNullableValueTypeConstraint;
+            if (parameter.HasUnmanagedTypeConstraint) ret |= GenericParameterAttributes.NotNullableValueTypeConstraint;
+            if (parameter.HasConstructorConstraint) ret   |= GenericParameterAttributes.DefaultConstructorConstraint;
+            return ret;
+        }
     }
 
+    public override bool IsSerializable =>
+        Symbol.GetAttributes()
+            .Any(static x => x.AttributeClass?
+                .ToType()
+                .Equals(typeof(SerializableAttribute)) is true);
+
+    public override System.Type? GetGenericTypeDefinition() =>
+        Symbol is INamedTypeSymbol { IsGenericType: true }
+            ? new Type(Symbol.OriginalDefinition)
+            : null;
+
+    public override System.Type[] GetGenericArguments() =>
+        Symbol is INamedTypeSymbol { TypeArguments.Length: > 0 } namedType
+            ? namedType.TypeArguments
+                .Select(static x => (global::System.Type)new Type(x))
+                .ToArray()
+            : Array.Empty<System.Type>();
+
+    public System.Type[] GetGenericParameters() =>
+        Symbol is INamedTypeSymbol { TypeParameters.Length: > 0 } namedType
+            ? namedType.TypeParameters
+                .Select(static x => (global::System.Type)new Type(x))
+                .ToArray()
+            : Array.Empty<System.Type>();
+    
+    public override System.Type[] GetGenericParameterConstraints() =>
+        Symbol is not ITypeParameterSymbol typeParameterSymbol
+            ? Array.Empty<System.Type>()
+            : typeParameterSymbol.ConstraintTypes
+                .Select(static x => (global::System.Type)new Type(x))
+                .ToArray();
+
+    
+    
     protected override TypeAttributes GetAttributeFlagsImpl()
     {
         var ret = Symbol.TypeKind switch
@@ -198,27 +237,25 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     {
         var ret = Symbol.GetMembers()
             .OfType<IEventSymbol>()
-            .FirstOrDefault(x => x.Name == name && Qualified(x, bindingAttr));
+            .FirstOrDefault(x => Qualified(x, name, bindingAttr));
         return ret == null ? null : new EventInfo(ret);
     }
 
     public override global::System.Reflection.EventInfo[] GetEvents(
-        BindingFlags bindingAttr)
-    {
-        return Symbol.GetMembers()
+        BindingFlags bindingAttr) =>
+        Symbol.GetMembers()
             .OfType<IEventSymbol>()
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x =>
                 (global::System.Reflection.EventInfo)new EventInfo(x))
             .ToArray();
-    }
 
     public override global::System.Reflection.FieldInfo? GetField(string name,
         BindingFlags bindingAttr)
     {
         var ret = Symbol.GetMembers()
             .OfType<IFieldSymbol>()
-            .FirstOrDefault(x => Qualified(x, bindingAttr) && x.Name == name);
+            .FirstOrDefault(x => Qualified(x, name, bindingAttr));
         return ret == null ? null : new FieldInfo(ret);
     }
 
@@ -230,30 +267,6 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             .Select(static x =>
                 (global::System.Reflection.FieldInfo)new FieldInfo(x))
             .ToArray();
-
-    private static bool Qualified(ISymbol symbol,
-        BindingFlags flags) =>
-        flags.HasFlag(BindingFlags.Instance) && !symbol.IsStatic
-        ||
-        flags.HasFlag(BindingFlags.Static) && symbol.IsStatic
-        ||
-        flags.HasFlag(BindingFlags.Public) && symbol.DeclaredAccessibility == Accessibility.Public 
-        ||
-        flags.HasFlag(BindingFlags.NonPublic) && symbol.DeclaredAccessibility != Accessibility.Public;
-
-    private static bool Qualified(ISymbol symbol,
-        MemberTypes memberTypes) =>
-        memberTypes is MemberTypes.All || symbol switch
-        {
-            IFieldSymbol => memberTypes.HasFlag(MemberTypes.Field),
-            IMethodSymbol method => method.MethodKind == MethodKind.Constructor
-                ? memberTypes.HasFlag(MemberTypes.Constructor)
-                : memberTypes.HasFlag(MemberTypes.Method),
-            IPropertySymbol  => memberTypes.HasFlag(MemberTypes.Property),
-            IEventSymbol     => memberTypes.HasFlag(MemberTypes.Event),
-            INamedTypeSymbol => memberTypes.HasFlag(MemberTypes.NestedType),
-            _                => false
-        };
     
     public override global::System.Reflection.MemberInfo[] GetMembers(
         BindingFlags bindingAttr) =>
@@ -274,7 +287,8 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         var ret = Symbol.GetMembers()
             .OfType<IMethodSymbol>()
             .FirstOrDefault(x =>
-                x.Name == name && Qualified(x, bindingAttr) && x.Parameters.Length == types.Length
+                Qualified(x, name, bindingAttr)
+                && x.Parameters.Length == types.Length
                 && !x.Parameters
                     .Where((p, i) => types[i] != new Type(p.Type))
                     .Any());
@@ -297,6 +311,20 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             .Where(x => Qualified(x, bindingAttr))
             .Select(static x => (global::System.Reflection.PropertyInfo)new PropertyInfo(x))
             .ToArray();
+    
+    protected override global::System.Reflection.PropertyInfo? GetPropertyImpl(string name,
+        BindingFlags bindingAttr,
+        Binder binder,
+        global::System.Type returnType,
+        global::System.Type[] types,
+        ParameterModifier[] modifiers)
+    {
+        var ret = Symbol.GetMembers()
+            .OfType<IPropertySymbol>()
+            .FirstOrDefault(x =>
+                Qualified(x, name, bindingAttr) && new Type(x.Type).Equals(returnType));
+        return ret == null ? null : new PropertyInfo(ret);
+    }
 
     public override System.Reflection.EventInfo[] GetEvents() =>
         Symbol.GetMembers()
@@ -304,15 +332,10 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             .Select(static x => (global::System.Reflection.EventInfo)new EventInfo(x))
             .ToArray();
 
-    public override bool IsSerializable => Symbol.GetAttributes().Any(static x =>
-        x.AttributeClass?
-            .ToType()
-            .Equals(typeof(SerializableAttribute)) is true);
-
     public override System.Reflection.MemberInfo[] GetMember(string name,
         BindingFlags bindingAttr)
         => Symbol.GetMembers()
-            .Where(x => Qualified(x, bindingAttr))
+            .Where(x => Qualified(x, name, bindingAttr))
             .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
             .ToArray();
 
@@ -320,9 +343,10 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         MemberTypes type,
         BindingFlags bindingAttr)
         => Symbol.GetMembers()
-            .Where(x => x.Name == name && Qualified(x, bindingAttr) && Qualified(x, type))
+            .Where(x => Qualified(x, name, bindingAttr, type))
             .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
             .ToArray();
+    
     public override bool IsEnumDefined(object value) =>
         IsEnum && Symbol.GetMembers()
             .OfType<IFieldSymbol>()
@@ -361,23 +385,6 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
                 .Select(x => x.ConstantValue)
                 .ToArray()
             : throw new InvalidOperationException();
-
-    public override GenericParameterAttributes GenericParameterAttributes => throw new InvalidOperationException();
-
-    protected override global::System.Reflection.PropertyInfo? GetPropertyImpl(string name,
-        BindingFlags bindingAttr,
-        Binder binder,
-        global::System.Type returnType,
-        global::System.Type[] types,
-        ParameterModifier[] modifiers)
-    {
-        var ret = Symbol.GetMembers()
-            .OfType<IPropertySymbol>()
-            .FirstOrDefault(x =>
-                Qualified(x, bindingAttr) && new Type(x.Type).Equals(returnType));
-       return ret == null ? null : new PropertyInfo(ret);
-    }
-
 
     protected override bool HasElementTypeImpl() =>
         Symbol.TypeKind    == TypeKind.Array
@@ -471,4 +478,33 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     
     public static bool operator !=(global::System.Type? left, Type? right) =>
         !(left == right);
+    
+    private static bool Qualified(ISymbol symbol, BindingFlags flags) =>
+        flags.HasFlag(BindingFlags.Instance) && !symbol.IsStatic
+        ||
+        flags.HasFlag(BindingFlags.Static) && symbol.IsStatic
+        ||
+        flags.HasFlag(BindingFlags.Public) && symbol.DeclaredAccessibility == Accessibility.Public 
+        ||
+        flags.HasFlag(BindingFlags.NonPublic) && symbol.DeclaredAccessibility != Accessibility.Public;
+
+    private static bool Qualified(ISymbol symbol, MemberTypes memberTypes) =>
+        memberTypes is MemberTypes.All || symbol switch
+        {
+            IFieldSymbol => memberTypes.HasFlag(MemberTypes.Field),
+            IMethodSymbol method => method.MethodKind == MethodKind.Constructor
+                ? memberTypes.HasFlag(MemberTypes.Constructor)
+                : memberTypes.HasFlag(MemberTypes.Method),
+            IPropertySymbol  => memberTypes.HasFlag(MemberTypes.Property),
+            IEventSymbol     => memberTypes.HasFlag(MemberTypes.Event),
+            INamedTypeSymbol => memberTypes.HasFlag(MemberTypes.NestedType),
+            _                => false
+        };
+    private static bool Qualified(ISymbol symbol, string name, BindingFlags flags) =>
+        symbol.MetadataName == name && Qualified(symbol, flags);
+    private static bool Qualified(ISymbol symbol, string name, MemberTypes memberTypes) =>
+        symbol.MetadataName == name && Qualified(symbol, memberTypes);
+    private static bool Qualified(ISymbol symbol, string name, BindingFlags flags, MemberTypes memberTypes) =>
+        Qualified(symbol, name, flags) && Qualified(symbol, memberTypes);
+
 }
