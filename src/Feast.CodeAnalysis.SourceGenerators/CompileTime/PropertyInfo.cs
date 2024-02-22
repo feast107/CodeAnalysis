@@ -9,6 +9,8 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymbol property)
     : global::System.Reflection.PropertyInfo
 {
+    public IPropertySymbol Symbol => property;
+    
     public override object[] GetCustomAttributes(bool inherit)
         => property.GetAttributes()
             .Cast<object>()
@@ -90,4 +92,6 @@ internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymb
     public override System.Reflection.Module Module => property.ContainingModule.ToModule();
 
     public override global::System.Type PropertyType => new Type(property.Type);
+
+    public bool HasNullableAnnotation => property.NullableAnnotation == NullableAnnotation.Annotated;
 }

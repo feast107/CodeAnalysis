@@ -38,9 +38,10 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     public override string FullName =>
         Symbol.TypeKind switch
         {
-            TypeKind.Array   => $"{GetElementType()!.FullName}[]",
-            TypeKind.Pointer => $"{GetElementType()!.FullName}*",
-            _ => $"{Namespace + (IsGenericParameter ? "" : ".")}{Name}{(!IsGenericType
+            TypeKind.TypeParameter => Name,
+            TypeKind.Array         => $"{GetElementType()!.FullName}[]",
+            TypeKind.Pointer       => $"{GetElementType()!.FullName}*",
+            _ => $"{Namespace}.{Name}{(!IsGenericType
                 ? string.Empty
                 : '[' + string.Join(",", GenericTypeArguments.Select(x => $"[{x.AssemblyQualifiedName}]")) + ']')}"
         };
@@ -77,11 +78,9 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     
     public override global::System.Reflection.Assembly Assembly => new Assembly(Symbol.ContainingAssembly);
 
-    public override global::System.Reflection.Module Module =>
-        new Module(Symbol.ContainingModule);
+    public override global::System.Reflection.Module Module => new Module(Symbol.ContainingModule);
 
-    public override global::System.Type UnderlyingSystemType =>
-        new Type(Symbol);
+    public override global::System.Type UnderlyingSystemType => new Type(Symbol);
     
     public override bool IsGenericType => Symbol is INamedTypeSymbol
     {
@@ -92,17 +91,16 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
     {
         TypeParameters.Length: > 0
     };
-    
-    public override bool IsGenericParameter =>
-        Symbol.TypeKind == TypeKind.TypeParameter;
+
+    public override bool IsGenericParameter => Symbol.TypeKind == TypeKind.TypeParameter;
 
     public override bool IsGenericTypeDefinition =>
         Symbol is INamedTypeSymbol namedType &&
         namedType.TypeParameters.Length > namedType.TypeArguments.Length;
-    
+
     public override bool IsConstructedGenericType =>
         Symbol is INamedTypeSymbol namedType &&
-        namedType.TypeParameters.Length == namedType.TypeArguments.Length;
+        namedType.TypeArguments.All(x => !x.IsDefinition);
 
     public override System.Type[] GenericTypeArguments =>
         Symbol is INamedTypeSymbol { TypeArguments.Length: > 0 } typeSymbol
@@ -223,8 +221,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             case TypeKind.Struct:
                 return (Symbol as INamedTypeSymbol)!.Constructors
                     .Select(static x =>
-                        (global::System.Reflection.ConstructorInfo)
-                        new ConstructorInfo(x))
+                        (global::System.Reflection.ConstructorInfo)new ConstructorInfo(x))
                     .ToArray();
         }
 
@@ -387,22 +384,19 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             : throw new InvalidOperationException();
 
     protected override bool HasElementTypeImpl() =>
-        Symbol.TypeKind    == TypeKind.Array
-        || Symbol.TypeKind == TypeKind.Pointer 
-        || Symbol.IsReferenceType;
+        Symbol.TypeKind is TypeKind.Array or TypeKind.Pointer;
 
     public override global::System.Type? GetElementType() =>
         Symbol switch
         {
             { TypeKind: TypeKind.Array } => new
-                Type(Symbol.Interfaces.First(x => x.TypeArguments.Length == 1).TypeArguments[0]),
+                Type(Symbol.Interfaces.First(static x => x.TypeArguments.Length == 1).TypeArguments[0]),
             { TypeKind: TypeKind.Pointer } and IPointerTypeSymbol pointer => new Type(pointer.PointedAtType),
             { IsReferenceType: true }                                     => this,
             _                                                             => null
         };
 
-    protected override bool IsValueTypeImpl() =>
-        Symbol.TypeKind is TypeKind.Struct or TypeKind.Structure;
+    protected override bool IsValueTypeImpl() => Symbol.TypeKind is TypeKind.Struct or TypeKind.Structure;
         
     public override global::System.Type? GetNestedType(string name,
         BindingFlags bindingAttr)
