@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Text;
-using Feast.CodeAnalysis.TestGenerator;
 
 namespace Feast.CodeAnalysis.Tests;
 
@@ -37,7 +36,6 @@ public class AnotherClass<T> where T : IEnumerable<T>
 }
 
 
-[Sample(typeof(Foo<>), typeof(Foo<>))]
 public class Foo<T>
 {
 
