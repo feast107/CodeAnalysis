@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="Pack">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,17 +6,17 @@
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
-        
-        <Version>0.1.5</Version>
-        <FileVersion>0.1.5</FileVersion>
-        <AssemblyVersion>0.1.5</AssemblyVersion>
-        
+
+        <Version>0.1.0</Version>
+        <FileVersion>0.1.0</FileVersion>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+
         <Authors>Feast</Authors>
-        <Title>Feast.CodeAnalysis</Title>
-        <PackageId>Feast.CodeAnalysis</PackageId>
+        <Title>Feast.CodeAnalysis.Literal</Title>
+        <PackageId>Feast.CodeAnalysis.Literal</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Copyright>Copyright Feast. All rights reserved.</Copyright>
-        <Description>Auto generate extensions for Microsoft.CodeAnalysis</Description>
+        <Description>[Literal] of Feast.CodeAnalysis</Description>
         <RepositoryType>git</RepositoryType>
         <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
         <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
@@ -28,19 +28,17 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
+
     <ItemGroup Label="Package">
         <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
-          <Link>Logo.png</Link>
+            <Link>Logo.png</Link>
         </None>
         <None Include="..\..\README.md" PackagePath="\" Pack="true" />
-        <None Include="..\Feast.CodeAnalysis.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
-        
+        <None Include="..\Feast.CodeAnalysis.LiteralGenerator\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.LiteralGenerator.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="PolySharp" Version="1.14.1"/>
-        <ProjectReference Include="..\Feast.CodeAnalysis.Literal\Feast.CodeAnalysis.Literal.csproj" />
-        <ProjectReference Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>

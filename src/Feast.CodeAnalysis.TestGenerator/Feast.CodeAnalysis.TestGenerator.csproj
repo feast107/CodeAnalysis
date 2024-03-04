@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
+      <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
     </ItemGroup>
 
 

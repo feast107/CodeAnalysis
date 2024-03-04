@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{0D81B43B-56BD-45
 		..\doc\Logo.ico = ..\doc\Logo.ico
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feast.CodeAnalysis.Literal", "Feast.CodeAnalysis.Literal\Feast.CodeAnalysis.Literal.csproj", "{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{40DB7380-D677-44DD-BB6B-73CD04EABA4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40DB7380-D677-44DD-BB6B-73CD04EABA4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40DB7380-D677-44DD-BB6B-73CD04EABA4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

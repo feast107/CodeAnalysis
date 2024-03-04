@@ -38,7 +38,7 @@ public class LiteralGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(ctx =>
+        context.RegisterPostInitializationOutput(static ctx =>
         {
             ctx.AddSource($"{nameof(LiteralAttribute)}.g.cs", SourceText.From(LiteralAttribute, Encoding.UTF8));
         });
