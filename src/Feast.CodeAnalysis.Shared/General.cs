@@ -55,10 +55,16 @@ public static partial class General
                             .Select(x => x.FullName(semanticModel)))}>";
         }
 
-        return semanticModel
+        var sym = semanticModel
             .GetSymbolInfo(syntax)
-            .Symbol?
-            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + ' ';
+            .Symbol;
+        var name = sym?
+            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        if (sym is IFieldSymbol fieldSymbol && sym.ContainingType.TypeKind == TypeKind.Enum)
+        {
+            name = sym.ContainingType.FullName() + '.' + name;
+        }
+        return name + ' ';
     }
 
     public static TypeSyntax ParseTypeName(this string name) => SyntaxFactory.ParseTypeName(name);

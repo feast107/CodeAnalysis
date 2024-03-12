@@ -6,13 +6,12 @@ namespace Feast.CodeAnalysis.Tests;
 [System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
 public partial class AnotherClass<T> where T : IEnumerable<T>
 {
-    public bool Equals(Type x, Type y) =>
-        x is CompileTime.Type
-            ? x.Equals(y)
-            : y is CompileTime.Type
-                ? y.Equals(x)
-                : x.Equals(y);
+    public string EE(E e) => e is E.e ? "" : ""; 
     
+    public enum E
+    {
+        e
+    }
 
     public string[] Member = new List<string> { typeof(StringBuilder).Name }.ToArray();
     
