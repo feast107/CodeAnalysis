@@ -4,21 +4,17 @@ using System.Text;
 namespace Feast.CodeAnalysis.Tests;
 
 [System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
-public class AnotherClass<T> where T : IEnumerable<T>
+public partial class AnotherClass<T> where T : IEnumerable<T>
 {
-    public enum E
-    {
-        A
-    }
+    public bool Equals(Type x, Type y) =>
+        x is CompileTime.Type
+            ? x.Equals(y)
+            : y is CompileTime.Type
+                ? y.Equals(x)
+                : x.Equals(y);
+    
 
     public string[] Member = new List<string> { typeof(StringBuilder).Name }.ToArray();
-
-    public string Getter => Member switch { { Length: > 3 } => "" };
-
-    public string Get() => Member switch
-    {
-        IEnumerable<string> => ToString()
-    };
     
     public string Generate(StringBuilder[] args, StringBuilder[] unused)
     {

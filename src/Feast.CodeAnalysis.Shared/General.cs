@@ -335,6 +335,7 @@ public static partial class General
                                     .Select(x => x.FullName(semanticModel).ParseTypeName())
                                     .ToSeparatedSyntaxList())))
                     .WithExpression(memberAccess.Expression.FullQualifiedExpression(semanticModel)),
+            NameSyntax name => name.FullName(semanticModel).ParseTypeName(),
             ObjectCreationExpressionSyntax objectCreation =>
                 objectCreation
                     .WithType(objectCreation.Type.FullName(semanticModel).ParseTypeName())
@@ -359,8 +360,6 @@ public static partial class General
                 simpleLambda
                     .WithBlock(simpleLambda.Block?.FullQualifiedStatement(semanticModel))
                     .WithExpressionBody(simpleLambda.ExpressionBody?.FullQualifiedExpression(semanticModel)),
-            SimpleNameSyntax simpleName =>
-                simpleName.FullName(semanticModel).ParseTypeName(),
             SwitchExpressionSyntax switchExpression =>
                 switchExpression
                     .WithGoverningExpression(

@@ -4,37 +4,37 @@
 namespace Feast.CodeAnalysis;
 
 [Literal("Feast.CodeAnalysis.TypeEqualityComparer")]
-public partial class TypeEqualityComparer :  global::System.Collections.Generic.IEqualityComparer<global::System.Type>
+public partial class TypeEqualityComparer :  System.Collections.Generic.IEqualityComparer<Type>
 {
-    public bool Equals(global::System.Type x, global::System.Type y) =>
-        x is global::Feast.CodeAnalysis.CompileTime.Type
+    public bool Equals(Type x, Type y) =>
+        x is CompileTime.Type
             ? x.Equals(y)
-            : y is global::Feast.CodeAnalysis.CompileTime.Type
+            : y is CompileTime.Type
                 ? y.Equals(x)
                 : x.Equals(y);
 
-    public int GetHashCode(global::System.Type obj) =>
+    public int GetHashCode(Type obj) =>
         obj is global::Feast.CodeAnalysis.CompileTime.Type type
             ? type.GetHashCode()
             : obj.GetHashCode();
 
-    public static global::Feast.CodeAnalysis.TypeEqualityComparer Default { get; } = new();
+    public static TypeEqualityComparer Default { get; } = new();
 }
 
 
-public partial class AssemblyEqualityComparer :  global::System.Collections.Generic.IEqualityComparer<global::System.Reflection.Assembly>
+public partial class AssemblyEqualityComparer :  System.Collections.Generic.IEqualityComparer<System.Reflection.Assembly>
 {
-    public bool Equals(global::System.Reflection.Assembly x, global::System.Reflection.Assembly y) =>
-        x is global::Feast.CodeAnalysis.CompileTime.Assembly assemblyX
+    public bool Equals(System.Reflection.Assembly x, System.Reflection.Assembly y) =>
+        x is CompileTime.Assembly assemblyX
             ? assemblyX.Equals(y)
-            : y is global::Feast.CodeAnalysis.CompileTime.Assembly assemblyY
+            : y is CompileTime.Assembly assemblyY
                 ? assemblyY.Equals(x)
                 : x.Equals(y);
 
-    public int GetHashCode(global::System.Reflection.Assembly obj) =>
-        obj is global::Feast.CodeAnalysis.CompileTime.Assembly assembly
+    public int GetHashCode(System.Reflection.Assembly obj) =>
+        obj is CompileTime.Assembly assembly
             ? assembly.GetHashCode()
             : obj.GetHashCode();
 
-    public static global::Feast.CodeAnalysis.AssemblyEqualityComparer Default { get; } = new();
+    public static AssemblyEqualityComparer Default { get; } = new();
 }
