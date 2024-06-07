@@ -11,6 +11,9 @@
 
         <RootNamespace>Feast.CodeAnalysis</RootNamespace>
         <PackageId>Feast.CodeAnalysis.SourceGenerators</PackageId>
+        <Version>1.0.1</Version>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
+        <FileVersion>1.0.1</FileVersion>
 
     </PropertyGroup>
 
