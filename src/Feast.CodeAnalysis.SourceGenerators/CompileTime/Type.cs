@@ -32,8 +32,8 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         .Select(x => new AttributeData(x));
 
     
-    public override string Namespace => IsGenericParameter ? string.Empty : Symbol.ContainingNamespace.ToDisplayString();
-    public override string Name      => Symbol.MetadataName;
+    public override string? Namespace => IsGenericParameter ? null : NotGlobalNamespace(Symbol.ContainingNamespace.ToDisplayString());
+    public override string  Name      => Symbol.MetadataName;
 
     public override string FullName =>
         Symbol.TypeKind switch
@@ -107,7 +107,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             ? typeSymbol.TypeArguments
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
-            : Array.Empty<System.Type>();
+            : [];
 
     public override GenericParameterAttributes GenericParameterAttributes
     {
@@ -139,18 +139,18 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             ? namedType.TypeArguments
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
-            : Array.Empty<System.Type>();
+            : [];
 
     public System.Type[] GetGenericParameters() =>
         Symbol is INamedTypeSymbol { TypeParameters.Length: > 0 } namedType
             ? namedType.TypeParameters
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray()
-            : Array.Empty<System.Type>();
+            : [];
     
     public override System.Type[] GetGenericParameterConstraints() =>
         Symbol is not ITypeParameterSymbol typeParameterSymbol
-            ? Array.Empty<System.Type>()
+            ? []
             : typeParameterSymbol.ConstraintTypes
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray();
@@ -225,7 +225,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
                     .ToArray();
         }
 
-        return Array.Empty<global::System.Reflection.ConstructorInfo>();
+        return [];
     }
 
 
@@ -500,5 +500,6 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         symbol.MetadataName == name && Qualified(symbol, memberTypes);
     private static bool Qualified(ISymbol symbol, string name, BindingFlags flags, MemberTypes memberTypes) =>
         Qualified(symbol, name, flags) && Qualified(symbol, memberTypes);
-
+    
+    private static string? NotGlobalNamespace(string ns) => ns == "<global namespace>" ? null : ns;
 }

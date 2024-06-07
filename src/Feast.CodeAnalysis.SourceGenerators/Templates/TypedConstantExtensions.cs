@@ -20,7 +20,7 @@ internal static class TypedConstantExtensions
         var add      = listType.GetMethod(nameof(System.Collections.Generic.List<object>.Add))!;
         foreach (var value in values)
         {
-            add.Invoke(list, new object[] { value });
+            add.Invoke(list, [value]);
         }
 
         return list;

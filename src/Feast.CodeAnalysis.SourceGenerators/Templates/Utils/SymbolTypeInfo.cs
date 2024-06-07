@@ -12,9 +12,10 @@ namespace Feast.CodeAnalysis.Utils
         public SymbolTypeInfo(ITypeSymbol type)
         {
             this.type = type;
-            Namespace = type.ContainingNamespace.MetadataName == string.Empty
+            var ns = type.ContainingNamespace.ToDisplayString();
+            Namespace = ns == "<global namespace>"
                 ? null
-                : type.ContainingNamespace.ToDisplayString();
+                : ns;
             origin = new(() => SymbolEqualityComparer.Default.Equals(type, type.OriginalDefinition)
                 ? null
                 : new SymbolTypeInfo(type.OriginalDefinition));
