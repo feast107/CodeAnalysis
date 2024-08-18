@@ -7,9 +7,9 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
 
-        <Version>0.1.1</Version>
-        <FileVersion>0.1.1</FileVersion>
-        <AssemblyVersion>0.1.1</AssemblyVersion>
+        <Version>0.1.2</Version>
+        <FileVersion>0.1.2</FileVersion>
+        <AssemblyVersion>0.1.2</AssemblyVersion>
 
         <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis.Literal</Title>
@@ -23,7 +23,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Fix full qualified Enum field</PackageReleaseNotes>
+        <PackageReleaseNotes>Support same file generate and field name template</PackageReleaseNotes>
         <PackageIcon>Logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>

@@ -40,8 +40,6 @@ namespace Feast.CodeAnalysis.Utils
                             .ToArray());
                     break;
             }
-    
-    
         }
     
         public override string? Namespace   { get; }

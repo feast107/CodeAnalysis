@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+
 // ReSharper disable CheckForReferenceEqualityInstead.1
 
 namespace Feast.CodeAnalysis;
@@ -21,17 +23,17 @@ public partial class TypeEqualityComparer :  System.Collections.Generic.IEqualit
     public static TypeEqualityComparer Default { get; } = new();
 }
 
-
-public partial class AssemblyEqualityComparer :  System.Collections.Generic.IEqualityComparer<System.Reflection.Assembly>
+[Literal("Feast.CodeAnalysis.AssemblyEqualityComparer")]
+public partial class AssemblyEqualityComparer :  System.Collections.Generic.IEqualityComparer<Assembly>
 {
-    public bool Equals(System.Reflection.Assembly x, System.Reflection.Assembly y) =>
+    public bool Equals(Assembly x, Assembly y) =>
         x is CompileTime.Assembly assemblyX
             ? assemblyX.Equals(y)
             : y is CompileTime.Assembly assemblyY
                 ? assemblyY.Equals(x)
                 : x.Equals(y);
 
-    public int GetHashCode(System.Reflection.Assembly obj) =>
+    public int GetHashCode(Assembly obj) =>
         obj is CompileTime.Assembly assembly
             ? assembly.GetHashCode()
             : obj.GetHashCode();

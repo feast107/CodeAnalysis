@@ -24,5 +24,6 @@ public class CompileTimeGenerator: AutoTextGenerator
         typeof(Type),
         typeof(CompileTimeExtensions),
         typeof(TypeEqualityComparer),
+        typeof(AssemblyEqualityComparer),
     ];
 }

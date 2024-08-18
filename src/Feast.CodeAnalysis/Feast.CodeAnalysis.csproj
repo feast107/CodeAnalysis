@@ -7,9 +7,9 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
         
-        <Version>0.1.8</Version>
-        <FileVersion>0.1.8</FileVersion>
-        <AssemblyVersion>0.1.8</AssemblyVersion>
+        <Version>0.1.9</Version>
+        <FileVersion>0.1.9</FileVersion>
+        <AssemblyVersion>0.1.9</AssemblyVersion>
         
         <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis</Title>
