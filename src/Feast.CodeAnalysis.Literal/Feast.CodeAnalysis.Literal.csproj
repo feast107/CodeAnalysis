@@ -7,9 +7,9 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
 
-        <Version>0.1.2</Version>
-        <FileVersion>0.1.2</FileVersion>
-        <AssemblyVersion>0.1.2</AssemblyVersion>
+        <Version>0.1.4</Version>
+        <FileVersion>0.1.4</FileVersion>
+        <AssemblyVersion>0.1.4</AssemblyVersion>
 
         <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis.Literal</Title>
@@ -23,7 +23,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Support same file generate and field name template</PackageReleaseNotes>
+        <PackageReleaseNotes>Support nullable annotation</PackageReleaseNotes>
         <PackageIcon>Logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>

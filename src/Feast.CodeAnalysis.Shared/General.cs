@@ -47,24 +47,20 @@ public static partial class General
                                .Select(e => e.FullQualifiedExpression(semanticModel))
                                .ToSeparatedSyntaxList())));
             case GenericNameSyntax genericName:
-                var symbol = semanticModel.GetTypeInfo(genericName).Type;
-                return (symbol is not null
-                        ? symbol.OriginalDefinition.FullName()
+                var generic = semanticModel.GetTypeInfo(genericName).Type;
+                return (generic is not null
+                        ? generic.OriginalDefinition.FullName()
                         : genericName.Identifier.ValueText) + $"<{string.Join(",", genericName.TypeArgumentList
                             .Arguments
                             .Select(x => x.FullName(semanticModel)))}>";
         }
 
-        var sym = semanticModel
-            .GetSymbolInfo(syntax)
-            .Symbol;
-        var name = sym?
-            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-        if (sym is IFieldSymbol fieldSymbol && sym.ContainingType.TypeKind == TypeKind.Enum)
-        {
-            name = sym.ContainingType.FullName() + '.' + name;
-        }
-        return name + ' ';
+        var symbol = semanticModel.GetSymbolInfo(syntax).Symbol;
+        var name = symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        if (symbol is IFieldSymbol && symbol.ContainingType.TypeKind == TypeKind.Enum)
+            name = symbol.ContainingType.FullName() + '.' + name;
+        if (syntax is NullableTypeSyntax && name?.EndsWith("?") is false) name += "?";
+        return name ?? string.Empty;
     }
 
     public static TypeSyntax ParseTypeName(this string name) => SyntaxFactory.ParseTypeName(name);
