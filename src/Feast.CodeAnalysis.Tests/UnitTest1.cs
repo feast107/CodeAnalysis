@@ -1,7 +1,9 @@
 using System.Runtime.CompilerServices;
 using System.Text;
+using Feast.CodeAnalysis.CompileTime;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using BindingFlags = System.Reflection.BindingFlags;
 
 namespace Feast.CodeAnalysis.Tests;
 
@@ -75,4 +77,22 @@ public class Tests
             }
         }
         """;
+
+    [Test]
+    public void TestStaticClass()
+    {
+    }
+
+
+    public class Static
+    {
+        static Static()
+        {
+        }
+
+        public Static(int i)
+        {
+            
+        }
+    }
 }

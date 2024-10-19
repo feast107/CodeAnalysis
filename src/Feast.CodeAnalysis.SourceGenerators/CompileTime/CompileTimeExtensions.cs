@@ -16,7 +16,18 @@ public static partial class CompileTimeExtensions
         new global::Feast.CodeAnalysis.CompileTime.Type(symbol);
 
     public static MemberInfo ToMemberInfo(this ISymbol symbol) =>
-        new global::Feast.CodeAnalysis.CompileTime.MemberInfo(symbol);
+        symbol switch
+        {
+            ITypeSymbol type => type.ToType(),
+            IMethodSymbol method => method.MethodKind
+                is MethodKind.Constructor or MethodKind.StaticConstructor
+                ? method.ToConstructorInfo()
+                : method.ToMethodInfo(),
+            IFieldSymbol field       => field.ToFieldInfo(),
+            IPropertySymbol property => property.ToPropertyInfo(),
+            IEventSymbol @event      => @event.ToEventInfo(),
+            _                        => throw new ArgumentException(nameof(symbol))
+        };
 
     public static MethodInfo ToMethodInfo(this IMethodSymbol symbol) =>
         new global::Feast.CodeAnalysis.CompileTime.MethodInfo(symbol);

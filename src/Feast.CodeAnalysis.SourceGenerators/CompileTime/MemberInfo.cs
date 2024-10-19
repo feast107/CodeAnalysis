@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if False
+using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -60,3 +61,4 @@ internal partial class MemberInfo(global::Microsoft.CodeAnalysis.ISymbol symbol)
             _                        => throw new ArgumentOutOfRangeException()
         });
 }
+#endif

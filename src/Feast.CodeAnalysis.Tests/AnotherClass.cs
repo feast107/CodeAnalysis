@@ -13,7 +13,7 @@ public partial class AnotherClass<T> where T : IEnumerable<T>
         e
     }
 
-    public string[] Member = new List<string> { typeof(StringBuilder).Name }.ToArray();
+    public string[] Member = new List<string> { nameof(StringBuilder) }.ToArray();
     
     public string Generate(StringBuilder[] args, StringBuilder[] unused)
     {

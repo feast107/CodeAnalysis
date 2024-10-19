@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
@@ -8,6 +9,7 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol constructor)
     : global::System.Reflection.ConstructorInfo
 {
+    internal IMethodSymbol Symbol => constructor;
     public override object[] GetCustomAttributes(bool inherit) =>
         constructor
             .GetAttributes()

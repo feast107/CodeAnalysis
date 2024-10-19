@@ -7,7 +7,7 @@ using CompileTimeExtensions = Feast.CodeAnalysis.CompileTime.CompileTimeExtensio
 namespace Feast.CodeAnalysis.Generators;
 
 [Generator]
-public class CompileTimeGenerator: AutoTextGenerator
+public class CompileTimeGenerator : AutoTextGenerator
 {
     protected override System.Type[] Types =>
     [
@@ -16,7 +16,9 @@ public class CompileTimeGenerator: AutoTextGenerator
         typeof(ConstructorInfo),
         typeof(EventInfo),
         typeof(FieldInfo),
-        typeof(MemberInfo),
+#if False
+        typeof(MemberInfo), //member info will be removed
+#endif
         typeof(MethodInfo),
         typeof(Module),
         typeof(ParameterInfo),

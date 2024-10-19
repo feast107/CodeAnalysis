@@ -9,6 +9,7 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol method)
     : global::System.Reflection.MethodInfo
 {
+    internal IMethodSymbol Symbol => method;
     public override object[] GetCustomAttributes(bool inherit) =>
         method.GetAttributes()
             .CastArray<object>()

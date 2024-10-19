@@ -9,7 +9,7 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymbol property)
     : global::System.Reflection.PropertyInfo
 {
-    public IPropertySymbol Symbol => property;
+    internal IPropertySymbol Symbol => property;
     
     public override object[] GetCustomAttributes(bool inherit)
         => property.GetAttributes()

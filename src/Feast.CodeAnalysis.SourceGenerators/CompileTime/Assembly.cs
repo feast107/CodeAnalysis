@@ -8,10 +8,11 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class Assembly(global::Microsoft.CodeAnalysis.IAssemblySymbol symbol)
     : global::System.Reflection.Assembly, IEquatable<global::System.Reflection.Assembly>
 {
-    internal readonly IAssemblySymbol Symbol = symbol;
-    public override   string          FullName => Symbol.GetFullyQualifiedName();
-    public override   string          Location => Symbol.Locations.FirstOrDefault()?.GetLineSpan().Path ?? string.Empty;
-    public override   bool            ReflectionOnly => !Symbol.CanBeReferencedByName;
+    internal IAssemblySymbol Symbol => symbol;
+    
+    public override string          FullName => Symbol.GetFullyQualifiedName();
+    public override string          Location => Symbol.Locations.FirstOrDefault()?.GetLineSpan().Path ?? string.Empty;
+    public override bool            ReflectionOnly => !Symbol.CanBeReferencedByName;
 
     public override System.Collections.Generic.IEnumerable<global::System.Reflection.Module> Modules => Symbol
         .Modules

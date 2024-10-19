@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.EventInfo")]
 internal partial class EventInfo(global::Microsoft.CodeAnalysis.IEventSymbol @event) : global::System.Reflection.EventInfo
 {
+    internal IEventSymbol Symbol => @event;
     public override object[] GetCustomAttributes(bool inherit)
         => @event.GetAttributes()
             .CastArray<object>()

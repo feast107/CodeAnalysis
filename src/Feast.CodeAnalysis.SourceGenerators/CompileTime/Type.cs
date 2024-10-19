@@ -10,7 +10,7 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol) 
     : global::System.Type, IEquatable<global::System.Type>
 {
-    internal readonly ITypeSymbol Symbol = symbol;
+    internal ITypeSymbol Symbol => symbol;
         
     public override object[] GetCustomAttributes(bool inherit) => Symbol
         .GetAttributes()
@@ -154,8 +154,6 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             : typeParameterSymbol.ConstraintTypes
                 .Select(static x => (global::System.Type)new Type(x))
                 .ToArray();
-
-    
     
     protected override TypeAttributes GetAttributeFlagsImpl()
     {
@@ -270,8 +268,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         Symbol.GetMembers()
             .OfType<ISymbol>()
             .Where(x => Qualified(x, bindingAttr))
-            .Select(static x =>
-                (global::System.Reflection.MemberInfo)new MemberInfo(x))
+            .Select(static x => x.ToMemberInfo())
             .ToArray();
 
     protected override global::System.Reflection.MethodInfo? GetMethodImpl(string name,
@@ -333,7 +330,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         BindingFlags bindingAttr)
         => Symbol.GetMembers()
             .Where(x => Qualified(x, name, bindingAttr))
-            .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
+            .Select(static x => x.ToMemberInfo())
             .ToArray();
 
     public override System.Reflection.MemberInfo[] GetMember(string name,
@@ -341,7 +338,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         BindingFlags bindingAttr)
         => Symbol.GetMembers()
             .Where(x => Qualified(x, name, bindingAttr, type))
-            .Select(static x => (global::System.Reflection.MemberInfo)new MemberInfo(x))
+            .Select(static x => x.ToMemberInfo())
             .ToArray();
     
     public override bool IsEnumDefined(object value) =>

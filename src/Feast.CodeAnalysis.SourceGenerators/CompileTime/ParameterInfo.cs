@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
@@ -6,7 +7,8 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSymbol parameter)
     : global::System.Reflection.ParameterInfo
 {
-    public override string Name => parameter.MetadataName;
+    internal IParameterSymbol Symbol => parameter;
+    public override   string           Name => parameter.MetadataName;
 
     public override global::System.Type ParameterType => new Type(parameter.Type);
 

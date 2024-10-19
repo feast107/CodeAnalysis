@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.FieldInfo")]
 internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol field) : global::System.Reflection.FieldInfo
 {
+    internal IFieldSymbol Symbol => field;
     public override object[] GetCustomAttributes(bool inherit) =>
         field.GetAttributes()
             .CastArray<object>()
@@ -59,6 +61,6 @@ internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol fie
         }
     }
 
-    public override global::System.RuntimeFieldHandle FieldHandle => throw new global::System.NotSupportedException();
-    public override global::System.Type FieldType => new global::Feast.CodeAnalysis.CompileTime.Type(field.Type);
+    public override RuntimeFieldHandle FieldHandle => throw new NotSupportedException();
+    public override global::System.Type FieldType => new Type(field.Type);
 }
