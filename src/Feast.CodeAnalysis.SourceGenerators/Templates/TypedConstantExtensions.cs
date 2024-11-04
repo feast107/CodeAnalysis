@@ -55,7 +55,16 @@ internal static class TypedConstantExtensions
                 : value;
 
         if (value is not object[] arr) throw new ArgumentException("constant is not an array");
-        var ret = Array.CreateInstance(type.GetElementType()!, arr.Length);
+        var element = type.GetElementType()!;
+        if (element.IsEnum)
+        {
+            for (var i = 0; i < arr.Length; i++)
+            {
+                arr[i] = Enum.ToObject(element, arr[i]);
+            }
+        }
+
+        var ret     = Array.CreateInstance(element, arr.Length);
         Array.Copy(arr, ret, arr.Length);
         return ret;
     }
