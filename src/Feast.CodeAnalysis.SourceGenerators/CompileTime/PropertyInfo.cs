@@ -6,55 +6,55 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.PropertyInfo")]
-internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymbol property)
+internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymbol symbol)
     : global::System.Reflection.PropertyInfo
 {
-    internal IPropertySymbol Symbol => property;
+    internal IPropertySymbol Symbol => symbol;
     
     public override object[] GetCustomAttributes(bool inherit)
-        => property.GetAttributes()
+        => symbol.GetAttributes()
             .Cast<object>()
             .ToArray();
 
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-        property.GetAttributes()
+        symbol.GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
             .Cast<object>()
             .ToArray();
 
     public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-        property
+        symbol
             .GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Type DeclaringType => new Type(property.ContainingType);
-    public override string              Name          => property.MetadataName;
+    public override global::System.Type DeclaringType => new Type(symbol.ContainingType);
+    public override string              Name          => symbol.MetadataName;
     public override global::System.Type ReflectedType => PropertyType;
     
     public override System.Reflection.MethodInfo? GetMethod =>
-        property.GetMethod == null
+        symbol.GetMethod == null
             ? null
-            : new MethodInfo(property.GetMethod);
+            : new MethodInfo(symbol.GetMethod);
 
     public override System.Reflection.MethodInfo? SetMethod =>
-        property.SetMethod == null
+        symbol.SetMethod == null
             ? null
-            : new MethodInfo(property.SetMethod);
+            : new MethodInfo(symbol.SetMethod);
 
     public override global::System.Reflection.MethodInfo[] GetAccessors(bool nonPublic)
         => [GetGetMethod(nonPublic), GetSetMethod(nonPublic)];
 
     public override global::System.Reflection.MethodInfo? GetGetMethod(bool nonPublic) =>
-        property.GetMethod == null
+        symbol.GetMethod == null
             ? null
-            : property.GetMethod.DeclaredAccessibility != Accessibility.Public == nonPublic
+            : symbol.GetMethod.DeclaredAccessibility != Accessibility.Public == nonPublic
                 ? GetMethod
                 : null;
 
     public override global::System.Reflection.MethodInfo? GetSetMethod(bool nonPublic) =>
-        property.SetMethod == null
+        symbol.SetMethod == null
             ? null
-            : property.SetMethod.DeclaredAccessibility != Accessibility.Public == nonPublic
+            : symbol.SetMethod.DeclaredAccessibility != Accessibility.Public == nonPublic
                 ? SetMethod
                 : null;
 
@@ -62,7 +62,7 @@ internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymb
     public override object GetValue(object obj, object[] index) => throw new NotSupportedException();
 
     public override global::System.Reflection.ParameterInfo[] GetIndexParameters() =>
-        property
+        symbol
             .Parameters
             .Select(x => (global::System.Reflection.ParameterInfo)new ParameterInfo(x))
             .ToArray();
@@ -84,14 +84,14 @@ internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymb
 
     public override PropertyAttributes Attributes => PropertyAttributes.SpecialName;
 
-    public override bool CanRead  => !property.IsWriteOnly;
-    public override bool CanWrite => !property.IsReadOnly;
+    public override bool CanRead  => !symbol.IsWriteOnly;
+    public override bool CanWrite => !symbol.IsReadOnly;
     
     public override MemberTypes MemberType => MemberTypes.Property; 
 
-    public override System.Reflection.Module Module => property.ContainingModule.ToModule();
+    public override System.Reflection.Module Module => symbol.ContainingModule.ToModule();
 
-    public override global::System.Type PropertyType => new Type(property.Type);
+    public override global::System.Type PropertyType => new Type(symbol.Type);
 
-    public bool HasNullableAnnotation => property.NullableAnnotation == NullableAnnotation.Annotated;
+    public bool HasNullableAnnotation => symbol.NullableAnnotation == NullableAnnotation.Annotated;
 }

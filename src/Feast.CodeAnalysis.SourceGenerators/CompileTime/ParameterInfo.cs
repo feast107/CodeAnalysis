@@ -4,22 +4,22 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.ParameterInfo")]
-internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSymbol parameter)
+internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSymbol symbol)
     : global::System.Reflection.ParameterInfo
 {
-    internal IParameterSymbol Symbol => parameter;
-    public override   string           Name => parameter.MetadataName;
+    internal IParameterSymbol Symbol => symbol;
+    public override   string           Name => symbol.MetadataName;
 
-    public override global::System.Type ParameterType => new Type(parameter.Type);
+    public override global::System.Type ParameterType => new Type(symbol.Type);
 
     public override System.Reflection.ParameterAttributes Attributes
     {
         get
         {
             var ret = System.Reflection.ParameterAttributes.None;
-            if (parameter.IsOptional)
+            if (symbol.IsOptional)
                 ret |= System.Reflection.ParameterAttributes.Optional;
-            switch (parameter.RefKind)
+            switch (symbol.RefKind)
             {
                 case Microsoft.CodeAnalysis.RefKind.Out:
                     ret |= System.Reflection.ParameterAttributes.Out;
@@ -33,8 +33,8 @@ internal partial class ParameterInfo(global::Microsoft.CodeAnalysis.IParameterSy
         }
     }
 
-    public override object? DefaultValue => parameter.ExplicitDefaultValue;
+    public override object? DefaultValue => symbol.ExplicitDefaultValue;
 
-    public override bool HasDefaultValue => parameter.HasExplicitDefaultValue;
+    public override bool HasDefaultValue => symbol.HasExplicitDefaultValue;
 
 }

@@ -6,38 +6,38 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.MethodInfo")]
-internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol method)
+internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol symbol)
     : global::System.Reflection.MethodInfo
 {
-    internal IMethodSymbol Symbol => method;
+    internal IMethodSymbol Symbol => symbol;
     public override object[] GetCustomAttributes(bool inherit) =>
-        method.GetAttributes()
+        symbol.GetAttributes()
             .CastArray<object>()
             .ToArray();
 
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-        method.GetAttributes()
+        symbol.GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
             .Cast<object>()
             .ToArray();
 
     public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-        method.GetAttributes()
+        symbol.GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Type DeclaringType => new Type((method.ContainingSymbol as ITypeSymbol)!);
+    public override global::System.Type DeclaringType => new Type((symbol.ContainingSymbol as ITypeSymbol)!);
 
-    public override string Name => method.MetadataName;
+    public override string Name => symbol.MetadataName;
 
-    public override global::System.Type ReflectedType => new Type(method.ReturnType);
+    public override global::System.Type ReflectedType => new Type(symbol.ReturnType);
 
-    public override System.Type ReturnType => new Type(method.ReturnType);
+    public override System.Type ReturnType => new Type(symbol.ReturnType);
 
-    public override System.Reflection.Module Module => new Module(method.ContainingModule);
+    public override System.Reflection.Module Module => new Module(symbol.ContainingModule);
 
-    public override bool IsGenericMethod => method.IsGenericMethod;
+    public override bool IsGenericMethod => symbol.IsGenericMethod;
 
-    public override MemberTypes MemberType => method.MethodKind switch
+    public override MemberTypes MemberType => symbol.MethodKind switch
     {
         MethodKind.Constructor                         => MemberTypes.Constructor,
         MethodKind.StaticConstructor                   => MemberTypes.Constructor,
@@ -51,12 +51,12 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
     }
 
     public override global::System.Reflection.ParameterInfo[] GetParameters() =>
-        method
+        symbol
             .Parameters
             .Select(static x => (global::System.Reflection.ParameterInfo)new ParameterInfo(x))
             .ToArray();
 
-    public override bool ContainsGenericParameters => method.IsGenericMethod;
+    public override bool ContainsGenericParameters => symbol.IsGenericMethod;
 
     public override object Invoke(object obj, 
         BindingFlags invokeAttr,
@@ -69,13 +69,13 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
         get
         {
             var ret = MethodAttributes.PrivateScope;
-            if (method.IsStatic)
+            if (symbol.IsStatic)
                 ret |= MethodAttributes.Static;
-            if (method.IsVirtual)
+            if (symbol.IsVirtual)
                 ret |= MethodAttributes.Virtual;
-            if (method.IsAbstract)
+            if (symbol.IsAbstract)
                 ret |= MethodAttributes.Abstract;
-            switch (method.DeclaredAccessibility)
+            switch (symbol.DeclaredAccessibility)
             {
                 case Accessibility.Public:
                     ret |= MethodAttributes.Public;
@@ -91,7 +91,7 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol m
 
     public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
 
-    public override global::System.Reflection.MethodInfo GetBaseDefinition() => new MethodInfo(method.OriginalDefinition);
+    public override global::System.Reflection.MethodInfo GetBaseDefinition() => new MethodInfo(symbol.OriginalDefinition);
 
     public override ICustomAttributeProvider ReturnTypeCustomAttributes =>
         throw new NotImplementedException();

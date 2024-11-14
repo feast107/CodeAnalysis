@@ -5,49 +5,49 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.EventInfo")]
-internal partial class EventInfo(global::Microsoft.CodeAnalysis.IEventSymbol @event) : global::System.Reflection.EventInfo
+internal partial class EventInfo(global::Microsoft.CodeAnalysis.IEventSymbol symbol) : global::System.Reflection.EventInfo
 {
-    internal IEventSymbol Symbol => @event;
+    internal IEventSymbol Symbol => symbol;
     public override object[] GetCustomAttributes(bool inherit)
-        => @event.GetAttributes()
+        => symbol.GetAttributes()
             .CastArray<object>()
             .ToArray();
 
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-        @event.GetAttributes()
+        symbol.GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
             .Cast<object>()
             .ToArray();
 
     public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-        @event
+        symbol
             .GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Type DeclaringType => new Type((@event.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+    public override global::System.Type DeclaringType => new Type((symbol.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
 
-    public override string              Name          => @event.MetadataName;
+    public override string              Name          => symbol.MetadataName;
     public override global::System.Type ReflectedType => DeclaringType;
 
     public override global::System.Reflection.MethodInfo? GetAddMethod(bool nonPublic) =>
-        @event.AddMethod == null
+        symbol.AddMethod == null
             ? null
-            : @event.AddMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
-                ? new MethodInfo(@event.AddMethod)
+            : symbol.AddMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
+                ? new MethodInfo(symbol.AddMethod)
                 : null;
 
     public override global::System.Reflection.MethodInfo? GetRaiseMethod(bool nonPublic)
-        => @event.RaiseMethod == null
+        => symbol.RaiseMethod == null
             ? null
-            : @event.RaiseMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
-                ? new MethodInfo(@event.RaiseMethod)
+            : symbol.RaiseMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
+                ? new MethodInfo(symbol.RaiseMethod)
                 : null;
 
     public override global::System.Reflection.MethodInfo? GetRemoveMethod(bool nonPublic) =>
-        @event.RemoveMethod == null
+        symbol.RemoveMethod == null
             ? null
-            : @event.RemoveMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
-                ? new MethodInfo(@event.RemoveMethod)
+            : symbol.RemoveMethod.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public == nonPublic
+                ? new MethodInfo(symbol.RemoveMethod)
                 : null;
 
     public override System.Reflection.EventAttributes Attributes =>

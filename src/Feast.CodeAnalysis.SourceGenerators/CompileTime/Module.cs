@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.Module")]
-internal partial class Module(global::Microsoft.CodeAnalysis.IModuleSymbol module) : global::System.Reflection.Module
+internal partial class Module(global::Microsoft.CodeAnalysis.IModuleSymbol symbol) : global::System.Reflection.Module
 {
-    internal IModuleSymbol Symbol => module;
+    internal IModuleSymbol Symbol => symbol;
     
-    public override string        Name               => module.MetadataName;
-    public override string        FullyQualifiedName => module.GetFullyQualifiedName();
+    public override string        Name               => symbol.MetadataName;
+    public override string        FullyQualifiedName => symbol.GetFullyQualifiedName();
 
-    public override global::System.Reflection.Assembly Assembly => new Assembly(module.ContainingAssembly);
+    public override global::System.Reflection.Assembly Assembly => new Assembly(symbol.ContainingAssembly);
 }

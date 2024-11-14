@@ -6,41 +6,41 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.ConstructorInfo")]
-internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol constructor)
+internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSymbol symbol)
     : global::System.Reflection.ConstructorInfo
 {
-    internal IMethodSymbol Symbol => constructor;
+    internal IMethodSymbol Symbol => symbol;
     public override object[] GetCustomAttributes(bool inherit) =>
-        constructor
+        symbol
             .GetAttributes()
             .CastArray<object>()
             .ToArray();
 
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-        constructor
+        symbol
             .GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
             .Cast<object>()
             .ToArray();
 
     public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-        constructor
+        symbol
             .GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
     public override global::System.Type DeclaringType =>
-        new Type((constructor.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
+        new Type((symbol.ContainingSymbol as global::Microsoft.CodeAnalysis.ITypeSymbol)!);
 
-    public override string Name => constructor.MetadataName;
+    public override string Name => symbol.MetadataName;
 
     public override global::System.Type ReflectedType =>
-        new Type(constructor.ReturnType);
+        new Type(symbol.ReturnType);
 
     public override MethodImplAttributes GetMethodImplementationFlags() =>
         throw new NotSupportedException();
 
     public override global::System.Reflection.ParameterInfo[] GetParameters() =>
-        constructor
+        symbol
             .Parameters
             .Select(static x =>
                 (global::System.Reflection.ParameterInfo)
@@ -59,13 +59,13 @@ internal partial class ConstructorInfo(global::Microsoft.CodeAnalysis.IMethodSym
         get
         {
             var ret = MethodAttributes.PrivateScope;
-            if (constructor.IsStatic)
+            if (symbol.IsStatic)
                 ret |= MethodAttributes.Static;
-            if (constructor.IsVirtual)
+            if (symbol.IsVirtual)
                 ret |= MethodAttributes.Virtual;
-            if (constructor.IsAbstract)
+            if (symbol.IsAbstract)
                 ret |= MethodAttributes.Abstract;
-            switch (constructor.DeclaredAccessibility)
+            switch (symbol.DeclaredAccessibility)
             {
                 case Microsoft.CodeAnalysis.Accessibility.Public:
                     ret |= MethodAttributes.Public;

@@ -5,28 +5,28 @@ using Microsoft.CodeAnalysis;
 namespace Feast.CodeAnalysis.CompileTime;
 
 [Literal("Feast.CodeAnalysis.CompileTime.FieldInfo")]
-internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol field) : global::System.Reflection.FieldInfo
+internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol symbol) : global::System.Reflection.FieldInfo
 {
-    internal IFieldSymbol Symbol => field;
+    internal IFieldSymbol Symbol => symbol;
     public override object[] GetCustomAttributes(bool inherit) =>
-        field.GetAttributes()
+        symbol.GetAttributes()
             .CastArray<object>()
             .ToArray();
 
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
-        field.GetAttributes()
+        symbol.GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
             .Cast<object>()
             .ToArray();
 
     public override bool IsDefined(global::System.Type attributeType, bool inherit) =>
-        field.GetAttributes()
+        symbol.GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
 
-    public override global::System.Type DeclaringType => new Type(field.ContainingType);
+    public override global::System.Type DeclaringType => new Type(symbol.ContainingType);
 
-    public override string              Name          => field.MetadataName;
+    public override string              Name          => symbol.MetadataName;
     public override global::System.Type ReflectedType => FieldType;
 
     public override object GetValue(object obj) => throw new NotSupportedException();
@@ -41,13 +41,13 @@ internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol fie
     {
         get
         {
-            var ret                         = System.Reflection.FieldAttributes.PrivateScope;
-            if (field.IsStatic) ret         |= System.Reflection.FieldAttributes.Static;
-            if (field.IsReadOnly) ret       |= System.Reflection.FieldAttributes.InitOnly;
-            if (field.HasConstantValue) ret |= System.Reflection.FieldAttributes.HasDefault;
-            if (field.IsConst) ret          |= System.Reflection.FieldAttributes.Literal;
+            var ret                          = System.Reflection.FieldAttributes.PrivateScope;
+            if (symbol.IsStatic) ret         |= System.Reflection.FieldAttributes.Static;
+            if (symbol.IsReadOnly) ret       |= System.Reflection.FieldAttributes.InitOnly;
+            if (symbol.HasConstantValue) ret |= System.Reflection.FieldAttributes.HasDefault;
+            if (symbol.IsConst) ret          |= System.Reflection.FieldAttributes.Literal;
 
-            switch (field.DeclaredAccessibility)
+            switch (symbol.DeclaredAccessibility)
             {
                 case Microsoft.CodeAnalysis.Accessibility.Public:
                     ret |= System.Reflection.FieldAttributes.Public;
@@ -62,5 +62,5 @@ internal partial class FieldInfo(global::Microsoft.CodeAnalysis.IFieldSymbol fie
     }
 
     public override RuntimeFieldHandle FieldHandle => throw new NotSupportedException();
-    public override global::System.Type FieldType => new Type(field.Type);
+    public override global::System.Type FieldType => new Type(symbol.Type);
 }

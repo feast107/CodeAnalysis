@@ -499,4 +499,8 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         Qualified(symbol, name, flags) && Qualified(symbol, memberTypes);
     
     private static string? NotGlobalNamespace(string ns) => ns == "<global namespace>" ? null : ns;
+
+    public override bool Equals(object? o) => o is global::System.Type type && type == this;
+
+    public override int GetHashCode() => base.GetHashCode();
 }

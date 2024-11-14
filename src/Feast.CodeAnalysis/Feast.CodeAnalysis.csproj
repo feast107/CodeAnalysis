@@ -7,7 +7,7 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
         
-        <Version>0.2.1</Version>
+        <Version>0.3.0</Version>
         <FileVersion>0.2.1</FileVersion>
         <AssemblyVersion>0.2.1</AssemblyVersion>
         
@@ -23,7 +23,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Fix enum array creation in ToAttribute&lt;&gt;</PackageReleaseNotes>
+        <PackageReleaseNotes>Adapt to lang 13</PackageReleaseNotes>
         <PackageIcon>Logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
