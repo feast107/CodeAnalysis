@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿#nullable enable
+using System.Collections;
 using System.Text;
 
 namespace Feast.CodeAnalysis.Tests;
-
 [System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
 public partial class AnotherClass<T> where T : IEnumerable<T>
 {

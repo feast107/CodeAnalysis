@@ -7,9 +7,9 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
         
-        <Version>0.3.0</Version>
-        <FileVersion>0.2.1</FileVersion>
-        <AssemblyVersion>0.2.1</AssemblyVersion>
+        <Version>0.3.1</Version>
+        <FileVersion>0.3.1</FileVersion>
+        <AssemblyVersion>0.3.1</AssemblyVersion>
         
         <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis</Title>
@@ -23,7 +23,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Adapt to lang 13</PackageReleaseNotes>
+        <PackageReleaseNotes>Literal support trivia syntax</PackageReleaseNotes>
         <PackageIcon>Logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>

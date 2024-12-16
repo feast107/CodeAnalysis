@@ -103,8 +103,7 @@ public class LiteralGenerator : IIncrementalGenerator
                                 var classSymbol = (syntax.TargetSymbol as INamedTypeSymbol)!;
                                 var attrSymbols = classSymbol.GetAttributes();
                                 foreach (var (attributeList, index) in typeDeclaration
-                                             .AttributeLists.Select(
-                                                 (x, i) => (x, i)))
+                                             .AttributeLists.Select(static (a, i) => (x: a, i)))
                                 {
                                     var attrs = new SeparatedSyntaxList<AttributeSyntax>();
                                     attrs = attributeList.Attributes
@@ -121,10 +120,15 @@ public class LiteralGenerator : IIncrementalGenerator
                                     }
                                 }
 
+                                var cs = x.Context.TargetNode.SyntaxTree.GetRoot().ChildNodes()
+                                    .Where(static x => x.HasLeadingTrivia)
+                                    .SelectMany(static x => x.GetLeadingTrivia())
+                                    .Where(static x => x.HasStructure);
                                 var full = typeDeclaration
                                     .FullQualifiedMember(syntax.SemanticModel)
                                     .WithAttributeLists(attrList)
                                     .FullNamespace(classSymbol)
+                                    .WithLeadingTrivia(cs)
                                     .WithUsing(typeDeclaration.SyntaxTree
                                                    .GetCompilationUnitRoot())
                                     .NormalizeWhitespace()
@@ -154,6 +158,8 @@ public class LiteralGenerator : IIncrementalGenerator
                                               + ".Replace(\"\\\"^\\\"\\\"\",\"\\\"\\\"\\\"\");";
                                 return ParseMemberDeclaration(content)!;
                             }).ToArray());
+                    
+                    
                     var text = CompilationUnit()
                         .AddMembers(
                             NamespaceDeclaration(IdentifierName(@namespace))
