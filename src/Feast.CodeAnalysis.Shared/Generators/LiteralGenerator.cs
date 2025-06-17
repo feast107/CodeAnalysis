@@ -99,47 +99,37 @@ public class LiteralGenerator : IIncrementalGenerator
 
                                 var typeDeclaration =
                                     (syntax.TargetNode as MemberDeclarationSyntax)!;
-                                var attrList    = new SyntaxList<AttributeListSyntax>();
                                 var classSymbol = (syntax.TargetSymbol as INamedTypeSymbol)!;
-                                var attrSymbols = classSymbol.GetAttributes();
-                                foreach (var (attributeList, index) in typeDeclaration
-                                             .AttributeLists.Select(static (a, i) => (x: a, i)))
-                                {
-                                    var attrs = new SeparatedSyntaxList<AttributeSyntax>();
-                                    attrs = attributeList.Attributes
-                                        .Where(_ => attrSymbols[index].AttributeClass!
-                                                        .ToDisplayString() !=
-                                                    AttributeName)
-                                        .Aggregate(
-                                            attrs,
-                                            (current, attribute) => current.Add(attribute));
-
-                                    if (attrs.Count > 0)
-                                    {
-                                        attrList = attrList.Add(AttributeList(attrs));
-                                    }
-                                }
-
                                 var cs = x.Context.TargetNode.SyntaxTree.GetRoot().ChildNodes()
                                     .Where(static x => x.HasLeadingTrivia)
                                     .SelectMany(static x => x.GetLeadingTrivia())
                                     .Where(static x => x.HasStructure);
+                                var replaces = typeDeclaration.AttributeLists
+                                    .FullQualifiedAttributeLists(syntax.SemanticModel)
+                                    .Select(al => al
+                                        .WithAttributes(al.Attributes
+                                            .Where(a => a.Name.ToFullString() != "global::System.LiteralAttribute")
+                                            .ToSeparatedSyntaxList()))
+                                     .Where(al => al.Attributes.Count > 0)
+                                     .ToSyntaxList();
                                 var full = typeDeclaration
                                     .FullQualifiedMember(syntax.SemanticModel)
-                                    .WithAttributeLists(attrList)
+                                    .WithAttributeLists(replaces)
                                     .FullNamespace(classSymbol)
-                                    .WithLeadingTrivia(cs)
                                     .WithUsing(typeDeclaration.SyntaxTree
                                                    .GetCompilationUnitRoot())
+                                    .WithLeadingTrivia(cs)
                                     .NormalizeWhitespace()
                                     .GetText(Encoding.UTF8);
-                                var sp = (syntax.TargetSymbol as ITypeSymbol)!
-                                    .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+                                var sp = new StringBuilder((syntax.TargetSymbol as ITypeSymbol)!
+                                        .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
                                     .Replace("{", "_")
                                     .Replace("}", "_")
                                     .Replace("<", "_")
                                     .Replace(">", "_")
-                                    .Replace("global::", "").Split('.');
+                                    .Replace("global::", "")
+                                    .ToString()
+                                    .Split('.');
                                 var fqn = string.Join("_", sp.Take(sp.Length - 1));
                                 var fqc = sp.Last();
                                 var content = $"internal static string {

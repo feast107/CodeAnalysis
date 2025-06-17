@@ -1,12 +1,21 @@
 ﻿#nullable enable
 using System.Collections;
+using System.Diagnostics;
 using System.Text;
+using Feast.CodeAnalysis.TestGenerator;
+
+[assembly: ForAssembly]
 
 namespace Feast.CodeAnalysis.Tests;
+
+
+public class CustomAttribute : Attribute;
+
+[CustomAttribute]
 [System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
 public partial class AnotherClass<T> where T : IEnumerable<T>
 {
-    public string EE(E e) => e is E.e ? "" : ""; 
+    public string EE(E e) => e is E.e ? To("") : To(""); 
     
     public enum E
     {
@@ -14,6 +23,8 @@ public partial class AnotherClass<T> where T : IEnumerable<T>
     }
 
     public string[] Member = new List<string> { nameof(StringBuilder) }.ToArray();
+
+    private string To(string str) => str;
     
     public string Generate(StringBuilder[] args, StringBuilder[] unused)
     {

@@ -9,7 +9,7 @@
     <Import_RootNamespace>Feast.CodeAnalysis.Extensions.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)General.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SyntaxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Generators\LiteralGenerator.cs" />
   </ItemGroup>
 </Project>

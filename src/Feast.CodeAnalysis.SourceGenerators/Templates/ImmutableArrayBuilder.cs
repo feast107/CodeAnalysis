@@ -55,7 +55,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Gets the data written to the underlying buffer so far, as a <see cref="ReadOnlySpan{T}"/>.
         /// </summary>
-        [UnscopedRef]
+        [global::System.Diagnostics.CodeAnalysis.UnscopedRef]
         public readonly ReadOnlySpan<T> WrittenSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

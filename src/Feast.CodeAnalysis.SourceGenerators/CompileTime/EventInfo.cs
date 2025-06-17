@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace Feast.CodeAnalysis.CompileTime;
 
@@ -8,6 +12,7 @@ namespace Feast.CodeAnalysis.CompileTime;
 internal partial class EventInfo(global::Microsoft.CodeAnalysis.IEventSymbol symbol) : global::System.Reflection.EventInfo
 {
     internal IEventSymbol Symbol => symbol;
+    
     public override object[] GetCustomAttributes(bool inherit)
         => symbol.GetAttributes()
             .CastArray<object>()

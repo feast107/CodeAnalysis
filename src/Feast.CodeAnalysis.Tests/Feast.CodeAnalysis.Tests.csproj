@@ -20,9 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference  Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
-        <ProjectReference  Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
-
+        <ProjectReference Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
+        <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
     </ItemGroup>
 
 </Project>

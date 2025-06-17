@@ -1,9 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
-using Feast.CodeAnalysis.CompileTime;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using BindingFlags = System.Reflection.BindingFlags;
 
 namespace Feast.CodeAnalysis.Tests;
 
@@ -43,19 +41,17 @@ public class Tests
 
         // We need to create a compilation with the required source code.
         var compilation = CSharpCompilation.Create(nameof(Tests),
-            new[]
-            {
+            [
                 CSharpSyntaxTree.ParseText(Attribute),
-                CSharpSyntaxTree.ParseText(File.ReadAllText(file)),
-            },
-            new[]
-            {
+                CSharpSyntaxTree.ParseText(File.ReadAllText(file))
+            ],
+            [
                 // To support 'System.Attribute' inheritance, add reference to 'System.Private.CoreLib'.
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(StringBuilder).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Array).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(IEnumerable<>).Assembly.Location),
-            });
+                MetadataReference.CreateFromFile(typeof(IEnumerable<>).Assembly.Location)
+            ]);
 
         // Run generators and retrieve all results.
         var runResult = driver.RunGenerators(compilation).GetRunResult();

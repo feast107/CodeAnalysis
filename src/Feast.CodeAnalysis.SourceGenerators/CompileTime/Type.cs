@@ -33,6 +33,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
 
     
     public override string? Namespace => IsGenericParameter ? null : NotGlobalNamespace(Symbol.ContainingNamespace.ToDisplayString());
+
     public override string  Name      => Symbol.MetadataName;
 
     public override string FullName =>
