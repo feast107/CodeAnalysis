@@ -40,4 +40,6 @@
       <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
     </ItemGroup>
 
+    <Import Project="..\Feast.CodeAnalysis.Shared\Feast.CodeAnalysis.Shared.projitems" Label="Shared" />
+
 </Project>

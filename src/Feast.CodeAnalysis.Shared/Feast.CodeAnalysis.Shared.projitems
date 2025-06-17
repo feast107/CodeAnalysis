@@ -10,6 +10,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)SyntaxExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Generators\LiteralGenerator.cs" />
   </ItemGroup>
 </Project>

@@ -1,12 +1,16 @@
-﻿using System;
+﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Feast.CodeAnalysis.LiteralGenerator;
+namespace Feast.CodeAnalysis;
 
+#if !LITERAL
+[Literal("Feast.CodeAnalysis.LiteralGenerator.SyntaxExtensions")]
+#endif
 public static partial class SyntaxExtensions
 {
     public static string FullName(this INamespaceSymbol symbol)

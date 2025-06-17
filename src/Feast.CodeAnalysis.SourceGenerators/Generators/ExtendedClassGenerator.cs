@@ -18,6 +18,8 @@ public class ExtendedClassGenerator : IIncrementalGenerator
                 using Microsoft.CodeAnalysis.Internal;
                 #endif
                 """);
+            ctx.AddSource(GenerateFileName(nameof(SyntaxExtensions)),
+                LiteralGenerator.SyntaxExtensions.Text.Replace("#endif", ""));
             ctx.AddSource(GenerateFileName(nameof(GeneratorAttributeSyntaxContext)),
                 GeneratorAttributeSyntaxContext.Text);
             ctx.AddSource(GenerateFileName("ImmutableArrayBuilder{T}"),

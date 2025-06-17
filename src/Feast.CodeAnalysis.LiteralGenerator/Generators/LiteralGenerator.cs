@@ -1,7 +1,7 @@
 ﻿global using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System.Linq;
 using System.Text;
-using Feast.CodeAnalysis.LiteralGenerator;
+using Feast.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

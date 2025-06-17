@@ -6,7 +6,7 @@ using Feast.CodeAnalysis;
 namespace Microsoft.CodeAnalysis;
 
 [Literal("Feast.CodeAnalysis.SyntaxExtensions")]
-internal static class SyntaxExtensions
+internal static partial class SyntaxExtensions
 {
     public static global::System.Collections.Generic.IEnumerable<global::Microsoft.CodeAnalysis.CSharp.Syntax.AttributeSyntax> GetAllAttributes(this global::Microsoft.CodeAnalysis.SyntaxNode syntax)
     {
