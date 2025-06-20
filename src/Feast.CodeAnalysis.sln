@@ -18,9 +18,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{0D81B43B-56BD-4560-99D1-99BC976F463D}"
 	ProjectSection(SolutionItems) = preProject
 		..\doc\Logo.ico = ..\doc\Logo.ico
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feast.CodeAnalysis.Literal", "Feast.CodeAnalysis.Literal\Feast.CodeAnalysis.Literal.csproj", "{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feast.CodeAnalysis.ScriptingGenerator", "Feast.CodeAnalysis.ScriptingGenerator\Feast.CodeAnalysis.ScriptingGenerator.csproj", "{5DD567DB-214F-48A3-87F9-3D9FD2AC57D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feast.CodeAnalysis.Scripting", "Feast.CodeAnalysis.Scripting\Feast.CodeAnalysis.Scripting.csproj", "{0E3DF60C-54D4-484A-9C37-513943EDB92C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +57,14 @@ Global
 		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB1A4D28-818D-4427-AC7E-E13CDC8AB8E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD567DB-214F-48A3-87F9-3D9FD2AC57D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD567DB-214F-48A3-87F9-3D9FD2AC57D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD567DB-214F-48A3-87F9-3D9FD2AC57D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD567DB-214F-48A3-87F9-3D9FD2AC57D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3DF60C-54D4-484A-9C37-513943EDB92C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E3DF60C-54D4-484A-9C37-513943EDB92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E3DF60C-54D4-484A-9C37-513943EDB92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E3DF60C-54D4-484A-9C37-513943EDB92C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

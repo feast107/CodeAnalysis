@@ -7,6 +7,11 @@
 
 ## Supports
 
++ `Feast.CodeAnalysis.Scripting`
+  
+  allow using `CSharpScript` in Roslyn components
+
+
 + `[Literal]`
     
     Auto generate full qualified string literal for target class

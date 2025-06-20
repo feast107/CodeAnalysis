@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>preview</LangVersion>
 
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
@@ -27,8 +27,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Feast.CodeAnalysis.Scripting\Feast.CodeAnalysis.Scripting.csproj" />
       <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" />
       <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
+      <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.ScriptingGenerator\Feast.CodeAnalysis.ScriptingGenerator.csproj" />
     </ItemGroup>
 
 

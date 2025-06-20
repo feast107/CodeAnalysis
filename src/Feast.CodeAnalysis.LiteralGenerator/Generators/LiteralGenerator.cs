@@ -24,7 +24,7 @@ public class LiteralGenerator : IIncrementalGenerator
             /// <summary>
             /// Auto generate full-qualified class for target type
             /// </summary>
-            [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Delegate)]
+            [global::System.AttributeUsage(global::System.AttributeTargets.Class | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Delegate, AllowMultiple = true)]
             public class LiteralAttribute : Attribute
             {
                 /// <summary>
