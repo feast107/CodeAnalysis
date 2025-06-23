@@ -13,6 +13,7 @@ public class CustomAttribute : Attribute;
 
 [CustomAttribute]
 [System.Literal("Feast.CodeAnalysis.Tests.AnotherClasses")]
+[Sample]
 public partial class AnotherClass<T> where T : IEnumerable<T>
 {
     public string EE(E e) => e is E.e ? To("") : To(""); 
@@ -42,7 +43,9 @@ public partial class AnotherClass<T> where T : IEnumerable<T>
 }
 
 
-public class Foo<T>
+public class Foo<T1, T2, T3>
 {
 
 }
+
+public class Foo<T2,T3> : Foo<int,T2,T3>;

@@ -39,10 +39,11 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol s
 
     public override MemberTypes MemberType => symbol.MethodKind switch
     {
-        MethodKind.Constructor                         => MemberTypes.Constructor,
-        MethodKind.StaticConstructor                   => MemberTypes.Constructor,
-        _                                              => MemberTypes.Method
+        MethodKind.Constructor       => MemberTypes.Constructor,
+        MethodKind.StaticConstructor => MemberTypes.Constructor,
+        _                            => MemberTypes.Method
     };
+    
 
     public override MethodImplAttributes GetMethodImplementationFlags()
     {
@@ -89,10 +90,45 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol s
         }
     }
 
+    public override MethodBody? GetMethodBody() => throw new NotSupportedException();
+
+    public override Delegate CreateDelegate(System.Type delegateType) => throw new NotSupportedException();
+
+    public override Delegate CreateDelegate(System.Type delegateType, object target) =>
+        throw new NotSupportedException();
+
+    public override System.Reflection.MethodInfo GetGenericMethodDefinition() =>
+        new MethodInfo(symbol.OriginalDefinition);
+
+    public override bool IsGenericMethodDefinition => symbol is { IsDefinition: true, IsGenericMethod: true };
+
+    public override System.Reflection.MethodInfo MakeGenericMethod(params System.Type[] typeArguments) =>
+        throw new NotSupportedException();
+
+    public override System.Type[] GetGenericArguments() =>
+        symbol.TypeArguments.Select(x => new Type(x) as System.Type).ToArray();
+
     public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
 
     public override global::System.Reflection.MethodInfo GetBaseDefinition() => new MethodInfo(symbol.OriginalDefinition);
 
-    public override ICustomAttributeProvider ReturnTypeCustomAttributes =>
-        throw new NotImplementedException();
+    public override ICustomAttributeProvider ReturnTypeCustomAttributes => new CustomAttributeProvider(symbol.ReturnType);
+    
+    private class CustomAttributeProvider(ISymbol symbol) : ICustomAttributeProvider
+    {
+        public object[] GetCustomAttributes(bool inherit) =>
+            symbol.GetAttributes()
+                .CastArray<object>()
+                .ToArray();
+
+        public object[] GetCustomAttributes(System.Type attributeType, bool inherit) =>
+            symbol.GetAttributes()
+                .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
+                .Cast<object>()
+                .ToArray();
+
+        public bool IsDefined(System.Type attributeType, bool inherit) =>
+            symbol.GetAttributes()
+                .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
+    }
 }

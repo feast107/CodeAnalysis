@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -16,7 +17,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         .GetAttributes()
         .CastArray<object>()
         .ToArray();
-
+    
     public override object[] GetCustomAttributes(global::System.Type attributeType, bool inherit) =>
         Symbol.GetAttributes()
             .Where(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName)
@@ -32,7 +33,7 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
         .Select(x => new AttributeData(x));
 
     
-    public override string? Namespace => IsGenericParameter ? null : NotGlobalNamespace(Symbol.ContainingNamespace.ToDisplayString());
+    public override string? Namespace => IsGenericParameter || Symbol.ContainingNamespace.IsGlobalNamespace ? null : Symbol.ContainingNamespace.ToDisplayString();
 
     public override string  Name      => Symbol.MetadataName;
 
@@ -42,10 +43,92 @@ internal partial class Type(global::Microsoft.CodeAnalysis.ITypeSymbol symbol)
             TypeKind.TypeParameter => Name,
             TypeKind.Array         => $"{GetElementType()!.FullName}[]",
             TypeKind.Pointer       => $"{GetElementType()!.FullName}*",
-            _ => $"{Namespace}.{Name}{(!IsGenericType
-                ? string.Empty
-                : '[' + string.Join(",", GenericTypeArguments.Select(x => $"[{x.AssemblyQualifiedName}]")) + ']')}"
+            _ => GetFullName()
         };
+
+    private string GetFullName()
+    {
+        var sb = new StringBuilder();
+        if (symbol.ContainingType is {} containing)
+        {
+            sb.Append(new Type(containing).FullName + ".");
+        }
+        else
+        {
+            sb.Append(symbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : Namespace + ".");
+        }
+
+        sb.Append(Name);
+        return sb.ToString();
+    }
+
+    public override string[] GetEnumNames()
+    {
+        if (!IsEnum)
+            throw new InvalidOperationException("Type is not an enum.");
+        
+        return Symbol.GetMembers()
+            .OfType<IFieldSymbol>()
+            .Where(x => x.IsConst && x.HasConstantValue)
+            .Select(x => x.Name)
+            .ToArray();
+    }
+
+    public override string? GetEnumName(object value)
+    {
+        if (!IsEnum)
+            throw new InvalidOperationException("Type is not an enum.");
+        
+        return Symbol.GetMembers()
+            .OfType<IFieldSymbol>()
+            .FirstOrDefault(x => x.IsConst && x.HasConstantValue && x.ConstantValue?.Equals(value) is true)
+            ?.Name;
+    }
+
+    public override bool IsSubclassOf(System.Type c)
+    {
+        if (c is not Type type)
+            throw new ArgumentException("Argument must be of type 'CompileTime.Type'.", nameof(c));
+        
+        if (type.IsGenericParameter)
+            return false;
+
+        if (Symbol.TypeKind == TypeKind.TypeParameter)
+            return false;
+
+        var baseType = Symbol.BaseType;
+        while (baseType != null)
+        {
+            if (SymbolEqualityComparer.Default.Equals(baseType, type.Symbol))
+                return true;
+            baseType = baseType.BaseType;
+        }
+
+        return false;
+    }
+
+    public override bool IsInstanceOfType(object o) => throw new NotSupportedException();
+
+    public override System.Type MakeGenericType(params System.Type[] typeArguments) =>
+        throw new NotSupportedException();
+    public override System.Type MakeArrayType() => throw new NotSupportedException();
+    public override System.Type MakeArrayType(int rank) => throw new NotSupportedException();
+    public override System.Type MakeByRefType() => throw new NotSupportedException();
+    public override System.Type MakePointerType() => throw new NotSupportedException();
+
+    public override MemberInfo[] FindMembers(MemberTypes memberType, BindingFlags bindingAttr, MemberFilter filter,
+                                             object filterCriteria) =>
+        Symbol.GetMembers()
+            .Where(x => Qualified(x, memberType) && Qualified(x, bindingAttr))
+            .Select(static x => x.ToMemberInfo())
+            .Where(x => filter(x, filterCriteria))
+            .ToArray();
+
+    public override System.Type[] FindInterfaces(TypeFilter filter, object filterCriteria) =>
+        Symbol.AllInterfaces
+            .Select(x => (global::System.Type)new Type(x))
+            .Where(x => filter(x, filterCriteria))
+            .ToArray();
 
     public override string AssemblyQualifiedName => $"{FullName}, {Assembly.FullName}";
         

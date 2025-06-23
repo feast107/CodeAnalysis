@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text;
+using Feast.CodeAnalysis.TestGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -30,10 +31,10 @@ public class Tests
     [Test]
     public void Test()
     {
+        var n    = typeof(Foo<,,>).FullName;
         var file = Path.Combine(Dir(), "AnotherClass.cs");
         // Create an instance of the source generator.
-        var generator =
-            new Generators.LiteralGenerator.LiteralGenerator();
+        var generator = new TestIncrementalGenerator();
             //new TestIncrementalGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.

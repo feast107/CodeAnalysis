@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using Feast.CodeAnalysis.CompileTime;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 namespace Feast.CodeAnalysis.TestGenerator
@@ -33,24 +34,10 @@ namespace Feast.CodeAnalysis.TestGenerator
                 {
                     foreach (var syntaxContext in t.Right)
                     {
-                        var data = syntaxContext.Attributes
-                            .FirstOrDefault(static x =>
-                                x.AttributeClass.GetFullyQualifiedName() ==
-                                "global::" + typeof(SampleAttribute).FullName);
-                        if (data == null)
-                        {
-                            continue;
-                        }
-
-                        if (data.ConstructorArguments.Length == 1)
-                        {
-                            var arg = data.ConstructorArguments.First();
-                            if (arg.Values.Length > 1)
-                            {
-                            }
-                        }
-
-                        var attr = data.ToAttribute<SampleAttribute>();
+                        var assembly = new Assembly(syntaxContext.TargetSymbol.ContainingAssembly);
+                        var ts       = assembly.GetTypes();
+                        ctx.AddSource("assemblies",
+                            "//" + string.Join("\n//", ts.Select(x => x.FullName)));
                     }
                 });
         }
