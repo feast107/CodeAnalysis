@@ -25,11 +25,11 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol s
         symbol.GetAttributes()
             .Any(x => x.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
-    public override global::System.Type DeclaringType => new Type((symbol.ContainingSymbol as ITypeSymbol)!);
-
+    public override global::System.Type DeclaringType => new Type(symbol.ContainingType);
+    
     public override string Name => symbol.MetadataName;
 
-    public override global::System.Type ReflectedType => new Type(symbol.ReturnType);
+    public override global::System.Type ReflectedType => new Type(symbol.ContainingType);
 
     public override System.Type ReturnType => new Type(symbol.ReturnType);
 
@@ -81,11 +81,21 @@ internal partial class MethodInfo(global::Microsoft.CodeAnalysis.IMethodSymbol s
                 case Accessibility.Public:
                     ret |= MethodAttributes.Public;
                     break;
-                case Accessibility.Protected or Accessibility.Private:
+                default:
                     ret |= MethodAttributes.Private;
                     break;
             }
 
+            if (symbol.MethodKind is MethodKind.PropertyGet or MethodKind.PropertySet or MethodKind.Constructor)
+            {
+                ret |= MethodAttributes.SpecialName;
+                ret |= MethodAttributes.HideBySig;
+
+                if (symbol.MethodKind == MethodKind.Constructor)
+                {
+                    ret |= MethodAttributes.RTSpecialName;
+                }
+            }
             return ret;
         }
     }
