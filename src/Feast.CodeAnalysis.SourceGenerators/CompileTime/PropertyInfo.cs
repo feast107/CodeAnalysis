@@ -42,7 +42,14 @@ internal partial class PropertyInfo(global::Microsoft.CodeAnalysis.IPropertySymb
             : new MethodInfo(symbol.SetMethod);
 
     public override global::System.Reflection.MethodInfo[] GetAccessors(bool nonPublic)
-        => [GetGetMethod(nonPublic), GetSetMethod(nonPublic)];
+    {
+        var list      = new global::System.Collections.Generic.List<global::System.Reflection.MethodInfo>();
+        var getMethod = GetGetMethod(nonPublic);
+        if (getMethod != null) list.Add(getMethod);
+        var setMethod = GetSetMethod(nonPublic);
+        if (setMethod != null) list.Add(setMethod);
+        return list.ToArray();
+    }
 
     public override global::System.Reflection.MethodInfo? GetGetMethod(bool nonPublic) =>
         symbol.GetMethod == null
