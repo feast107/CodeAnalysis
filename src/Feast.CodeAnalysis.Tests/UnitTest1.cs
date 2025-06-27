@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Feast.CodeAnalysis.TestGenerator;
@@ -78,6 +79,10 @@ public class Tests
     [Test]
     public void TestStaticClass()
     {
+        var p = typeof(Static).GetProperties().FirstOrDefault();
+        var m = p?.GetGetMethod();
+        var c = typeof(Static).GetConstructors().FirstOrDefault();
+        Debugger.Break();
     }
 
 
@@ -91,5 +96,7 @@ public class Tests
         {
             
         }
+        
+        public int Number { get; set; }
     }
 }
