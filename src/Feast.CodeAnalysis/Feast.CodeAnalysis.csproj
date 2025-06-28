@@ -7,7 +7,7 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
         
-        <Version>0.4.0</Version>
+        <Version>0.4.2</Version>
         <FileVersion>0.4.0</FileVersion>
         <AssemblyVersion>0.4.0</AssemblyVersion>
         
@@ -23,7 +23,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Expose SyntaxExtension</PackageReleaseNotes>
+        <PackageReleaseNotes>Implement more for CompileTime</PackageReleaseNotes>
         <PackageIcon>Logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
