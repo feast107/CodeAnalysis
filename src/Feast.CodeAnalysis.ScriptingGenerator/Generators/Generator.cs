@@ -15,7 +15,7 @@ public class Generator : IIncrementalGenerator
             foreach (var type in GetType().Assembly.GetTypes().Where(x=>x.Namespace?.Contains(nameSpace) is true))
             {
                 c.AddSource(type.FullName!.Replace(nameSpace, "Feast.CodeAnalysis.Scripting"),
-                    type.GetField("Text", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null) as string);
+                    (type.GetField("Text", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as string)!);
             }
         });
     }

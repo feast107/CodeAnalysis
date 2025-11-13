@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.TestGenerator\Feast.CodeAnalysis.TestGenerator.csproj" />
+		<ProjectReference Include="..\Feast.CodeAnalysis\Feast.CodeAnalysis.csproj" />
+	</ItemGroup>
+
+</Project>
