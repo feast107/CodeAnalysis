@@ -12,15 +12,6 @@ public class ScriptGenerator : IIncrementalGenerator
 {
     static ScriptGenerator()
     {
-        try
-        {
-            var assembly = Assembly.LoadFile(@"C:\Users\feast\Downloads\microsoft.codeanalysis.scripting.common.4.0.1\lib\netstandard2.0\Microsoft.CodeAnalysis.Scripting.dll");
-        }
-        catch (Exception ex)
-        {
-            Debugger.Launch();
-        }
-
     }
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -38,8 +29,7 @@ public class ScriptGenerator : IIncrementalGenerator
             }
             catch (Exception ex)
             {
-                Debugger.Launch();
-                c.AddSource("Error", ex.ToString());
+                //c.AddSource("Error", "// " + ex.ToString());
             }
         });
     }

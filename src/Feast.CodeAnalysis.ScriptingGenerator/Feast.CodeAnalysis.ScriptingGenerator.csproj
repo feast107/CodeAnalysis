@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <ScriptingVersion>[4.0.1,)</ScriptingVersion>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <RootNamespace>Feast.CodeAnalysis.Scripting</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
