@@ -2,10 +2,10 @@
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 
-namespace Feast.CodeAnalysis.ScriptingGenerator.Generators;
+namespace Feast.CodeAnalysis.Scripting.Generators;
 
 [Generator]
-public class Generator : IIncrementalGenerator
+public class CodeGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

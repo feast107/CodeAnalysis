@@ -7,16 +7,16 @@
         <IsPackable>true</IsPackable>
         <LangVersion>preview</LangVersion>
 
-        <Version>0.1.0</Version>
-        <FileVersion>0.1.0</FileVersion>
-        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <Version>5.0.0-2.final</Version>
+        <FileVersion>5.0.0</FileVersion>
+        <AssemblyVersion>5.0.0</AssemblyVersion>
 
         <Authors>Feast</Authors>
         <Title>Feast.CodeAnalysis.Scripting</Title>
         <PackageId>Feast.CodeAnalysis.Scripting</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Copyright>Copyright Feast. All rights reserved.</Copyright>
-        <Description>enable CSharpScript for Roslyn components</Description>
+        <Description>provide CSharpScript for Roslyn components</Description>
         <RepositoryType>git</RepositoryType>
         <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
         <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
