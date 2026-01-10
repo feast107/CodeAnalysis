@@ -1,45 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <Nullable>enable</Nullable>
-        <ScriptingVersion>[4.0.1,)</ScriptingVersion>
-        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <RootNamespace>Feast.CodeAnalysis.Scripting</RootNamespace>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ScriptingVersion>[4.0.1,)</ScriptingVersion>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <RootNamespace>Feast.CodeAnalysis.Scripting</RootNamespace>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="[3.3.4,)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(ScriptingVersion)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(ScriptingVersion)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="$(ScriptingVersion)" />
-        <PackageReference Include="PolySharp" Version="1.14.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <EmbeddedResource Update="Resources\Resources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Compile Update="Resources\Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
-    </ItemGroup>
-   
+  <ItemGroup>
+    <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="[3.3.4,)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(ScriptingVersion)"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(ScriptingVersion)"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="$(ScriptingVersion)"/>
+    <PackageReference Include="PolySharp" Version="1.14.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

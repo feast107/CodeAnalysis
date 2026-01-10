@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -15,7 +16,7 @@ public abstract class AutoTextGenerator : IIncrementalGenerator
             foreach (var type in Types)
             {
                 ctx.AddSource(GenerateFileName(type.Name),
-                    GetGenerateTexts(type).First()
+                    "#pragma warning disable\n" +GetGenerateTexts(type).First()
                 );
             }
         });

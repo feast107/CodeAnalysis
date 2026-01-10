@@ -1,44 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <IsPackable>true</IsPackable>
-        <LangVersion>preview</LangVersion>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
 
-        <Version>0.2.0</Version>
-        <FileVersion>0.2.0</FileVersion>
-        <AssemblyVersion>0.2.0</AssemblyVersion>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0</FileVersion>
+    <AssemblyVersion>0.2.0</AssemblyVersion>
 
-        <Authors>Feast</Authors>
-        <Title>Feast.CodeAnalysis.Literal</Title>
-        <PackageId>Feast.CodeAnalysis.Literal</PackageId>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Copyright>Copyright Feast. All rights reserved.</Copyright>
-        <Description>[Literal] of Feast.CodeAnalysis</Description>
-        <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Expose SyntaxExtension</PackageReleaseNotes>
-        <PackageIcon>Logo.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+    <Title>Feast.CodeAnalysis.Literal</Title>
+    <PackageId>Feast.CodeAnalysis.Literal</PackageId>
+    <Description>[Literal] of Feast.CodeAnalysis</Description>
+    <PackageTags>roslyn;generator;enhance;extension</PackageTags>
+    <PackageReleaseNotes>Expose SyntaxExtension</PackageReleaseNotes>
+  </PropertyGroup>
 
+  <Import Project="..\PackageInfo.props"/>
 
-    <ItemGroup Label="Package">
-        <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
-            <Link>Logo.png</Link>
-        </None>
-        <None Include="..\..\README.md" PackagePath="\" Pack="true" />
-        <None Include="..\Feast.CodeAnalysis.LiteralGenerator\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.LiteralGenerator.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
-    </ItemGroup>
+  <ItemGroup Label="Package">
+    <None Include="..\Feast.CodeAnalysis.LiteralGenerator\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.LiteralGenerator.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" ReferenceOutputAssembly="false" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Feast.CodeAnalysis.LiteralGenerator\Feast.CodeAnalysis.LiteralGenerator.csproj" ReferenceOutputAssembly="false"/>
+  </ItemGroup>
 
 </Project>

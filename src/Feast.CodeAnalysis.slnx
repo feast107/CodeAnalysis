@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/_/">
+    <File Path="../doc/Logo.ico" />
+    <File Path="../README.md" />
+    <File Path=".dockerignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Dockerfile" />
+    <File Path="PackageInfo.props" />
+  </Folder>
+  <Project Path="Feast.CodeAnalysis.Literal/Feast.CodeAnalysis.Literal.csproj" />
+  <Project Path="Feast.CodeAnalysis.LiteralGenerator/Feast.CodeAnalysis.LiteralGenerator.csproj" />
+  <Project Path="Feast.CodeAnalysis.Sample/Feast.CodeAnalysis.Sample.csproj" />
+  <Project Path="Feast.CodeAnalysis.Scripting/Feast.CodeAnalysis.Scripting.csproj" />
+  <Project Path="Feast.CodeAnalysis.ScriptingGenerator/Feast.CodeAnalysis.ScriptingGenerator.csproj" />
+  <Project Path="Feast.CodeAnalysis.Shared/Feast.CodeAnalysis.Shared.shproj" />
+  <Project Path="Feast.CodeAnalysis.SourceGenerators/Feast.CodeAnalysis.SourceGenerators.csproj" />
+  <Project Path="Feast.CodeAnalysis.TestGenerator/Feast.CodeAnalysis.TestGenerator.csproj" />
+  <Project Path="Feast.CodeAnalysis.Tests/Feast.CodeAnalysis.Tests.csproj" />
+  <Project Path="Feast.CodeAnalysis/Feast.CodeAnalysis.csproj" />
+</Solution>

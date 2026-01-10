@@ -4,7 +4,7 @@
 
 // This file is ported and adapted from ComputeSharp (Sergio0694/ComputeSharp),
 // more info in ThirdPartyNotices.txt in the root of the project.
-
+#nullable enable
 using System;
 using System.Buffers;
 using System.Collections;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-#nullable enable
+
 namespace Microsoft.CodeAnalysis
 {
     /// <summary>
@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis
             /// <inheritdoc/>
             public void Dispose()
             {
-                T?[]? array = this.array;
+                var array = this.array;
 
                 this.array = null;
 

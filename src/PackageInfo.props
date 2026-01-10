@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup Label="Package">
+    <IsPackable>true</IsPackable>
+    
+    <Authors>Feast</Authors>
+    <Copyright>Copyright Feast. All rights reserved.</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>Logo.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup Label="Package">
+    <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
+      <Link>Logo.png</Link>
+    </None>
+    <None Include="..\..\README.md" PackagePath="\" Pack="true" />
+  </ItemGroup>
+</Project>

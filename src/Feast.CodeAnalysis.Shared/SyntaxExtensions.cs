@@ -1,4 +1,5 @@
-﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+﻿#nullable enable
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

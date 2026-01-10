@@ -1,46 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk" DefaultTargets="Pack">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <IsPackable>true</IsPackable>
-        <LangVersion>preview</LangVersion>
-        
-        <Version>0.4.2</Version>
-        <FileVersion>0.4.0</FileVersion>
-        <AssemblyVersion>0.4.0</AssemblyVersion>
-        
-        <Authors>Feast</Authors>
-        <Title>Feast.CodeAnalysis</Title>
-        <PackageId>Feast.CodeAnalysis</PackageId>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Copyright>Copyright Feast. All rights reserved.</Copyright>
-        <Description>Auto generate extensions for Microsoft.CodeAnalysis</Description>
-        <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/feast107/CodeAnalysis</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>roslyn;generator;enhance;extension</PackageTags>
-        <PackageReleaseNotes>Implement more for CompileTime</PackageReleaseNotes>
-        <PackageIcon>Logo.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
 
-    <ItemGroup Label="Package">
-        <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
-          <Link>Logo.png</Link>
-        </None>
-        <None Include="..\..\README.md" PackagePath="\" Pack="true" />
-        <None Include="..\Feast.CodeAnalysis.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
-        
-    </ItemGroup>
+    <Version>0.4.2</Version>
+    <FileVersion>0.4.0</FileVersion>
+    <AssemblyVersion>0.4.0</AssemblyVersion>
 
-    <ItemGroup>
-        <PackageReference Include="PolySharp" Version="1.14.1"/>
-        <ProjectReference Include="..\Feast.CodeAnalysis.Literal\Feast.CodeAnalysis.Literal.csproj" />
-        <ProjectReference Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
-    </ItemGroup>
+    <Title>Feast.CodeAnalysis</Title>
+    <PackageId>Feast.CodeAnalysis</PackageId>
+    <Description>Auto generate extensions for Microsoft.CodeAnalysis</Description>
+    <PackageTags>roslyn;generator;enhance;extension</PackageTags>
+    <PackageReleaseNotes>Implement more for CompileTime</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <Import Project="..\PackageInfo.props"/>
+
+  <ItemGroup Label="Package">
+    <None Include="..\Feast.CodeAnalysis.SourceGenerators\bin\$(Configuration)\netstandard2.0\Feast.CodeAnalysis.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PolySharp" Version="1.14.1"/>
+    <ProjectReference Include="..\Feast.CodeAnalysis.Literal\Feast.CodeAnalysis.Literal.csproj"/>
+    <ProjectReference Include="..\Feast.CodeAnalysis.SourceGenerators\Feast.CodeAnalysis.SourceGenerators.csproj" ReferenceOutputAssembly="false"/>
+  </ItemGroup>
 
 </Project>

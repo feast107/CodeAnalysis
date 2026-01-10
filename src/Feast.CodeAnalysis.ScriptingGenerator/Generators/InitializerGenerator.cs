@@ -21,6 +21,7 @@ public class AssemblyLoadGenerator : IIncrementalGenerator
             c.AddSource($"{nameof(CSharpScript)}Initializer.Assembly.g.cs", 
                 SourceText.From(
                     $$"""
+                    #pragma warning disable
                     namespace Feast.CodeAnalysis.Scripting.Generators{
                         partial class CSharpScriptInitializer{
                             private static byte[] {{nameof(Resources.Resources.Scripting_5_0_0_2_Final)}} => new byte[] { {{

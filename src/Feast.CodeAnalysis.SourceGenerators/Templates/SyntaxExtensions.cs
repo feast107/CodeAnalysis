@@ -2,7 +2,6 @@
 using System.Linq;
 using Feast.CodeAnalysis;
 
-#nullable enable
 namespace Microsoft.CodeAnalysis;
 
 [Literal("Feast.CodeAnalysis.SyntaxExtensions")]

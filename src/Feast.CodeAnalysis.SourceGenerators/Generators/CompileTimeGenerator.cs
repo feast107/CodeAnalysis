@@ -3,6 +3,7 @@ using Feast.CodeAnalysis.Generators.Base;
 using Microsoft.CodeAnalysis;
 using AttributeData = Feast.CodeAnalysis.CompileTime.AttributeData;
 using CompileTimeExtensions = Feast.CodeAnalysis.CompileTime.CompileTimeExtensions;
+using Type = Feast.CodeAnalysis.CompileTime.Type;
 
 namespace Feast.CodeAnalysis.Generators;
 
