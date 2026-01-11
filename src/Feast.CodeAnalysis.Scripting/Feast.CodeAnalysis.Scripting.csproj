@@ -3,16 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <Version>5.0.0-2.final</Version>
+    <Version>5.0.1</Version>
     <FileVersion>5.0.0</FileVersion>
     <AssemblyVersion>5.0.0</AssemblyVersion>
 
+    <IsPackable>true</IsPackable>
     <Authors>Feast</Authors>
     <Title>Feast.CodeAnalysis.Scripting</Title>
     <PackageId>Feast.CodeAnalysis.Scripting</PackageId>
     <Description>provide CSharpScript for Roslyn components</Description>
     <PackageTags>roslyn;generator;enhance;script;scripting</PackageTags>
-    <PackageReleaseNotes>Initial</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix debian CSC location</PackageReleaseNotes>
   </PropertyGroup>
 
   <Import Project="..\PackageInfo.props"/>
