@@ -1,5 +1,5 @@
 <Project>
-  <PropertyGroup Label="Package">
+  <PropertyGroup Label="Package" Condition="$(Configuration) == 'Release'">
     <IsPackable>true</IsPackable>
     
     <Authors>Feast</Authors>
@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/feast107/CodeAnalysis.git</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup Label="Package">
+  <ItemGroup Label="Package" Condition="$(Configuration) == 'Release'">
     <None Include="..\..\doc\Logo.png" Pack="true" PackagePath="\">
       <Link>Logo.png</Link>
     </None>

@@ -1,0 +1,7 @@
+﻿services:
+  feast.codeanalysis.tests:
+    image: feast.codeanalysis.tests
+    build:
+      context: .
+      dockerfile: Feast.CodeAnalysis.Tests/Dockerfile
+

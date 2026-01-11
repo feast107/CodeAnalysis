@@ -1,12 +1,20 @@
 <Solution>
+  <Folder Name="/env/">
+    <File Path="../env/Debian13.Dockerfile" />
+    <File Path="../env/Docker.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="compose.yaml" />
+  </Folder>
   <Folder Name="/_/">
+    <File Path="../.gitignore" />
     <File Path="../doc/Logo.ico" />
+    <File Path="../Dockerfile" />
     <File Path="../README.md" />
-    <File Path=".dockerignore" />
     <File Path="Directory.Build.props" />
-    <File Path="Dockerfile" />
     <File Path="PackageInfo.props" />
   </Folder>
+  <Project Path="Feast.CodeAnalysis.Console/Feast.CodeAnalysis.Console.csproj" />
   <Project Path="Feast.CodeAnalysis.Literal/Feast.CodeAnalysis.Literal.csproj" />
   <Project Path="Feast.CodeAnalysis.LiteralGenerator/Feast.CodeAnalysis.LiteralGenerator.csproj" />
   <Project Path="Feast.CodeAnalysis.Sample/Feast.CodeAnalysis.Sample.csproj" />

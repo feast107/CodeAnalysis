@@ -24,10 +24,17 @@ public class ScriptGenerator : IIncrementalGenerator
         {
             try
             {
-               var code =
-                    """
-                    return "public class ScriptGeneratedClass{ public static string Report() => \"Success\"; }";
-                    """;
+                if (CSharpScriptInitializer.Exception != null)
+                {
+                    throw new AggregateException(
+                    [
+                        ..CSharpScriptInitializer.Detail.Select(x => new Exception(x)),
+                        CSharpScriptInitializer.Exception
+                    ]);
+                }
+                var code = """
+                           return "public class ScriptGeneratedClass{ public static string Report() => 1.ToString(); }";
+                           """;
                 var result = CSharpScript.EvaluateAsync(code).Result;
 
                 c.AddSource("ScriptGenerated.g.cs",
@@ -35,7 +42,6 @@ public class ScriptGenerator : IIncrementalGenerator
             }
             catch (Exception ex)
             {
-                
                 c.AddSource("ScriptGenerated.err.g.cs",
                     SourceText.From(
                         $$"""

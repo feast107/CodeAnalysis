@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis
             /// <inheritdoc/>
             public void Dispose()
             {
-                var array = this.array;
+                T?[]? array = this.array;
 
                 this.array = null;
 

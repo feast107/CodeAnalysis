@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference OutputItemType="Analyzer" Include="..\Feast.CodeAnalysis.TestGenerator\Feast.CodeAnalysis.TestGenerator.csproj"/>
+  </ItemGroup>
+</Project>
